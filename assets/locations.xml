@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Location XML file
+Each location has a name, number, and type
+Type differentiates based on meal times
+type = 0, residential dining hall
+       1, CJL
+       2, Grad College
+
+** Entries should be in numeric order by type!! **
+ID is a nonnegative number identifying the location. Names and 
+nicknames may change, but not the ID
+-->
+
+<!-- type 0 -->
+<locations>
+    <location>
+        <name>Butler &amp; Wilson Colleges</name>
+        <nickname>Wu/Wilcox</nickname>
+        <num>02</num>
+        <type>0</type>
+        <id>0</id>
+    </location>
+    <location>
+        <name>Rockefeller &amp; Mathey Colleges</name>
+        <nickname>Rocky/Mathey</nickname>
+        <num>01</num>
+        <type>0</type>
+        <id>1</id>
+    </location>
+    <location>
+        <name>Whitman College</name>
+        <nickname>Whitman</nickname>
+        <num>08</num>
+        <type>0</type>
+        <id>2</id>
+    </location>
+    <location>
+        <name>Forbes College</name>
+        <nickname>Forbes</nickname>
+        <num>03</num>
+        <type>0</type>
+        <id>3</id>
+    </location>
+<!-- type 1 -->
+    <location>
+        <name>Center For Jewish Life</name>
+        <nickname>CJL</nickname>
+        <num>05</num>
+        <type>1</type>
+        <id>4</id>
+    </location>
+<!-- type 2 -->
+    <location>
+        <name>Graduate College</name>
+        <nickname>Grad College</nickname>
+        <num>04</num>
+        <type>2</type>
+        <id>5</id>
+    </location>
+</locations>
