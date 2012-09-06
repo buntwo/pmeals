@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#000</color>
+    <color name="white">#ffffff</color>
+    <color name="light_gray">#8a8a8a</color>
+    <color name="menuitem_selectedbg">#bfbfbf</color>
+    <color name="menuitem_bg">#eaeaea</color>
+    <color name="infobar_neutral_bg">#00000000</color>
+    <color name="text_lightgray">#fafafa</color>
+    <color name="PrincetonOrange">#ee7f2d</color>
+    <color name="selectedPrincetonOrange">#d97021</color>
+    <color name="refresh_background">#a8000000</color>
+    <color name="pageindicators">#dd000000</color>
+
+</resources>
