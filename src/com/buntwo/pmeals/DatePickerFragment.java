@@ -35,7 +35,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Date today = new Date(getArguments().getString(EXTRA_DATE));
-		Dialog dialog = new DatePickerDialog(getActivity(), this, today.year, today.month, today.monthDay);
+		DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, today.year, today.month, today.monthDay);
+		dialog.getDatePicker().setCalendarViewShown(true);
+		dialog.getDatePicker().setSpinnersShown(false);
+		
 		dialog.setTitle("Jump to date");
 		return dialog;
 	}
