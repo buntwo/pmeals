@@ -4,6 +4,8 @@ import static com.buntwo.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.buntwo.pmeals.data.C.ALPHA_DISABLED;
 import static com.buntwo.pmeals.data.C.ALPHA_ENABLED;
 import static com.buntwo.pmeals.data.C.END_ALERT_COLOR;
+import static com.buntwo.pmeals.data.C.EXTRA_DATE;
+import static com.buntwo.pmeals.data.C.EXTRA_MEALNAMES;
 import static com.buntwo.pmeals.data.C.LOCATIONSXML;
 import static com.buntwo.pmeals.data.C.MEALTIMESXML;
 import static com.buntwo.pmeals.data.C.MEAL_PASSED_COLOR;
@@ -33,6 +35,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
@@ -42,6 +45,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.buntwo.pmeals.DatePickerDialogFragment.OnDateSelectedListener;
+import com.buntwo.pmeals.MealPickerDialogFragment.OnMealSelectedListener;
 import com.buntwo.pmeals.data.C;
 import com.buntwo.pmeals.data.Date;
 import com.buntwo.pmeals.data.DatedMealTime;
@@ -51,9 +56,9 @@ import com.buntwo.pmeals.data.MealTimeProvider;
 import com.buntwo.pmeals.data.MealTimeProviderFactory;
 import com.buntwo.pmeals.data.RGBEvaluator;
 
-public class ViewByMeal extends FragmentActivity {
+public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener {
 	
-    //private static final String TAG = "ViewByMeal";
+    private static final String TAG = "ViewByMeal";
     
 	private static final IntentFilter sIntentFilter;
 	// create intent filter
@@ -79,7 +84,6 @@ public class ViewByMeal extends FragmentActivity {
 					LocalBroadcastManager.getInstance(ViewByMeal.this).sendBroadcast(newMealIntent);
 					
 					currentMeal = d;
-					//gotoCurrentMeal();
 				} else if (!today.equals(oldToday)) { // new day?
 					Intent newDayIntent = new Intent();
 					newDayIntent.setAction(C.ACTION_NEW_DAY);
@@ -101,14 +105,18 @@ public class ViewByMeal extends FragmentActivity {
     private DatedMealTime currentMeal;
     
     private Date today;
+    private ArrayList<Integer> locIDsToShow;
     
     // infobar stuff
     private TextView mealInfoView;
     private String mealInfo;
     private int infoBarColor;
     
-    private ViewPager vP;
-    private MealViewPagerAdapter pagerAdapter;
+    private ViewPager mPager;
+    private MealViewPagerAdapter mAdapter;
+    
+    // meal selector cache
+    private String selectedDate;
     
     // cached animations
     private Animation dropdown0;
@@ -186,11 +194,12 @@ public class ViewByMeal extends FragmentActivity {
         
         // setup views
 		mealInfoView = (TextView) findViewById(R.id.infobar_mealinfo);
-		vP = (ViewPager) findViewById(R.id.listview_pager);
+		mPager = (ViewPager) findViewById(R.id.listview_pager);
 		
 		// setup pager adapter
-		ArrayList<Integer> locIDsToShow = lP.getIDsForType(0, 1, 2);
-		pagerAdapter = new MealViewPagerAdapter(locIDsToShow, 0, getSupportFragmentManager());
+		locIDsToShow = lP.getIDsForType(0, 1, 2);
+		// hard coded meal type!!
+		mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.getCurrentMeal(0), 0, getSupportFragmentManager());
 		
 		// set meals
 		// hard coded meal type!!
@@ -201,11 +210,11 @@ public class ViewByMeal extends FragmentActivity {
 		today = new Date();
 		
 		// set up viewpager
-		vP.setAdapter(pagerAdapter);
-		vP.setCurrentItem(pagerAdapter.findMealIndex(mealDisplayed));
+		mPager.setAdapter(mAdapter);
+		mPager.setCurrentItem(mAdapter.getMiddleIndex());
 		TitleChangeListener tCL = new TitleChangeListener();
-		vP.setOnPageChangeListener(tCL);
-		tCL.onPageSelected(vP.getCurrentItem());
+		mPager.setOnPageChangeListener(tCL);
+		tCL.onPageSelected(mPager.getCurrentItem());
 		
         // set up action bar
         final ActionBar aB = getActionBar();
@@ -215,15 +224,22 @@ public class ViewByMeal extends FragmentActivity {
     
     // refresh button onClick method
     public void refreshList() {
-    	pagerAdapter.refreshList(vP.getCurrentItem());
+    	mAdapter.refreshList(mPager.getCurrentItem());
     }
     
     // go to current meal
     public void gotoCurrentMeal() {
-    	int currentMealIndex = pagerAdapter.findMealIndex(currentMeal);
-    	if (currentMealIndex == -1) // current meal not found?!
-    		return;
-    	vP.setCurrentItem(currentMealIndex, true);
+    	int currentMealIndex = mAdapter.findMealIndex(currentMeal);
+    	if (currentMealIndex != -1) // else, current meal not found?!
+    		mPager.setCurrentItem(currentMealIndex, true);
+    	else {
+    		mAdapter = new MealViewPagerAdapter(locIDsToShow, currentMeal, 0, getSupportFragmentManager());
+    		mPager.setAdapter(mAdapter);
+    		mPager.setOnPageChangeListener(new TitleChangeListener());
+    		mPager.setCurrentItem(mAdapter.getMiddleIndex());
+    		startPageIndicatorFadeout();
+    	}
+    		
     }
     
     // build meal time data text to show in title
@@ -341,6 +357,12 @@ public class ViewByMeal extends FragmentActivity {
     	}
     }
     
+    // start fadeout animation
+    private void startPageIndicatorFadeout() {
+    	pageIndicatorsLayout.clearAnimation();
+    	pageIndicatorsLayout.startAnimation(fadeoutAnim);
+    }
+    
     //--------------------------------------------------LISTENERS-----------------------------------------------
     
     private class BackgroundColorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
@@ -370,7 +392,7 @@ public class ViewByMeal extends FragmentActivity {
 
     	public void onPageSelected(int pos) {
     		boolean oldAreMealsEqual = mealDisplayed.equals(currentMeal);
-    		mealDisplayed = pagerAdapter.getMeal(pos);
+    		mealDisplayed = mAdapter.getMeal(pos);
     		refreshTitle(true);
     		// whether or not to disable/enable the goto current meal button
     		if (oldAreMealsEqual != mealDisplayed.equals(currentMeal))
@@ -384,6 +406,33 @@ public class ViewByMeal extends FragmentActivity {
     				iv.setImageDrawable(indic_notSelected);
     		}
     	}
+    }
+    
+    // date picker dialog callback
+    // create another dialog for meal selection
+    public void dateSelected(Date dt) {
+    	selectedDate = dt.toString();
+    	MealPickerDialogFragment mealPicker = new MealPickerDialogFragment();
+    	// hard coded meal type!!
+    	ArrayList<String> mealNames = mTP.getDaysMealNames(0, dt.weekDay);
+    	String[] mealNameArr = mealNames.toArray(new String[mealNames.size()]);
+    	Bundle args = new Bundle();
+    	args.putStringArray(EXTRA_MEALNAMES, mealNameArr);
+    	mealPicker.setArguments(args);
+    	// show meal picker dialog
+    	mealPicker.show(getFragmentManager(), "MealPicker");
+    }
+    
+    // meal selecter dialog callback
+    public void onMealSelected(String mealName) {
+    	Log.d(TAG, mTP.constructMeal(mealName, selectedDate, 0).mealName);
+    	mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.constructMeal(mealName, selectedDate, 0),
+    			0, getSupportFragmentManager());
+    	int oldPosition = mPager.getCurrentItem();
+    	mPager.setAdapter(mAdapter);
+    	mPager.setOnPageChangeListener(new TitleChangeListener());
+    	mPager.setCurrentItem(oldPosition);
+    	startPageIndicatorFadeout();
     }
 
     //----------------------------------------------------------------------------------------------------------
@@ -412,6 +461,14 @@ public class ViewByMeal extends FragmentActivity {
     	case R.id.gotocurrentmeal:
     		gotoCurrentMeal();
     		return true;
+    	case R.id.jumptodate:
+    		DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
+    		Bundle date = new Bundle();
+    		date.putString(EXTRA_DATE, mAdapter.getMeal(mPager.getCurrentItem()).date.toString());
+    		datePicker.setArguments(date);
+    		// show date picker dialog
+    		datePicker.show(getFragmentManager(), "datePicker");
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
@@ -429,9 +486,7 @@ public class ViewByMeal extends FragmentActivity {
     	super.onResume();
     	// register receiver
         registerReceiver(timeChangedReceiver, sIntentFilter);
-    	// start fadeout animation
-    	pageIndicatorsLayout.clearAnimation();
-    	pageIndicatorsLayout.startAnimation(fadeoutAnim);
+        startPageIndicatorFadeout();
     }
     
 }

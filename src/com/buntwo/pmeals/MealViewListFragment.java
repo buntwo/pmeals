@@ -138,14 +138,15 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 		for (int id : locIDs)
 			mLocsToShow.add(lP.getById(id));
 		
-		DatedMealTime lastNewMeal = mTP.constructMeal(mealName, mDate, mLocsToShow.get(0).type);
+		DatedMealTime originalMeal = mTP.constructMeal(mealName, mDate, mLocsToShow.get(0).type);
+		int lastNewMealType = originalMeal.type;
 		// create meal array
 		mMealArr = new SparseArray<DatedMealTime>();
-		mMealArr.put(lastNewMeal.type, lastNewMeal);
+		mMealArr.put(lastNewMealType, originalMeal);
 		for (Location l : mLocsToShow) {
-			if (l.type != lastNewMeal.type) {
-				lastNewMeal = mTP.swapType(lastNewMeal, l.type);
-				mMealArr.put(l.type, lastNewMeal);
+			if (l.type != lastNewMealType) {
+				mMealArr.put(l.type, mTP.swapType(originalMeal, l.type));
+				lastNewMealType = l.type;
 			}
 		}
 		

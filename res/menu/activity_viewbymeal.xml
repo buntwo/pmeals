@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_gotocurrent"
         android:showAsAction="ifRoom" />
     
+    <item
+        android:id="@+id/jumptodate"
+        android:title="Jump to meal..."
+        android:showAsAction="never" />
+
 </menu>

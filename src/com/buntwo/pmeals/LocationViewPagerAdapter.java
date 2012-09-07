@@ -19,15 +19,13 @@ public class LocationViewPagerAdapter extends FragmentPagerAdapter {
 	
 	private final Location mLoc;
 	private final int mPagerId;
-	private final Date centerDate; //  the date in the middle
 	
 	private ArrayList<Date> dates;
 	
-	public LocationViewPagerAdapter(Location l, Date cD, FragmentManager fm) {
+	public LocationViewPagerAdapter(Location l, Date centerDate, FragmentManager fm) {
 		super(fm);
 		mLoc = l;
-		centerDate = cD;
-		mPagerId =  l.hashCode() + cD.hashCode();
+		mPagerId =  l.hashCode() + centerDate.hashCode();
 		
 		// add dates
 		dates = new ArrayList<Date>();

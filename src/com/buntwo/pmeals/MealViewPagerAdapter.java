@@ -24,29 +24,28 @@ public class MealViewPagerAdapter extends FragmentPagerAdapter {
 	private ArrayList<Integer> locIDsToShow;
 	
 	private ArrayList<DatedMealTime> meals;
-	private MealTimeProvider mTP;
 	private final int mPagerId;
 	
-	public MealViewPagerAdapter(ArrayList<Integer> locIDs, int mainType, FragmentManager fm) {
+	public MealViewPagerAdapter(ArrayList<Integer> locIDs, DatedMealTime centerMeal,
+			int mainType, FragmentManager fm) {
 		super(fm);
 		locIDsToShow = locIDs;
 		meals = new ArrayList<DatedMealTime>();
-		mPagerId = 0;
+		mPagerId = centerMeal.hashCode();
 		
-		// should already be initialized
-		mTP = MealTimeProviderFactory.newMealTimeProvider();
+		// should be initialized already
+		MealTimeProvider mTP = MealTimeProviderFactory.newMealTimeProvider();
 		
 		int mealType = mainType;
-		DatedMealTime curMeal = mTP.getCurrentMeal(mealType);
-		meals.add(curMeal);
+		meals.add(centerMeal);
 		
 		// add later and previous ones
-		DatedMealTime prevMeal = curMeal;
+		DatedMealTime prevMeal = centerMeal;
 		for (int i = 0; i < VBM_NUMLISTS_BEFORE; ++i) {
 			prevMeal = mTP.getPreviousMeal(mealType, prevMeal);
 			meals.add(0, prevMeal);
 		}
-		DatedMealTime nextMeal = curMeal;
+		DatedMealTime nextMeal = centerMeal;
 		for (int i = 0; i < VBM_NUMLISTS_AFTER; ++i) {
 			// ** hardcoded meal type!! **
 			nextMeal = mTP.getNextMeal(mealType, nextMeal);
@@ -64,6 +63,11 @@ public class MealViewPagerAdapter extends FragmentPagerAdapter {
 			++index;
 		}
 		return -1;
+	}
+	
+	// returns the middle index
+	public int getMiddleIndex() {
+		return VBM_NUMLISTS_BEFORE;
 	}
 	
 	public DatedMealTime getMeal(int pos) {

@@ -10,9 +10,14 @@ import android.widget.DatePicker;
 
 import com.buntwo.pmeals.data.Date;
 
-public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 	
 	private OnDateSelectedListener mListener;
+	
+	// activity interface, called in onDateSet
+	public interface OnDateSelectedListener {
+		public void dateSelected(Date date);
+	}
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -26,32 +31,21 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
-	}
-
-	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Date today = new Date(getArguments().getString(EXTRA_DATE));
+		Bundle args = getArguments();
+		Date today = new Date(args.getString(EXTRA_DATE));
 		DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, today.year, today.month, today.monthDay);
 		dialog.getDatePicker().setCalendarViewShown(true);
 		dialog.getDatePicker().setSpinnersShown(false);
 		
-		dialog.setTitle("Jump to date");
+		dialog.setTitle("Pick a date");
 		return dialog;
 	}
 	
 	public void onDateSet(DatePicker view, int year, int month,
 			int dayOfMonth) {
-		mListener.jumpToDate(new Date(month, dayOfMonth, year));
+		mListener.dateSelected(new Date(month, dayOfMonth, year));
 	}
 	
-	
-	// activity interface, called in onDateSet
-	public interface OnDateSelectedListener {
-		public void jumpToDate(Date date);
-	}
 
 }

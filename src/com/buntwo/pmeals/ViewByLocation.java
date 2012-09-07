@@ -45,7 +45,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.buntwo.pmeals.DatePickerFragment.OnDateSelectedListener;
+import com.buntwo.pmeals.DatePickerDialogFragment.OnDateSelectedListener;
 import com.buntwo.pmeals.data.C;
 import com.buntwo.pmeals.data.Date;
 import com.buntwo.pmeals.data.DatedMealTime;
@@ -209,7 +209,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	if (todayIndex != -1) // -1 means not found, eg, different date picked out of range
     		mPager.setCurrentItem(todayIndex, true);
     	else
-    		jumpToDate(currentMeal.date);
+    		dateSelected(currentMeal.date);
     }
     
     // build meal time data text to show in title
@@ -355,7 +355,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     }
 
     // DatePickerDialog callback
-    public void jumpToDate(Date date) {
+    public void dateSelected(Date date) {
     	currentCenter = date;
 		mAdapter = new LocationViewPagerAdapter(displayedLoc, currentCenter, getSupportFragmentManager());
 		mPager.setAdapter(mAdapter);
@@ -425,12 +425,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		startActivity(intent);
     		return true;
     	case R.id.jumptodate:
-    		DatePickerFragment datePicker = new DatePickerFragment();
+    		DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
     		Bundle date = new Bundle();
     		date.putString(EXTRA_DATE, mAdapter.getDate(mPager.getCurrentItem()).toString());
     		datePicker.setArguments(date);
     		// show date picker dialog
-    		datePicker.show(getFragmentManager(), "datePicker");
+    		datePicker.show(getFragmentManager(), "DatePicker");
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);
