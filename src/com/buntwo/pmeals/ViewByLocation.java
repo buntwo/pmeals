@@ -4,6 +4,7 @@ import static com.buntwo.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.buntwo.pmeals.data.C.ALPHA_DISABLED;
 import static com.buntwo.pmeals.data.C.ALPHA_ENABLED;
 import static com.buntwo.pmeals.data.C.END_ALERT_COLOR;
+import static com.buntwo.pmeals.data.C.EXTRA_DATE;
 import static com.buntwo.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.buntwo.pmeals.data.C.LOCATIONSXML;
 import static com.buntwo.pmeals.data.C.MEALTIMESXML;
@@ -44,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.buntwo.pmeals.DatePickerFragment.OnDateSelectedListener;
 import com.buntwo.pmeals.data.C;
 import com.buntwo.pmeals.data.Date;
 import com.buntwo.pmeals.data.DatedMealTime;
@@ -54,7 +56,7 @@ import com.buntwo.pmeals.data.MealTimeProvider;
 import com.buntwo.pmeals.data.MealTimeProviderFactory;
 import com.buntwo.pmeals.data.RGBEvaluator;
 
-public class ViewByLocation extends FragmentActivity implements OnNavigationListener {
+public class ViewByLocation extends FragmentActivity implements OnNavigationListener, OnDateSelectedListener {
 	
 	//private static final String TAG = "ViewByLocation";
 	
@@ -89,8 +91,8 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		}
 	};
 	
-    private ViewPager vP;
-    private LocationViewPagerAdapter pagerAdapter;
+    private ViewPager mPager;
+    private LocationViewPagerAdapter mAdapter;
 
     // cached animations
     private Animation dropdown0;
@@ -109,6 +111,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     
     private DatedMealTime currentMeal;
     private Date dateDisplayed;
+    private Date currentCenter;
     private Location displayedLoc;
     
     private Date today;
@@ -180,13 +183,13 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		// set location
 		Intent intent = getIntent();
 		mealInfoView = (TextView) findViewById(R.id.infobar_mealinfo);
-		vP = (ViewPager) findViewById(R.id.listview_pager);
+		mPager = (ViewPager) findViewById(R.id.listview_pager);
 		
 		// set today
 		today = new Date();
 		
 		displayedLoc = null;
-		dateDisplayed = new Date();
+		dateDisplayed = currentCenter = new Date(intent.getStringExtra(EXTRA_DATE));
 		
         // setup action bar
         final ActionBar aB = getActionBar();
@@ -202,10 +205,11 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 
     // go to today
     public void gotoToday() {
-    	int todayIndex = pagerAdapter.getTodayIndex();
-    	if (todayIndex == -1) // current meal not found?!
-    		return;
-    	vP.setCurrentItem(todayIndex, true);
+    	int todayIndex = mAdapter.getMealIndex(currentMeal.date);
+    	if (todayIndex != -1) // -1 means not found, eg, different date picked out of range
+    		mPager.setCurrentItem(todayIndex, true);
+    	else
+    		jumpToDate(currentMeal.date);
     }
     
     // build meal time data text to show in title
@@ -300,6 +304,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	}
     }
     
+    // start fadeout animation
+    private void startPageIndicatorFadeout() {
+    	pageIndicatorsLayout.clearAnimation();
+    	pageIndicatorsLayout.startAnimation(fadeoutAnim);
+    }
+    
     //--------------------------------------------------LISTENERS-----------------------------------------------
     
     private class BackgroundColorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
@@ -329,7 +339,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 
     	public void onPageSelected(int pos) {
     		boolean oldAreDatesEqual = dateDisplayed.equals(currentMeal.date);
-    		dateDisplayed = pagerAdapter.getDate(pos);
+    		dateDisplayed = mAdapter.getDate(pos);
     		// whether or not to disable/enable the goto today button
     		if (oldAreDatesEqual != dateDisplayed.equals(currentMeal.date))
     			invalidateOptionsMenu();
@@ -344,21 +354,39 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	}
     }
 
+    // DatePickerDialog callback
+    public void jumpToDate(Date date) {
+    	currentCenter = date;
+		mAdapter = new LocationViewPagerAdapter(displayedLoc, currentCenter, getSupportFragmentManager());
+		mPager.setAdapter(mAdapter);
+		mPager.setOnPageChangeListener(new TitleChangeListener());
+		mPager.setCurrentItem(mAdapter.getMiddleIndex());
+		startPageIndicatorFadeout();
+		refreshTitle(false);
+    }
+
     //----------------------------------------------------------------------------------------------------------
 
     // new location selected -> new adapter
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		int oldType;
-		if (displayedLoc == null)
+		int oldPosition;
+		if (displayedLoc == null) { // the beginning case
 			oldType = -1;
-		else
+			displayedLoc = lP.getByIndex(itemPosition);
+			currentMeal = mTP.getCurrentMeal(displayedLoc.type);
+			oldPosition = VBL_NUMLISTS_BEFORE;
+		} else {
 			oldType = displayedLoc.type;
-		displayedLoc = lP.getByIndex(itemPosition);
-        currentMeal = mTP.getCurrentMeal(displayedLoc.type);
-		pagerAdapter = new LocationViewPagerAdapter(displayedLoc, getSupportFragmentManager());
-		vP.setAdapter(pagerAdapter);
-		vP.setOnPageChangeListener(new TitleChangeListener());
-		vP.setCurrentItem(pagerAdapter.getTodayIndex());
+			displayedLoc = lP.getByIndex(itemPosition);
+			currentMeal = mTP.getCurrentMeal(displayedLoc.type);
+			oldPosition = mPager.getCurrentItem();
+		}
+		mAdapter = new LocationViewPagerAdapter(displayedLoc, currentCenter, getSupportFragmentManager());
+		mPager.setAdapter(mAdapter);
+		mPager.setOnPageChangeListener(new TitleChangeListener());
+		mPager.setCurrentItem(oldPosition);
+		startPageIndicatorFadeout();
 		refreshTitle(!(displayedLoc.type == oldType));
 		return true;
 	}
@@ -397,7 +425,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		startActivity(intent);
     		return true;
     	case R.id.jumptodate:
-    		
+    		DatePickerFragment datePicker = new DatePickerFragment();
+    		Bundle date = new Bundle();
+    		date.putString(EXTRA_DATE, mAdapter.getDate(mPager.getCurrentItem()).toString());
+    		datePicker.setArguments(date);
+    		// show date picker dialog
+    		datePicker.show(getFragmentManager(), "datePicker");
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);
@@ -416,9 +449,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	super.onResume();
     	// register receiver
         registerReceiver(timeChangedReceiver, sIntentFilter);
-    	// start fadeout animation
-    	pageIndicatorsLayout.clearAnimation();
-    	pageIndicatorsLayout.startAnimation(fadeoutAnim);
+		startPageIndicatorFadeout();
     }
 
 }

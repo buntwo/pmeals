@@ -14,37 +14,32 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.buntwo.pmeals.data.Date;
 import com.buntwo.pmeals.data.Location;
-import com.buntwo.pmeals.data.MealTimeProvider;
-import com.buntwo.pmeals.data.MealTimeProviderFactory;
 
 public class LocationViewPagerAdapter extends FragmentPagerAdapter {
 	
 	private final Location mLoc;
-	private MealTimeProvider mTP;
 	private final int mPagerId;
+	private final Date centerDate; //  the date in the middle
 	
 	private ArrayList<Date> dates;
 	
-	public LocationViewPagerAdapter(Location l, FragmentManager fm) {
+	public LocationViewPagerAdapter(Location l, Date cD, FragmentManager fm) {
 		super(fm);
 		mLoc = l;
-		mPagerId = mLoc.hashCode();
-		
-		// should already be initialized
-		mTP = MealTimeProviderFactory.newMealTimeProvider();
+		centerDate = cD;
+		mPagerId =  l.hashCode() + cD.hashCode();
 		
 		// add dates
 		dates = new ArrayList<Date>();
-		Date today = mTP.getCurrentMeal(mLoc.type).date;
-		dates.add(today);
-		Date yesterday = today;
+		dates.add(centerDate);
+		Date yesterday = centerDate;
 		for (int i = 0; i < VBL_NUMLISTS_BEFORE; ++i) {
 			yesterday = new Date(yesterday);
 			--yesterday.monthDay;
 			yesterday.normalize(true);
 			dates.add(0, yesterday);
 		}
-		Date tmrw = today;
+		Date tmrw = centerDate;
 		for (int i = 0; i < VBL_NUMLISTS_AFTER; ++i) {
 			tmrw = new Date(tmrw);
 			++tmrw.monthDay;
@@ -57,7 +52,16 @@ public class LocationViewPagerAdapter extends FragmentPagerAdapter {
 	// if not found, return -1
 	// well it just returns the number of lists before today, and since it's
 	// 0-indexed, this works
-	public int getTodayIndex() {
+	public int getMealIndex(Date dt) {
+		for (int i = 0; i < dates.size(); ++i) {
+			if (dates.get(i).equals(dt))
+				return i;
+		}
+		return -1;
+	}
+	
+	// returns the middle index
+	public int getMiddleIndex() {
 		return VBL_NUMLISTS_BEFORE;
 	}
 	

@@ -126,7 +126,7 @@ public class MenuDownloader implements Runnable {
 						data.put(DATE, mDate);
 						data.put(MEALNAME, mealName);
 						data.put(ITEMNAME, f.itemName);
-						data.put(ITEMERROR, f.error); // converted to 1=true, 0=false
+						data.put(ITEMERROR, f.error); // converted to 1 = true, 0 = false
 						mealData[j] = data;
 					}
 					cr.bulkInsert(CONTENT_URI, mealData);
@@ -169,7 +169,7 @@ public class MenuDownloader implements Runnable {
 	//----------------------------------------------------HELPER METHODS-----------------------------------------
 	private ArrayList<ArrayList<FoodItem>> getDaysMenus(ArrayList<String> aMealNames,
 			String aLocNum, String aLocName, String aDate) {
-
+		
 		int size = aMealNames.size();
 		ArrayList<ArrayList<FoodItem>> daysMenus = new ArrayList<ArrayList<FoodItem>>(size); // parallel array of menus
 		// (parallel to mealNames)
@@ -215,7 +215,11 @@ public class MenuDownloader implements Runnable {
 				return daysMenus;
 			// add in second set
 			meal.addAll(parseMenu2(htmlData));
-
+			
+			// if it's empty, then add nodata entry
+			if (meal.isEmpty())
+				meal.add(new FoodItem(STRING_NODATA, true));
+			
 			// add the menu
 			daysMenus.set(i, new ArrayList<FoodItem>(meal));
 		}
@@ -284,7 +288,7 @@ public class MenuDownloader implements Runnable {
 			FoodItem item = new FoodItem(itemNames.get(i), false);
 			meals.get(mealNames.get(mealNum-1)).add(item);
 		}
-
+		
 		return meals;
 	}
 

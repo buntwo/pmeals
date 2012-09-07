@@ -194,6 +194,7 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 		if (id >= 0) { // location name
 			Intent intent = new Intent(getActivity(), ViewByLocation.class);
 			intent.putExtra(EXTRA_LOCATIONID, (int) id);
+			intent.putExtra(EXTRA_DATE, mDate);
 			startActivity(intent);
 		} else if (pos == 0) { // toggle date
 			mAdapter.toggleDateFormat();

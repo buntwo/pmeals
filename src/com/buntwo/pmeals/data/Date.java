@@ -27,15 +27,24 @@ public class Date extends Time {
 	// get a date from a date string in MM/dd/yyyy form
 	// hackish, lol
 	public Date(String date) {
-		super();
 		// remember month is 0-indexed!!!!!!
-		month = Integer.parseInt(date.substring(0, 2)) - 1;
-		monthDay = Integer.parseInt(date.substring(3, 5));
-		year = Integer.parseInt(date.substring(6));
+		this(
+		Integer.parseInt(date.substring(0, 2)) - 1, // month
+		Integer.parseInt(date.substring(3, 5)),		// monthDay
+		Integer.parseInt(date.substring(6))			// year
+		);
+	}
+	
+	// generate date from given data.
+	// NOTE: month is from [0-11] !!
+	public Date(int aMonth, int aMonthDay, int aYear) {
+		month = aMonth;
+		monthDay = aMonthDay;
+		year = aYear;
 		dateify();
 	}
 	
-	//-------------------------------------------------------------------------------------------
+	//--------------------------------------PUBLIC METHODS-------------------------------------
 			
 	// is the given date tomorrow?
 	public boolean isTomorrow(Date d) {
@@ -52,6 +61,8 @@ public class Date extends Time {
 		d_.normalize(true);
 		return equals(d_);
 	}
+	
+	//------------------------------------------------------------------------------------------
 	
 	private void dateify() {
 		allDay = true;
