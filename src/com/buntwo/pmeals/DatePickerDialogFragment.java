@@ -45,7 +45,7 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Date today = new Date(getArguments().getString(EXTRA_DATE));
 		DatePickerDialog dialog = new DatePickerDialog(getActivity(),
-				android.R.style.Theme_Holo_Dialog, this,
+				R.style.Theme_Dialog_NoFrame, this,
 				//this,
 				today.year, today.month, today.monthDay);
 		dialog.getDatePicker().setCalendarViewShown(true);

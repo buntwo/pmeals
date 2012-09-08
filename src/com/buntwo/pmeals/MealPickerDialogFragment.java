@@ -47,7 +47,7 @@ public class MealPickerDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		mMealNames = getArguments().getStringArray(EXTRA_MEALNAMES);
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Holo_Dialog);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_Dialog_NoFrame);
     	
     	builder.setTitle("Select meal")
     		   .setCancelable(true)
