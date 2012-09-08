@@ -192,7 +192,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		dateDisplayed = currentCenter = new Date(intent.getStringExtra(EXTRA_DATE));
 		
         // setup action bar
-        final ActionBar aB = getActionBar();
+        ActionBar aB = getActionBar();
         aB.setTitle("PMeals");
         aB.setDisplayShowTitleEnabled(true);
         aB.setDisplayHomeAsUpEnabled(true);
@@ -425,11 +425,9 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		startActivity(intent);
     		return true;
     	case R.id.jumptodate:
-    		DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
-    		Bundle date = new Bundle();
-    		date.putString(EXTRA_DATE, mAdapter.getDate(mPager.getCurrentItem()).toString());
-    		datePicker.setArguments(date);
-    		// show date picker dialog
+    		DatePickerDialogFragment datePicker =DatePickerDialogFragment.newInstance(
+    				mAdapter.getDate(mPager.getCurrentItem()).toString()
+    				);
     		datePicker.show(getFragmentManager(), "DatePicker");
     		return true;
     	default:

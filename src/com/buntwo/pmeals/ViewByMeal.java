@@ -4,8 +4,6 @@ import static com.buntwo.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.buntwo.pmeals.data.C.ALPHA_DISABLED;
 import static com.buntwo.pmeals.data.C.ALPHA_ENABLED;
 import static com.buntwo.pmeals.data.C.END_ALERT_COLOR;
-import static com.buntwo.pmeals.data.C.EXTRA_DATE;
-import static com.buntwo.pmeals.data.C.EXTRA_MEALNAMES;
 import static com.buntwo.pmeals.data.C.LOCATIONSXML;
 import static com.buntwo.pmeals.data.C.MEALTIMESXML;
 import static com.buntwo.pmeals.data.C.MEAL_PASSED_COLOR;
@@ -35,7 +33,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
@@ -58,7 +55,7 @@ import com.buntwo.pmeals.data.RGBEvaluator;
 
 public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener {
 	
-    private static final String TAG = "ViewByMeal";
+    //private static final String TAG = "ViewByMeal";
     
 	private static final IntentFilter sIntentFilter;
 	// create intent filter
@@ -217,7 +214,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		tCL.onPageSelected(mPager.getCurrentItem());
 		
         // set up action bar
-        final ActionBar aB = getActionBar();
+        ActionBar aB = getActionBar();
         aB.setTitle("PMeals");
         aB.setDisplayShowTitleEnabled(true);
     }
@@ -412,20 +409,15 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     // create another dialog for meal selection
     public void dateSelected(Date dt) {
     	selectedDate = dt.toString();
-    	MealPickerDialogFragment mealPicker = new MealPickerDialogFragment();
     	// hard coded meal type!!
-    	ArrayList<String> mealNames = mTP.getDaysMealNames(0, dt.weekDay);
-    	String[] mealNameArr = mealNames.toArray(new String[mealNames.size()]);
-    	Bundle args = new Bundle();
-    	args.putStringArray(EXTRA_MEALNAMES, mealNameArr);
-    	mealPicker.setArguments(args);
-    	// show meal picker dialog
+    	MealPickerDialogFragment mealPicker = MealPickerDialogFragment.newInstance(
+    			mTP.getDaysMealNames(0, dt.weekDay)
+    			);
     	mealPicker.show(getFragmentManager(), "MealPicker");
     }
     
     // meal selecter dialog callback
     public void onMealSelected(String mealName) {
-    	Log.d(TAG, mTP.constructMeal(mealName, selectedDate, 0).mealName);
     	mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.constructMeal(mealName, selectedDate, 0),
     			0, getSupportFragmentManager());
     	int oldPosition = mPager.getCurrentItem();
@@ -462,11 +454,9 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		gotoCurrentMeal();
     		return true;
     	case R.id.jumptodate:
-    		DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
-    		Bundle date = new Bundle();
-    		date.putString(EXTRA_DATE, mAdapter.getMeal(mPager.getCurrentItem()).date.toString());
-    		datePicker.setArguments(date);
-    		// show date picker dialog
+    		DatePickerDialogFragment datePicker = DatePickerDialogFragment.newInstance(
+    				mAdapter.getMeal(mPager.getCurrentItem()).date.toString()
+    				);
     		datePicker.show(getFragmentManager(), "datePicker");
     		return true;
     	default:

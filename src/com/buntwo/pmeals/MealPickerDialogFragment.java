@@ -1,23 +1,36 @@
 package com.buntwo.pmeals;
 
 import static com.buntwo.pmeals.data.C.EXTRA_MEALNAMES;
+
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 public class MealPickerDialogFragment extends DialogFragment {
 	
-	private static final String TAG = "MealPickerDialogFragment";
+	//private static final String TAG = "MealPickerDialogFragment";
 	
 	private OnMealSelectedListener mListener;
 	private String[] mMealNames;
 	
 	public interface OnMealSelectedListener {
 		public void onMealSelected(String mealName);
+	}
+	
+	public static MealPickerDialogFragment newInstance(ArrayList<String> mealNames) {
+		MealPickerDialogFragment f = new MealPickerDialogFragment();
+		
+		// supply meal name array as arg
+		Bundle args = new Bundle();
+		args.putStringArray(EXTRA_MEALNAMES, mealNames.toArray(new String[mealNames.size()]));
+		f.setArguments(args);
+		
+		return f;
 	}
 	
 	@Override
@@ -34,8 +47,7 @@ public class MealPickerDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		mMealNames = getArguments().getStringArray(EXTRA_MEALNAMES);
-		Log.d(TAG, String.format("%s, %s", mMealNames[0], mMealNames[1]));
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Holo_Dialog);
     	
     	builder.setTitle("Select meal")
     		   .setCancelable(true)
@@ -48,6 +60,5 @@ public class MealPickerDialogFragment extends DialogFragment {
     	
     	return builder.create();
 	}
-	
 	
 }

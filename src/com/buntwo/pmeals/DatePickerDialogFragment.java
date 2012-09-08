@@ -19,6 +19,17 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 		public void dateSelected(Date date);
 	}
 	
+	public static DatePickerDialogFragment newInstance(String date) {
+		DatePickerDialogFragment f = new DatePickerDialogFragment();
+		
+		// supply date as arg
+		Bundle args = new Bundle();
+		args.putString(EXTRA_DATE, date);
+		f.setArguments(args);
+		
+		return f;
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -32,9 +43,11 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Bundle args = getArguments();
-		Date today = new Date(args.getString(EXTRA_DATE));
-		DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, today.year, today.month, today.monthDay);
+		Date today = new Date(getArguments().getString(EXTRA_DATE));
+		DatePickerDialog dialog = new DatePickerDialog(getActivity(),
+				android.R.style.Theme_Holo_Dialog, this,
+				//this,
+				today.year, today.month, today.monthDay);
 		dialog.getDatePicker().setCalendarViewShown(true);
 		dialog.getDatePicker().setSpinnersShown(false);
 		
@@ -46,6 +59,5 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 			int dayOfMonth) {
 		mListener.dateSelected(new Date(month, dayOfMonth, year));
 	}
-	
 
 }
