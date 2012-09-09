@@ -41,6 +41,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -54,7 +55,7 @@ import com.buntwo.pmeals.data.LocationProvider;
 import com.buntwo.pmeals.data.LocationProviderFactory;
 import com.buntwo.pmeals.data.MealTimeProvider;
 import com.buntwo.pmeals.data.MealTimeProviderFactory;
-import com.buntwo.pmeals.data.RGBEvaluator;
+import com.buntwo.pmeals.data.RgbEvaluator;
 
 public class ViewByLocation extends FragmentActivity implements OnNavigationListener, OnDateSelectedListener {
 	
@@ -97,7 +98,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     // cached animations
     private Animation dropdown0;
     private Animation dropdown1;
-    private Animation dropdown2;
 					
     private LinearLayout pageIndicatorsLayout;
     private ImageView[] pageIndicators;
@@ -117,22 +117,17 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     private Date today;
     
     // infobar stuff
-    private TextView mealInfoView;
+    private TextView mealInfoView0;
+    private TextView mealInfoView1;
+    private FrameLayout infoBar;
     private String mealInfo;
     private int infoBarColor;
     
-    private boolean isInfoBarSettling;
-    private boolean isInfoBarDropping;
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewbylocation);
 
-        // not animating
-        isInfoBarDropping = false;
-        isInfoBarSettling = false;
-        
         // get meal time provider
 		try {
 			MealTimeProviderFactory.initialize(getAssets().open(MEALTIMESXML));
@@ -149,22 +144,18 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         lP = LocationProviderFactory.newLocationProvider();
         
         // cache animations
-        dropdown0 = AnimationUtils.loadAnimation(this, R.anim.title_dropdown0);
-        dropdown0.setAnimationListener(new ResetAnimationListener());
-        dropdown1 = AnimationUtils.loadAnimation(this, R.anim.title_dropdown1);
+        dropdown0 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown0);
+        dropdown1 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown1);
         dropdown1.setAnimationListener(new AnimationListener() {
-        	public void onAnimationEnd(Animation animation) {
-        		isInfoBarDropping = false;
-        		updateInfoBar();
-        		mealInfoView.startAnimation(dropdown2);
-        	}
-        	public void onAnimationRepeat(Animation animation) {}
-        	public void onAnimationStart(Animation animation) {
-        		isInfoBarDropping = true;
-        	}
+			public void onAnimationRepeat(Animation animation) {}
+			public void onAnimationStart(Animation animation) {}
+			public void onAnimationEnd(Animation animation) {
+				// swap references
+				TextView tmp = mealInfoView0;
+				mealInfoView0 = mealInfoView1;
+				mealInfoView1 = tmp;
+			}
         });
-        dropdown2 = AnimationUtils.loadAnimation(this, R.anim.title_dropdown2);
-        dropdown2.setAnimationListener(new ResetAnimationListener());
         
         // set up page indicators
         pageIndicatorsLayout = (LinearLayout) findViewById(R.id.pageindicators);
@@ -182,8 +173,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		
 		// set location
 		Intent intent = getIntent();
-		mealInfoView = (TextView) findViewById(R.id.infobar_mealinfo);
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
+		
+		// cache views
+		mealInfoView0 = (TextView) findViewById(R.id.infobar_mealinfo0);
+		mealInfoView1 = (TextView) findViewById(R.id.infobar_mealinfo1);
+		infoBar = (FrameLayout) findViewById(R.id.infobar);
 		
 		// set today
 		today = new Date();
@@ -273,31 +268,26 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		}
 		
 		if (newMeal) {
-			if (!(isInfoBarSettling || isInfoBarDropping)) {
-				// fancy dropdown animation
-				if (mealInfoView.getText().equals("")) { // first load, load linear animation
-					mealInfoView.startAnimation(dropdown0);
-					updateInfoBar();
-				} else
-					mealInfoView.startAnimation(dropdown1);
-			} else if (isInfoBarSettling)
-				updateInfoBar();
+			// fancy dropdown animation
+			mealInfoView0.startAnimation(dropdown0);
+			mealInfoView1.startAnimation(dropdown1);
+			updateInfoBar();
 		} else
 			updateInfoBar();
     }
     
     private void updateInfoBar() {
-			mealInfoView.setText(mealInfo);
-			changeTitleColor(infoBarColor);
+    	mealInfoView0.setText(mealInfo);
+    	changeInfoBarColor(infoBarColor);
     }
     
-    private void changeTitleColor(int newBgColor) {
-    	int oldBgColor = ((ColorDrawable) mealInfoView.getBackground()).getColor();
+    private void changeInfoBarColor(int newBgColor) {
+    	int oldBgColor = ((ColorDrawable) infoBar.getBackground()).getColor();
     	if (!(newBgColor == oldBgColor)) {
     		// color changing animation
     		ValueAnimator colorAnim = new ValueAnimator();
     		colorAnim.setIntValues(oldBgColor, newBgColor);
-    		colorAnim.setEvaluator(new RGBEvaluator());
+    		colorAnim.setEvaluator(new RgbEvaluator());
     		colorAnim.setDuration(ALERT_FADEIN_TIME);
     		colorAnim.addUpdateListener(new BackgroundColorUpdateListener());
     		colorAnim.start();
@@ -315,16 +305,8 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     private class BackgroundColorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
     	public void onAnimationUpdate(ValueAnimator animation) {
     		int bgColor = (Integer) animation.getAnimatedValue();
-    		mealInfoView.setBackgroundColor(bgColor);
+    		infoBar.setBackgroundColor(bgColor);
     	}
-    }
-    
-    // title animating set to false at animation end
-    private class ResetAnimationListener implements AnimationListener {
-		public void onAnimationEnd(Animation animation) { isInfoBarSettling = false; }
-		public void onAnimationRepeat(Animation animation) {}
-		public void onAnimationStart(Animation animation) { isInfoBarSettling = true; }
-    	
     }
     
     private class TitleChangeListener extends SimpleOnPageChangeListener {

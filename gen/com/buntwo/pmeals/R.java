@@ -9,11 +9,10 @@ package com.buntwo.pmeals;
 
 public final class R {
     public static final class anim {
-        public static final int pageindicator_fadeout=0x7f040000;
-        public static final int refresh_rotate=0x7f040001;
-        public static final int title_dropdown0=0x7f040002;
-        public static final int title_dropdown1=0x7f040003;
-        public static final int title_dropdown2=0x7f040004;
+        public static final int infobar_dropdown0=0x7f040000;
+        public static final int infobar_dropdown1=0x7f040001;
+        public static final int pageindicator_fadeout=0x7f040002;
+        public static final int refresh_rotate=0x7f040003;
     }
     public static final class attr {
     }
@@ -43,19 +42,21 @@ public final class R {
     }
     public static final class id {
         public static final int action_viewbylocation_spinnertext=0x7f090000;
-        public static final int gotocurrentmeal=0x7f09000c;
-        public static final int gototoday=0x7f09000a;
-        public static final int infobar_mealinfo=0x7f090001;
-        public static final int jumptodate=0x7f09000b;
-        public static final int listview_pager=0x7f090002;
-        public static final int loading_text=0x7f090007;
-        public static final int menuitem=0x7f090006;
-        public static final int pageindicators=0x7f090003;
-        public static final int refresh=0x7f09000d;
-        public static final int refreshicon=0x7f090004;
-        public static final int sectionextra=0x7f090009;
-        public static final int sectiontitle=0x7f090008;
-        public static final int title=0x7f090005;
+        public static final int gotocurrentmeal=0x7f09000e;
+        public static final int gototoday=0x7f09000c;
+        public static final int infobar=0x7f090001;
+        public static final int infobar_mealinfo0=0x7f090002;
+        public static final int infobar_mealinfo1=0x7f090003;
+        public static final int jumptodate=0x7f09000d;
+        public static final int listview_pager=0x7f090004;
+        public static final int loading_text=0x7f090009;
+        public static final int menuitem=0x7f090008;
+        public static final int pageindicators=0x7f090005;
+        public static final int refresh=0x7f09000f;
+        public static final int refreshicon=0x7f090006;
+        public static final int sectionextra=0x7f09000b;
+        public static final int sectiontitle=0x7f09000a;
+        public static final int title=0x7f090007;
     }
     public static final class layout {
         public static final int actionbar_viewbylocation_spinner=0x7f030000;

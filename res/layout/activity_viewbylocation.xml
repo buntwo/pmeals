@@ -4,18 +4,42 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/infobar_mealinfo"
+    <FrameLayout
+        android:id="@+id/infobar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
-        android:paddingBottom="2sp"
-        android:paddingRight="10dp"
-        android:paddingTop="2sp"
-        android:textColor="@color/white"
         android:background="@color/infobar_neutral_bg"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        >
+
+        <TextView
+            android:id="@+id/infobar_mealinfo0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+       		android:layout_gravity="right"
+            android:gravity="right"
+            android:paddingRight="10dp"
+        	android:paddingBottom="2dp"
+        	android:paddingTop="2dp"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/infobar_mealinfo1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        	android:layout_gravity="right"
+            android:gravity="right"
+            android:paddingRight="10dp"
+        	android:paddingBottom="2dp"
+        	android:paddingTop="2dp"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+        
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

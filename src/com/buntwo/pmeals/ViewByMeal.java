@@ -38,9 +38,11 @@ import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.buntwo.pmeals.DatePickerDialogFragment.OnDateSelectedListener;
 import com.buntwo.pmeals.MealPickerDialogFragment.OnMealSelectedListener;
@@ -51,7 +53,7 @@ import com.buntwo.pmeals.data.LocationProvider;
 import com.buntwo.pmeals.data.LocationProviderFactory;
 import com.buntwo.pmeals.data.MealTimeProvider;
 import com.buntwo.pmeals.data.MealTimeProviderFactory;
-import com.buntwo.pmeals.data.RGBEvaluator;
+import com.buntwo.pmeals.data.RgbEvaluator;
 
 public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener {
 	
@@ -105,7 +107,9 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     private ArrayList<Integer> locIDsToShow;
     
     // infobar stuff
-    private TextView mealInfoView;
+    private TextView mealInfoView0;
+    private TextView mealInfoView1;
+    private FrameLayout infoBar;
     private String mealInfo;
     private int infoBarColor;
     
@@ -118,17 +122,15 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     // cached animations
     private Animation dropdown0;
     private Animation dropdown1;
-    private Animation dropdown2;
 					
     private LinearLayout pageIndicatorsLayout;
     private ImageView[] pageIndicators;
     private Drawable indic_notSelected;
     private Drawable indic_selected;
     private Animation fadeoutAnim;
-    private static int TOTAL_NUMLISTS= VBM_NUMLISTS_BEFORE + VBM_NUMLISTS_AFTER + 1;
+    private static int TOTAL_NUMLISTS = VBM_NUMLISTS_BEFORE + VBM_NUMLISTS_AFTER + 1;
     
-    private boolean isInfoBarSettling;
-    private boolean isInfoBarDropping;
+    private boolean isInfoBarMoving;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,23 +156,20 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         LocationProvider lP = LocationProviderFactory.newLocationProvider();
         
         // cache animations
-        dropdown0 = AnimationUtils.loadAnimation(this, R.anim.title_dropdown0);
+        dropdown0 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown0);
         dropdown0.setAnimationListener(new ResetAnimationListener());
-        dropdown1 = AnimationUtils.loadAnimation(this, R.anim.title_dropdown1);
+        dropdown1 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown1);
         dropdown1.setAnimationListener(new AnimationListener() {
-        	public void onAnimationEnd(Animation animation) {
-        		isInfoBarDropping = false;
-        		updateInfoBar();
-        		mealInfoView.startAnimation(dropdown2);
-        	}
-        	public void onAnimationRepeat(Animation animation) {}
-        	public void onAnimationStart(Animation animation) {
-        		isInfoBarDropping = true;
-        	}
+			public void onAnimationRepeat(Animation animation) {}
+			public void onAnimationStart(Animation animation) {}
+			public void onAnimationEnd(Animation animation) {
+				// swap references
+				TextView tmp = mealInfoView0;
+				mealInfoView0 = mealInfoView1;
+				mealInfoView1 = tmp;
+			}
         });
-        dropdown2 = AnimationUtils.loadAnimation(this, R.anim.title_dropdown2);
-        dropdown2.setAnimationListener(new ResetAnimationListener());
-
+        
         // set up page indicators
         pageIndicatorsLayout = (LinearLayout) findViewById(R.id.pageindicators);
         pageIndicators = new ImageView[TOTAL_NUMLISTS];
@@ -186,11 +185,12 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         fadeoutAnim = AnimationUtils.loadAnimation(ViewByMeal.this, R.anim.pageindicator_fadeout);
         
         // not animating
-        isInfoBarDropping = false;
-        isInfoBarSettling = false;
+        isInfoBarMoving = false;
         
-        // setup views
-		mealInfoView = (TextView) findViewById(R.id.infobar_mealinfo);
+        // cache views
+		mealInfoView0 = (TextView) findViewById(R.id.infobar_mealinfo0);
+		mealInfoView1 = (TextView) findViewById(R.id.infobar_mealinfo1);
+		infoBar = (FrameLayout) findViewById(R.id.infobar);
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
 		
 		// setup pager adapter
@@ -322,32 +322,28 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		}
 		
 		if (newMeal) {
-			if (!(isInfoBarSettling || isInfoBarDropping)) {
+			if (!isInfoBarMoving) {
 				// fancy dropdown animation
-				if (mealInfoView.getText().equals("")) { // first load, load linear animation
-					mealInfoView.startAnimation(dropdown0);
-					updateInfoBar();
-				} else
-					mealInfoView.startAnimation(dropdown1);
-			} else if (isInfoBarSettling)
+				mealInfoView0.startAnimation(dropdown0);
+				mealInfoView1.startAnimation(dropdown1);
+				updateInfoBar();
+			} else
 				updateInfoBar();
 		} else
 			updateInfoBar();
     }
     
     private void updateInfoBar() {
-    	mealInfoView.setText(mealInfo);
-    	changeTitleColor(infoBarColor);
+    	mealInfoView0.setText(mealInfo);
+    	changeInfoBarColor();
     }
     
-    private void changeTitleColor(int newBgColor) {
-    	int oldBgColor = ((ColorDrawable) mealInfoView.getBackground()).getColor();
-    	if (newBgColor == oldBgColor) {
-    		mealInfoView.setBackgroundColor(newBgColor);
-    	} else {
+    private void changeInfoBarColor() {
+    	int oldBgColor = ((ColorDrawable) infoBar.getBackground()).getColor();
+    	if (!(infoBarColor == oldBgColor)) {
     		// color changing animation
-    		ValueAnimator colorAnim = ValueAnimator.ofInt(oldBgColor, newBgColor);
-    		colorAnim.setEvaluator(new RGBEvaluator());
+    		ValueAnimator colorAnim = ValueAnimator.ofInt(oldBgColor, infoBarColor);
+    		colorAnim.setEvaluator(new RgbEvaluator());
     		colorAnim.setDuration(ALERT_FADEIN_TIME);
     		colorAnim.addUpdateListener(new BackgroundColorUpdateListener());
     		colorAnim.start();
@@ -365,16 +361,15 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     private class BackgroundColorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
     	public void onAnimationUpdate(ValueAnimator animation) {
     		int bgColor = (Integer) animation.getAnimatedValue();
-    		mealInfoView.setBackgroundColor(bgColor);
+    		infoBar.setBackgroundColor(bgColor);
     	}
     }
     
     // title animating set to false at animation end
     private class ResetAnimationListener implements AnimationListener {
-		public void onAnimationEnd(Animation animation) { isInfoBarSettling = false; }
+		public void onAnimationEnd(Animation animation) { isInfoBarMoving = false; }
 		public void onAnimationRepeat(Animation animation) {}
-		public void onAnimationStart(Animation animation) { isInfoBarSettling = true; }
-    	
+		public void onAnimationStart(Animation animation) { isInfoBarMoving = true; }
     }
     
     private class TitleChangeListener extends SimpleOnPageChangeListener {

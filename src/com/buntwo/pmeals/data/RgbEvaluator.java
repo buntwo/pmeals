@@ -3,7 +3,7 @@ package com.buntwo.pmeals.data;
 import android.animation.TypeEvaluator;
 import android.graphics.Color;
 
-public class RGBEvaluator implements TypeEvaluator<Integer> {
+public class RgbEvaluator implements TypeEvaluator<Integer> {
 
 	public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
 		int color0 = startValue;
