@@ -453,6 +453,10 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     				);
     		datePicker.show(getFragmentManager(), "datePicker");
     		return true;
+    	case R.id.about:
+    		AboutFragment about = new AboutFragment();
+    		about.show(getFragmentManager(), "about");
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}

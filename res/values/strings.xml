@@ -4,5 +4,9 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_viewbymeal">PMeals</string>
     <string name="title_activity_viewbylocation">PMeals</string>
+    <string name="app_info">An app for downloading, storing, and nicely displaying dining hall menus at Princeton University.</string>
+    <string name="credits_categories">App design\nCoding</string>
+    <string name="credits_authors">Brian Tu\nBrian Tu</string>
+    <string name="version">v0.2.8</string>
 
 </resources>

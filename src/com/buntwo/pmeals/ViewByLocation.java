@@ -412,6 +412,10 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     				);
     		datePicker.show(getFragmentManager(), "DatePicker");
     		return true;
+    	case R.id.about:
+    		AboutFragment about = new AboutFragment();
+    		about.show(getFragmentManager(), "about");
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
