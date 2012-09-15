@@ -22,20 +22,20 @@ type is same as in locations.xml
             </dinner>
         </weekDay>
         <saturday>
-            <brunch>
+            <lunch>
                 <start>10:00</start>
                 <end>14:00</end>
-            </brunch>
+            </lunch>
             <dinner>
                 <start>17:00</start>
                 <end>20:00</end>
             </dinner>
         </saturday>
         <sunday>
-            <brunch>
+            <lunch>
                 <start>11:00</start>
                 <end>14:00</end>
-            </brunch>
+            </lunch>
             <dinner>
                 <start>17:00</start>
                 <end>20:00</end>
@@ -59,20 +59,20 @@ type is same as in locations.xml
             </dinner>
         </weekDay>
         <saturday>
-            <brunch>
+            <lunch>
                 <start>11:30</start>
                 <end>13:30</end>
-            </brunch>
+            </lunch>
             <dinner>
                 <start>17:30</start>
                 <end>19:00</end>
             </dinner>
         </saturday>
         <sunday>
-            <brunch>
+            <lunch>
                 <start>11:30</start>
                 <end>13:30</end>
-            </brunch>
+            </lunch>
             <dinner>
                 <start>17:30</start>
                 <end>19:00</end>
@@ -94,10 +94,10 @@ type is same as in locations.xml
         <saturday>
         </saturday>
         <sunday>
-            <brunch>
+            <lunch>
                 <start>11:00</start>
                 <end>14:00</end>
-            </brunch>
+            </lunch>
         </sunday>
     </week>
 </mealTimes>
