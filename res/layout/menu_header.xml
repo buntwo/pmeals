@@ -4,6 +4,10 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/black"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
     >
     
 	<TextView 
@@ -12,10 +16,6 @@
 	    android:layout_height="wrap_content"
 	    android:layout_weight="1"
 	    android:gravity="right"
-	    android:paddingRight="10dp"
-	    android:paddingLeft="10dp"
-	    android:paddingTop="2dp"
-	    android:paddingBottom="2dp"
         android:textColor="@color/sectiontitle"
 	    android:textSize="18sp"
 	    android:textStyle="bold"

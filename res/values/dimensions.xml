@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="allergenindic">8dp</dimen>
+    <dimen name="foodinfo_height">12sp</dimen>
+    <dimen name="foodinfo_width">3dp</dimen>
     
 </resources>

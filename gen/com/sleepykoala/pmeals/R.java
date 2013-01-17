@@ -37,23 +37,23 @@ public final class R {
         public static final int white=0x7f050001;
     }
     public static final class dimen {
-        public static final int allergenindic=0x7f070000;
+        public static final int foodinfo_height=0x7f070000;
+        public static final int foodinfo_width=0x7f070001;
     }
     public static final class drawable {
-        public static final int efriendly=0x7f020000;
-        public static final int hr=0x7f020001;
-        public static final int ic_action_search=0x7f020002;
-        public static final int ic_gotocurrent=0x7f020003;
-        public static final int ic_help=0x7f020004;
-        public static final int ic_refresh=0x7f020005;
-        public static final int launcher=0x7f020006;
-        public static final int nuts=0x7f020007;
-        public static final int pageindicator_notselected=0x7f020008;
-        public static final int pageindicator_selected=0x7f020009;
-        public static final int pork=0x7f02000a;
-        public static final int refresh_background=0x7f02000b;
-        public static final int vegan=0x7f02000c;
-        public static final int vegetarian=0x7f02000d;
+        public static final int hr=0x7f020000;
+        public static final int ic_action_search=0x7f020001;
+        public static final int ic_gotocurrent=0x7f020002;
+        public static final int ic_help=0x7f020003;
+        public static final int ic_refresh=0x7f020004;
+        public static final int launcher=0x7f020005;
+        public static final int nuts=0x7f020006;
+        public static final int pageindicator_notselected=0x7f020007;
+        public static final int pageindicator_selected=0x7f020008;
+        public static final int pork=0x7f020009;
+        public static final int refresh_background=0x7f02000a;
+        public static final int vegan=0x7f02000b;
+        public static final int vegetarian=0x7f02000c;
     }
     public static final class id {
         public static final int about=0x7f0a0019;
@@ -69,11 +69,11 @@ public final class R {
         public static final int infobar=0x7f0a0008;
         public static final int infobar_mealinfo0=0x7f0a0009;
         public static final int infobar_mealinfo1=0x7f0a000a;
+        public static final int itemname=0x7f0a000f;
         public static final int jumptodate=0x7f0a0017;
         public static final int legend=0x7f0a0018;
         public static final int listview_pager=0x7f0a000b;
         public static final int loading_text=0x7f0a0013;
-        public static final int menuitem=0x7f0a000f;
         public static final int nuts=0x7f0a0012;
         public static final int pageindicators=0x7f0a000c;
         public static final int pork=0x7f0a0011;

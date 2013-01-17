@@ -8,15 +8,15 @@
         android:showAsAction="ifRoom" />
     
     <item
-        android:id="@+id/jumptodate"
-        android:title="Jump to meal"
-        android:showAsAction="never" />
-    
-    <item
         android:id="@+id/legend"
         android:title="Show legend"
         android:icon="@drawable/ic_help"
         android:showAsAction="ifRoom" />
+    
+    <item
+        android:id="@+id/jumptodate"
+        android:title="Jump to meal"
+        android:showAsAction="never" />
     
     <item android:id="@+id/about"
         android:title="About"

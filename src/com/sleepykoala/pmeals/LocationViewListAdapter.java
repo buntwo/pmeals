@@ -215,7 +215,7 @@ public class LocationViewListAdapter extends BaseAdapter {
 			} else {
 				convertView = (LinearLayout) mInflater.inflate(R.layout.menu_item, parent, false);
 				holder = new MenuItemHolder();
-				holder.item = (TextView) convertView.findViewById(R.id.menuitem);
+				holder.item = (TextView) convertView.findViewById(R.id.itemname);
 				holder.vegan_vegetarian = (ImageView) convertView.findViewById(R.id.vegan_vegetarian);
 				holder.pork = (ImageView) convertView.findViewById(R.id.pork);
 				holder.nuts = (ImageView) convertView.findViewById(R.id.nuts);
