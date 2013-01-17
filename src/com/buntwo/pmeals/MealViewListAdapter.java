@@ -415,8 +415,16 @@ public class MealViewListAdapter extends BaseAdapter {
 	
 	// get a FoodItem from cursor's current position
 	private FoodItem inflateItem(Cursor c) {
+		boolean[] params = { c.getInt(c.getColumnIndex(PMealsDatabase.ITEMVEGAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMVEGETARIAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMPORK)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMNUTS)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMEFRIENDLY)) == 1 ? true : false
+		};
 		return new FoodItem(c.getString(c.getColumnIndex(PMealsDatabase.ITEMNAME)),
-				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMERROR)) == 1 ? true : false);
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMERROR)) == 1 ? true : false,
+				params
+				);
 	}
 	
 	// get the name of the food item the cursor is pointing at

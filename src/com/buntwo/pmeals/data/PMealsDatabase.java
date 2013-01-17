@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class PMealsDatabase extends SQLiteOpenHelper {
 	
-	private static final int DB_VERSION = 1;
+	// V1 had _ID, locationid, date, mealname, itemname, itemerror
+	// V2 had food info
+	private static final int DB_VERSION = 2;
 	private static final String DB_NAME = "pmeals";
 	
 	// table names
@@ -19,15 +21,28 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 	public static final String MEALNAME = "meal_name";
 	public static final String ITEMNAME = "item_name"; // corresponds to itemName field
 	public static final String ITEMERROR = "item_error"; // corresponds to error field
+	// food info
+	public static final String ITEMVEGAN = "item_vegan"; // is the item vegan?
+	public static final String ITEMVEGETARIAN = "item_vegetarian"; // is the item vegetarian?
+	public static final String ITEMPORK = "item_pork"; // does the item contain pork?
+	public static final String ITEMNUTS = "item_nuts"; // does the item have nuts?
+	public static final String ITEMEFRIENDLY = "item_efriendly"; // is the item earth-friendly?
 	
 	// SQL commands
+	// Now with vegetarian, vegan, earth-friendly, pork, and nuts allergen info
 	private static final String CREATE_TABLE_MEALS = "create table " + TABLE_MEALS +
 			" (" + _ID + " integer primary key autoincrement, " +
 			LOCATIONID + " text, " +
 			DATE + " text, " +
 			MEALNAME + " text, " +
 			ITEMNAME + " text not null, " +
-			ITEMERROR + " integer);";
+			ITEMERROR + " integer, " + 
+			ITEMVEGAN + " integer default 0, " +
+			ITEMVEGETARIAN + " integer default 0, " +
+			ITEMPORK + " integer default 0, " +
+			ITEMNUTS + " integer default 0, " +
+			ITEMEFRIENDLY + " integer default 0" +
+			");";
 	
 	// schema
 	private static final String DB_SCHEMA = CREATE_TABLE_MEALS;
@@ -52,11 +67,15 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 		db.insert(TABLE_MEALS, null, nmt);
 	}
 
-	// drops all data on upgrade!!
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("drop table if exists " + TABLE_MEALS);
-		onCreate(db);
+		if (oldVersion < 2 && newVersion >= 2) {
+			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMVEGAN + " integer default 0");
+			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMVEGETARIAN + " integer default 0");
+			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMPORK + " integer default 0");
+			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMNUTS + " integer default 0");
+			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMEFRIENDLY + " integer default 0");
+		}
 	}
 
 }

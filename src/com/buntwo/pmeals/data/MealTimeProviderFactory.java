@@ -85,7 +85,7 @@ public class MealTimeProviderFactory {
 							eventType = p.next();
 						}
 					} catch (XmlPullParserException e) {
-						throw new RuntimeException("XmlPullParseException");
+						throw new RuntimeException("XmlPullParserException");
 					} catch (IOException e) {
 						throw new RuntimeException("IOException");
 					} finally { // release parser resources
