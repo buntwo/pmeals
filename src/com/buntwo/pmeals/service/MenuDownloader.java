@@ -131,11 +131,11 @@ public class MenuDownloader implements Runnable {
 						data.put(MEALNAME, mealName);
 						data.put(ITEMNAME, f.itemName);
 						data.put(ITEMERROR, f.error); // converted to 1 = true, 0 = false, in db
-						data.put(ITEMVEGAN, f.isVegan);
-						data.put(ITEMVEGETARIAN, f.isVegetarian);
-						data.put(ITEMPORK, f.hasPork);
-						data.put(ITEMNUTS, f.hasNuts);
-						data.put(ITEMEFRIENDLY, f.isEFriendly);
+						data.put(ITEMVEGAN, f.foodInfo[0]);
+						data.put(ITEMVEGETARIAN, f.foodInfo[1]);
+						data.put(ITEMPORK, f.foodInfo[2]);
+						data.put(ITEMNUTS, f.foodInfo[3]);
+						data.put(ITEMEFRIENDLY, f.foodInfo[4]);
 						mealData[j] = data;
 					}
 					cr.bulkInsert(CONTENT_URI, mealData);
@@ -166,11 +166,11 @@ public class MenuDownloader implements Runnable {
 					data.put(MEALNAME, mealName);
 					data.put(ITEMNAME, f.itemName);
 					data.put(ITEMERROR, f.error); // converted to 1=true, 0=false
-					data.put(ITEMVEGAN, f.isVegan);
-					data.put(ITEMVEGETARIAN, f.isVegetarian);
-					data.put(ITEMPORK, f.hasPork);
-					data.put(ITEMNUTS, f.hasNuts);
-					data.put(ITEMEFRIENDLY, f.isEFriendly);
+					data.put(ITEMVEGAN, f.foodInfo[0]);
+					data.put(ITEMVEGETARIAN, f.foodInfo[1]);
+					data.put(ITEMPORK, f.foodInfo[2]);
+					data.put(ITEMNUTS, f.foodInfo[3]);
+					data.put(ITEMEFRIENDLY, f.foodInfo[4]);
 					mealData[j] = data;
 				}
 				cr.bulkInsert(CONTENT_URI, mealData);

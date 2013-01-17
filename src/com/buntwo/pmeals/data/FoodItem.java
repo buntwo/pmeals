@@ -4,21 +4,15 @@ public class FoodItem {
 
 	public final String itemName;
 	public final boolean error;
-	public final boolean isVegan;
-	public final boolean isVegetarian;
-	public final boolean hasPork;
-	public final boolean hasNuts;
-	public final boolean isEFriendly;
+	public final boolean[] foodInfo;
 	
 	// params is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
 	public FoodItem(String s, boolean err, boolean[] params) {
 		itemName = s;
 		error = err;
-		this.isVegan = params[0];
-		this.isVegetarian = params[1];
-		this.hasPork = params[2];
-		this.hasNuts = params[3];
-		this.isEFriendly = params[4];
+		foodInfo = new boolean[5];
+		for (int i = 0; i < 5; ++i)
+			foodInfo[i] = params[i];
 	}
 	
 	public boolean equals(Object obj) {

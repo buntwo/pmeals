@@ -246,7 +246,13 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
     //---------------------------------------------------LOADER CALLBACKS---------------------------------------
     
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR };
+		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR,
+				PMealsDatabase.ITEMVEGAN,
+				PMealsDatabase.ITEMVEGETARIAN,
+				PMealsDatabase.ITEMPORK,
+				PMealsDatabase.ITEMNUTS,
+				PMealsDatabase.ITEMEFRIENDLY,
+		};
 
 		String select;
 		String[] selectArgs;
