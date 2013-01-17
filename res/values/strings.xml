@@ -7,7 +7,7 @@
     <string name="app_info">An app for downloading, storing, and nicely displaying dining hall menus at Princeton University.</string>
     <string name="credits_categories">App design\nCoding\nIcon</string>
     <string name="credits_authors">Brian Tu, David Zhao\nBrian Tu\nDavid Zhao</string>
-    <string name="version">v1.0</string>
+    <string name="version">v1.0.1</string>
     
     <string name="firsttime1">Thanks for downloading PMeals. Here are some tips to help you use the app.</string>
     <string name="firsttime2">Swipe left and right to view additional menus.</string>

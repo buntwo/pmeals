@@ -487,6 +487,9 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		AboutFragment about = new AboutFragment();
     		about.show(getFragmentManager(), "about");
     		return true;
+    	case R.id.legend:
+    		LegendFragment legend = new LegendFragment();
+    		legend.show(getFragmentManager(), "legend");
     	default:
     		return super.onOptionsItemSelected(item);
     	}

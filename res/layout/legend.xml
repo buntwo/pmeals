@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    >
+    
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+	    android:textColor="@android:color/white"
+        android:text="@string/legend1"
+        android:drawableLeft="@drawable/vegan"
+        android:drawablePadding="7dp"
+        />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+	    android:textColor="@android:color/white"
+        android:text="@string/legend2"
+        android:drawableLeft="@drawable/vegetarian"
+        android:drawablePadding="7dp"
+        />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+	    android:textColor="@android:color/white"
+        android:text="@string/legend3"
+        android:drawableLeft="@drawable/pork"
+        android:drawablePadding="7dp"
+        />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+	    android:textColor="@android:color/white"
+        android:text="@string/legend4"
+        android:drawableLeft="@drawable/nuts"
+        android:drawablePadding="7dp"
+        />
+    
+
+</LinearLayout>

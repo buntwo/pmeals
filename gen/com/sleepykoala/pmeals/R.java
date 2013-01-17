@@ -44,7 +44,7 @@ public final class R {
         public static final int hr=0x7f020001;
         public static final int ic_action_search=0x7f020002;
         public static final int ic_gotocurrent=0x7f020003;
-        public static final int ic_launcher=0x7f020004;
+        public static final int ic_help=0x7f020004;
         public static final int ic_refresh=0x7f020005;
         public static final int launcher=0x7f020006;
         public static final int nuts=0x7f020007;
@@ -56,13 +56,13 @@ public final class R {
         public static final int vegetarian=0x7f02000d;
     }
     public static final class id {
-        public static final int about=0x7f0a0018;
+        public static final int about=0x7f0a0019;
         public static final int action_viewbylocation_spinnertext=0x7f0a0007;
         public static final int app_info=0x7f0a0003;
         public static final int app_name=0x7f0a0000;
         public static final int credits_authors=0x7f0a0006;
         public static final int credits_categories=0x7f0a0005;
-        public static final int gotocurrentmeal=0x7f0a0019;
+        public static final int gotocurrentmeal=0x7f0a001a;
         public static final int gototoday=0x7f0a0016;
         public static final int hr1=0x7f0a0002;
         public static final int hr2=0x7f0a0004;
@@ -70,13 +70,14 @@ public final class R {
         public static final int infobar_mealinfo0=0x7f0a0009;
         public static final int infobar_mealinfo1=0x7f0a000a;
         public static final int jumptodate=0x7f0a0017;
+        public static final int legend=0x7f0a0018;
         public static final int listview_pager=0x7f0a000b;
         public static final int loading_text=0x7f0a0013;
         public static final int menuitem=0x7f0a000f;
         public static final int nuts=0x7f0a0012;
         public static final int pageindicators=0x7f0a000c;
         public static final int pork=0x7f0a0011;
-        public static final int refresh=0x7f0a001a;
+        public static final int refresh=0x7f0a001b;
         public static final int refreshicon=0x7f0a000d;
         public static final int sectionextra=0x7f0a0015;
         public static final int sectiontitle=0x7f0a0014;
@@ -90,14 +91,15 @@ public final class R {
         public static final int activity_viewbylocation=0x7f030002;
         public static final int activity_viewbymeal=0x7f030003;
         public static final int firsttime=0x7f030004;
-        public static final int listfragment_menu=0x7f030005;
-        public static final int menu_header=0x7f030006;
-        public static final int menu_item=0x7f030007;
-        public static final int menu_loading=0x7f030008;
-        public static final int menu_sectiontitle=0x7f030009;
-        public static final int menu_sectiontitle_nonclickable=0x7f03000a;
-        public static final int pageindicator=0x7f03000b;
-        public static final int refresh_icon=0x7f03000c;
+        public static final int legend=0x7f030005;
+        public static final int listfragment_menu=0x7f030006;
+        public static final int menu_header=0x7f030007;
+        public static final int menu_item=0x7f030008;
+        public static final int menu_loading=0x7f030009;
+        public static final int menu_sectiontitle=0x7f03000a;
+        public static final int menu_sectiontitle_nonclickable=0x7f03000b;
+        public static final int pageindicator=0x7f03000c;
+        public static final int refresh_icon=0x7f03000d;
     }
     public static final class menu {
         public static final int activity_viewbylocation=0x7f090000;

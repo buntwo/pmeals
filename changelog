@@ -1,3 +1,11 @@
 0.3.0:
 Use XML feed now for data instead of screenscraping
 Added allergen/food info
+
+1.0:
+Added UI
+First public release on Google Play
+
+1.0.1:
+Wow stupid typo (Vegetarian was showed as Contains Pork)
+Added legend
