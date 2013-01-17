@@ -19,53 +19,69 @@ public final class R {
     public static final class color {
         public static final int PrincetonOrange=0x7f050007;
         public static final int black=0x7f050000;
+        public static final int efriendly=0x7f05000f;
         public static final int infobar_neutral_bg=0x7f050005;
         public static final int light_gray=0x7f050002;
-        public static final int menuitem=0x7f05000b;
+        public static final int menuitem=0x7f050010;
         public static final int menuitem_bg=0x7f050004;
         public static final int menuitem_selectedbg=0x7f050003;
+        public static final int nuts=0x7f05000e;
         public static final int pageindicators=0x7f05000a;
+        public static final int pork=0x7f05000d;
         public static final int refresh_background=0x7f050009;
-        public static final int sectiontitle=0x7f05000c;
+        public static final int sectiontitle=0x7f050011;
         public static final int selectedPrincetonOrange=0x7f050008;
         public static final int text_lightgray=0x7f050006;
+        public static final int vegan=0x7f05000b;
+        public static final int vegetarian=0x7f05000c;
         public static final int white=0x7f050001;
     }
+    public static final class dimen {
+        public static final int allergenindic=0x7f070000;
+    }
     public static final class drawable {
-        public static final int hr=0x7f020000;
-        public static final int ic_action_search=0x7f020001;
-        public static final int ic_gotocurrent=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int ic_refresh=0x7f020004;
-        public static final int pageindicator_notselected=0x7f020005;
-        public static final int pageindicator_selected=0x7f020006;
-        public static final int refresh_background=0x7f020007;
+        public static final int efriendly=0x7f020000;
+        public static final int hr=0x7f020001;
+        public static final int ic_action_search=0x7f020002;
+        public static final int ic_gotocurrent=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int ic_refresh=0x7f020005;
+        public static final int nuts=0x7f020006;
+        public static final int pageindicator_notselected=0x7f020007;
+        public static final int pageindicator_selected=0x7f020008;
+        public static final int pork=0x7f020009;
+        public static final int refresh_background=0x7f02000a;
+        public static final int vegan=0x7f02000b;
+        public static final int vegetarian=0x7f02000c;
     }
     public static final class id {
-        public static final int about=0x7f090015;
-        public static final int action_viewbylocation_spinnertext=0x7f090007;
-        public static final int app_info=0x7f090003;
-        public static final int app_name=0x7f090000;
-        public static final int credits_authors=0x7f090006;
-        public static final int credits_categories=0x7f090005;
-        public static final int gotocurrentmeal=0x7f090016;
-        public static final int gototoday=0x7f090013;
-        public static final int hr1=0x7f090002;
-        public static final int hr2=0x7f090004;
-        public static final int infobar=0x7f090008;
-        public static final int infobar_mealinfo0=0x7f090009;
-        public static final int infobar_mealinfo1=0x7f09000a;
-        public static final int jumptodate=0x7f090014;
-        public static final int listview_pager=0x7f09000b;
-        public static final int loading_text=0x7f090010;
-        public static final int menuitem=0x7f09000f;
-        public static final int pageindicators=0x7f09000c;
-        public static final int refresh=0x7f090017;
-        public static final int refreshicon=0x7f09000d;
-        public static final int sectionextra=0x7f090012;
-        public static final int sectiontitle=0x7f090011;
-        public static final int title=0x7f09000e;
-        public static final int version=0x7f090001;
+        public static final int about=0x7f0a0018;
+        public static final int action_viewbylocation_spinnertext=0x7f0a0007;
+        public static final int app_info=0x7f0a0003;
+        public static final int app_name=0x7f0a0000;
+        public static final int credits_authors=0x7f0a0006;
+        public static final int credits_categories=0x7f0a0005;
+        public static final int gotocurrentmeal=0x7f0a0019;
+        public static final int gototoday=0x7f0a0016;
+        public static final int hr1=0x7f0a0002;
+        public static final int hr2=0x7f0a0004;
+        public static final int infobar=0x7f0a0008;
+        public static final int infobar_mealinfo0=0x7f0a0009;
+        public static final int infobar_mealinfo1=0x7f0a000a;
+        public static final int jumptodate=0x7f0a0017;
+        public static final int listview_pager=0x7f0a000b;
+        public static final int loading_text=0x7f0a0013;
+        public static final int menuitem=0x7f0a000f;
+        public static final int nuts=0x7f0a0012;
+        public static final int pageindicators=0x7f0a000c;
+        public static final int pork=0x7f0a0011;
+        public static final int refresh=0x7f0a001a;
+        public static final int refreshicon=0x7f0a000d;
+        public static final int sectionextra=0x7f0a0015;
+        public static final int sectiontitle=0x7f0a0014;
+        public static final int title=0x7f0a000e;
+        public static final int vegan_vegetarian=0x7f0a0010;
+        public static final int version=0x7f0a0001;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -82,19 +98,19 @@ public final class R {
         public static final int refresh_icon=0x7f03000b;
     }
     public static final class menu {
-        public static final int activity_viewbylocation=0x7f080000;
-        public static final int activity_viewbymeal=0x7f080001;
-        public static final int fragment_menu=0x7f080002;
+        public static final int activity_viewbylocation=0x7f090000;
+        public static final int activity_viewbymeal=0x7f090001;
+        public static final int fragment_menu=0x7f090002;
     }
     public static final class string {
-        public static final int app_info=0x7f070004;
-        public static final int app_name=0x7f070000;
-        public static final int credits_authors=0x7f070006;
-        public static final int credits_categories=0x7f070005;
-        public static final int menu_settings=0x7f070001;
-        public static final int title_activity_viewbylocation=0x7f070003;
-        public static final int title_activity_viewbymeal=0x7f070002;
-        public static final int version=0x7f070007;
+        public static final int app_info=0x7f080004;
+        public static final int app_name=0x7f080000;
+        public static final int credits_authors=0x7f080006;
+        public static final int credits_categories=0x7f080005;
+        public static final int menu_settings=0x7f080001;
+        public static final int title_activity_viewbylocation=0x7f080003;
+        public static final int title_activity_viewbymeal=0x7f080002;
+        public static final int version=0x7f080007;
     }
     public static final class style {
         public static final int AppTheme=0x7f060001;

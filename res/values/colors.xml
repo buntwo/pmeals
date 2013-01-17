@@ -12,5 +12,10 @@
     <color name="selectedPrincetonOrange">#d97021</color>
     <color name="refresh_background">#a8000000</color>
     <color name="pageindicators">#dd000000</color>
-
+    <color name="vegan">#C80005</color>
+    <color name="vegetarian">#53CD38</color>
+    <color name="pork">#860CFF</color>
+    <color name="nuts">#DDA21D</color>
+    <color name="efriendly">#1D9C00</color>
+    
 </resources>

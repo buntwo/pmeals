@@ -291,7 +291,13 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     //---------------------------------------------LOADER CALLBACKS---------------------------------------------
     
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR };
+		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR,
+				PMealsDatabase.ITEMVEGAN,
+				PMealsDatabase.ITEMVEGETARIAN,
+				PMealsDatabase.ITEMPORK,
+				PMealsDatabase.ITEMNUTS,
+				PMealsDatabase.ITEMEFRIENDLY,
+		};
 
 		String select;
 		String[] selectArgs;

@@ -16,7 +16,9 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.text.format.DateFormat;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -24,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -55,6 +58,12 @@ public class MealViewListAdapter extends BaseAdapter {
 	private static boolean isDetailedDate = false;
 	private static final String DATEFORMAT = "EEE, MMM d, yyyy";
 	
+	// food indicator drawables
+	private static Drawable vegan;
+	private static Drawable vegetarian;
+	private static Drawable pork;
+	private static Drawable nuts;
+	
 	// CONSTRUCTOR
 	// messenger is the a messenger of the MenuProvider class
 	public MealViewListAdapter(Context context, SparseArray<DatedMealTime> dmtMap, ArrayList<Location> locs) {
@@ -73,6 +82,13 @@ public class MealViewListAdapter extends BaseAdapter {
 		
 		// set date
 		today = new Date();
+		
+		// cache indicator drawables
+		Resources res = context.getResources();
+		vegan = res.getDrawable(R.drawable.vegan);
+		vegetarian = res.getDrawable(R.drawable.vegetarian);
+		pork = res.getDrawable(R.drawable.pork);
+		nuts = res.getDrawable(R.drawable.nuts);
 	}
 	
 	// swap in the cursor at the given ID
@@ -355,6 +371,9 @@ public class MealViewListAdapter extends BaseAdapter {
 				convertView = (LinearLayout) mInflater.inflate(R.layout.menu_item, parent, false);
 				holder = new MenuItemHolder();
 				holder.item = (TextView) convertView.findViewById(R.id.menuitem);
+				holder.vegan_vegetarian = (ImageView) convertView.findViewById(R.id.vegan_vegetarian);
+				holder.pork = (ImageView) convertView.findViewById(R.id.pork);
+				holder.nuts = (ImageView) convertView.findViewById(R.id.nuts);
 				convertView.setTag(holder);
 			}
 			menu.moveToPosition(menu.getCount() - counter + position - 1);
@@ -366,6 +385,16 @@ public class MealViewListAdapter extends BaseAdapter {
 				holder.item.setTextColor(COLOR_REGULAR_ITEM);
 				holder.item.setGravity(Gravity.LEFT);
 			}
+			// set food info indicators
+			boolean[] info = getFoodInfo(menu);
+			if (info[0])
+				holder.vegan_vegetarian.setImageDrawable(vegan);
+			else if (info[1])
+				holder.vegan_vegetarian.setImageDrawable(vegetarian);
+			if (info[2])
+				holder.pork.setImageDrawable(pork);
+			if (info[3])
+				holder.nuts.setImageDrawable(nuts);
 		} else if (itemType == 3) { // date
 			MealInfoHolder holder;
 			if (convertView != null) {
@@ -436,6 +465,18 @@ public class MealViewListAdapter extends BaseAdapter {
 	private boolean getItemError(Cursor c) {
 		return c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1 ? true : false;
 	}
+	
+	/* food info getter
+ 	 * array is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
+	 */
+	private boolean[] getFoodInfo(Cursor c) {
+		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGETARIAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMPORK)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNUTS)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMEFRIENDLY)) == 1 ? true : false
+		};
+	}
 
 	// --------------------------------------STATIC HOLDER CLASSES----------------------------------------
 	
@@ -450,6 +491,9 @@ public class MealViewListAdapter extends BaseAdapter {
 	
 	private static class MenuItemHolder {
 		TextView item;
+		ImageView vegan_vegetarian;
+		ImageView pork;
+		ImageView nuts;
 	}
 	
 	private static class LoadingHolder {
