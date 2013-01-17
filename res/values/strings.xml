@@ -7,6 +7,6 @@
     <string name="app_info">An app for downloading, storing, and nicely displaying dining hall menus at Princeton University.</string>
     <string name="credits_categories">App design\nCoding</string>
     <string name="credits_authors">Brian Tu, David Zhao\nBrian Tu</string>
-    <string name="version">v0.2.9</string>
+    <string name="version">v0.3.0</string>
 
 </resources>
