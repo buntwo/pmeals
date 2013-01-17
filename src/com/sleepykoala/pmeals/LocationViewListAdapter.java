@@ -9,9 +9,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
@@ -43,12 +40,6 @@ public class LocationViewListAdapter extends BaseAdapter {
 	private static boolean isDetailedDate = false;
 	private static final String DATEFORMAT = "EEEE, MMM d, yyyy";
 	
-	// food indicator drawables
-	private static Drawable vegan;
-	private static Drawable vegetarian;
-	private static Drawable pork;
-	private static Drawable nuts;
-	
 	public LocationViewListAdapter(Context context, ArrayList<DatedMealTime> daysMeals, Date d) {
 		mealsToShow = daysMeals;
 		mInflater = ((Activity) context).getLayoutInflater();
@@ -68,13 +59,6 @@ public class LocationViewListAdapter extends BaseAdapter {
 		// set dates
 		today = new Date();
 		dateShowing = d;
-		
-		// cache indicator drawables
-		Resources res = context.getResources();
-		vegan = res.getDrawable(R.drawable.vegan);
-		vegetarian = res.getDrawable(R.drawable.vegetarian);
-		pork = res.getDrawable(R.drawable.pork);
-		nuts = res.getDrawable(R.drawable.nuts);
 	}
 	
 	// is it okay to start a refresh?
@@ -250,13 +234,19 @@ public class LocationViewListAdapter extends BaseAdapter {
 			// set food info indicators
 			boolean[] info = getFoodInfo(menu);
 			if (info[0])
-				holder.vegan_vegetarian.setImageDrawable(vegan);
+				holder.vegan_vegetarian.setImageDrawable(ViewByMeal.vegan);
 			else if (info[1])
-				holder.vegan_vegetarian.setImageDrawable(vegetarian);
+				holder.vegan_vegetarian.setImageDrawable(ViewByMeal.vegetarian);
+			else
+				holder.vegan_vegetarian.setImageDrawable(null);
 			if (info[2])
-				holder.pork.setImageDrawable(pork);
+				holder.pork.setImageDrawable(ViewByMeal.pork);
+			else
+				holder.pork.setImageDrawable(null);
 			if (info[3])
-				holder.nuts.setImageDrawable(nuts);
+				holder.nuts.setImageDrawable(ViewByMeal.nuts);
+			else
+				holder.nuts.setImageDrawable(null);
 		} else if (itemType == 3) { // date
 			DateHolder holder;
 			if (convertView != null) {

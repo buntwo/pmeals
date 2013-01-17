@@ -95,4 +95,7 @@ public final class C {
     
     // user's 12/24 hour status
     public static boolean IS24HOURFORMAT = false;
+    
+    // preferences keys
+    public static final String PREF_FIRSTTIME = "firsttime";
 }

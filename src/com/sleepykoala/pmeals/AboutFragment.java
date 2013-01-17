@@ -16,7 +16,6 @@ public class AboutFragment extends DialogFragment {
     	builder.setTitle("About")
     		   .setCancelable(true)
     		   .setView(getActivity().getLayoutInflater().inflate(R.layout.about, null))
-    		   
     		   ;
     	
     	return builder.create();

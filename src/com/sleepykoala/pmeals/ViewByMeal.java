@@ -11,6 +11,7 @@ import static com.sleepykoala.pmeals.data.C.MINUTES_END_ALERT;
 import static com.sleepykoala.pmeals.data.C.MINUTES_START_ALERT;
 import static com.sleepykoala.pmeals.data.C.NO_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
+import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
@@ -24,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -43,7 +45,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.DatePickerDialogFragment.OnDateSelectedListener;
 import com.sleepykoala.pmeals.MealPickerDialogFragment.OnMealSelectedListener;
 import com.sleepykoala.pmeals.data.C;
@@ -132,6 +133,15 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     
     private boolean isInfoBarMoving;
     
+	// food indicator drawables
+	public static Drawable vegan;
+	public static Drawable vegetarian;
+	public static Drawable pork;
+	public static Drawable nuts;
+	
+	// prefs file
+	public static final String PREFS_NAME = "PMealsPrefs";
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,12 +188,19 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         	pageIndicatorsLayout.addView(iv);
         	pageIndicators[i] = iv;
         }
+        // cache some drawables
         Resources res = getResources();
         indic_notSelected = res.getDrawable(R.drawable.pageindicator_notselected);
         indic_selected = res.getDrawable(R.drawable.pageindicator_selected);
         // load fadeout animation
         fadeoutAnim = AnimationUtils.loadAnimation(ViewByMeal.this, R.anim.pageindicator_fadeout);
         
+        // cache food indicator drawables
+		vegan = res.getDrawable(R.drawable.vegan);
+		vegetarian = res.getDrawable(R.drawable.vegetarian);
+		pork = res.getDrawable(R.drawable.pork);
+		nuts = res.getDrawable(R.drawable.nuts);
+		
         // not animating
         isInfoBarMoving = false;
         
@@ -217,6 +234,18 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         ActionBar aB = getActionBar();
         aB.setTitle("PMeals");
         aB.setDisplayShowTitleEnabled(true);
+        
+        
+        // show help dialog on first time
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+        if (prefs.getBoolean(PREF_FIRSTTIME, true)) {
+    		FirstTimeFragment ftf = new FirstTimeFragment();
+    		ftf.show(getFragmentManager(), "firsttime");
+    		
+        	SharedPreferences.Editor editor = prefs.edit();
+        	editor.putBoolean(PREF_FIRSTTIME, false);
+        	editor.commit();
+        }
     }
     
     // refresh button onClick method
