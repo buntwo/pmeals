@@ -57,13 +57,13 @@ public class MealViewListAdapter extends BaseAdapter {
 	private static final String DATEFORMAT = "EEE, MMM d, yyyy";
 	
 	// CONSTRUCTOR
-	// messenger is the a messenger of the MenuProvider class
 	public MealViewListAdapter(Context context, SparseArray<DatedMealTime> dmtMap, ArrayList<Location> locs) {
 		mealsToShow = dmtMap;
 		locsToShow = locs;
 		mInflater = ((Activity) context).getLayoutInflater();
 		
-		mainType = locsToShow.get(0).type;
+		// HARD CODED MAIN TYPE
+		mainType = 0;
 		isCurrentMeal = MealTimeProviderFactory.newMealTimeProvider().isCurrentMeal(mealsToShow.get(mainType), mainType);
 		
 		// set initial data and id

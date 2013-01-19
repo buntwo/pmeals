@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="black">#000</color>
-    <color name="white">#ffffff</color>
     <color name="light_gray">#8a8a8a</color>
     <color name="menuitem_selectedbg">#bfbfbf</color>
     <color name="menuitem_bg">#eaeaea</color>

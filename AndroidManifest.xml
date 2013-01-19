@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleepykoala.pmeals"
-    android:versionCode="4"
+    android:versionCode="5"
     android:versionName="@string/version" >
 
     <uses-sdk
@@ -26,6 +26,10 @@
         <activity
             android:name=".ViewByLocation"
             android:label="@string/title_activity_viewbylocation" >
+        </activity>
+        <activity
+            android:name=".ReorderLocations"
+            android:label="@string/title_activity_reorderlocations" >
         </activity>
         <provider
             android:authorities="com.sleepykoala.pmeals.contentprovider.MenuProvider"

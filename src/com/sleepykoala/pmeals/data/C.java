@@ -92,10 +92,17 @@ public final class C {
     public static final String ACTION_REFRESHDONE = "com.sleepykoala.pmeals.action.REFRESHDONE";
     public static final String ACTION_REFRESHFAILED = "com.sleepykoala.pmeals.action.REFRESHFAILED";
     public static final String ACTION_DATEFORMATTOGGLED = "com.sleepykoala.pmeals.action.DATEFORMATTOGGLED";
+    // request codes
+    public static final int REQCODE_REORDER = 1;
     
     // user's 12/24 hour status
     public static boolean IS24HOURFORMAT = false;
     
+    // preference file name
+	public static final String PREFSFILENAME = "PMealsPrefs";
     // preferences keys
     public static final String PREF_FIRSTTIME = "firsttime";
+    public static final String PREF_LASTVER = "lastversion";
+    public static final String PREF_NUMLOCS = "numlocs";
+    public static final String PREF_LOCBASE = "loc_";
 }

@@ -20,7 +20,7 @@
             android:paddingRight="10dp"
         	android:paddingBottom="2dp"
         	android:paddingTop="2dp"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:background="@android:color/transparent"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -34,7 +34,7 @@
             android:paddingRight="10dp"
         	android:paddingBottom="2dp"
         	android:paddingTop="2dp"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:background="@android:color/transparent"
             android:textSize="15sp"
             android:textStyle="bold" />

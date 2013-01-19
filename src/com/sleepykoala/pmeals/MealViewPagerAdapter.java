@@ -24,7 +24,7 @@ public class MealViewPagerAdapter extends FragmentPagerAdapter {
 	private ArrayList<Integer> locIDsToShow;
 	
 	private ArrayList<DatedMealTime> meals;
-	private final int mPagerId;
+	private int mPagerId;
 	
 	public MealViewPagerAdapter(ArrayList<Integer> locIDs, DatedMealTime centerMeal,
 			int mainType, FragmentManager fm) {
@@ -93,6 +93,12 @@ public class MealViewPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	public void refreshList(int pos) {
+		
+	}
+	
+	public void newLocs(ArrayList<Integer> locIDs) {
+		locIDsToShow = locIDs;
+		mPagerId += 100;
 		
 	}
 	

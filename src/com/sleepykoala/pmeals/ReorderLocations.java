@@ -1,0 +1,197 @@
+package com.sleepykoala.pmeals;
+
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.DragEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.DragShadowBuilder;
+import android.view.View.OnDragListener;
+import android.view.View.OnTouchListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.sleepykoala.pmeals.data.LocationProvider;
+import com.sleepykoala.pmeals.data.LocationProviderFactory;
+
+public class ReorderLocations extends Activity {
+	
+	// data
+	private ArrayList<Integer> locIDs;
+	private ArrayList<Integer> origLocIDs;
+	private ArrayList<String> locNames;
+	private ArrayList<String> origLocNames;
+	// views
+	private ArrayList<TextView> views;
+	
+	private int numLocs;
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_reorderlocations);
+        
+        // build data
+        Intent intent = getIntent();
+        locIDs = intent.getIntegerArrayListExtra(EXTRA_LOCATIONIDS);
+        locNames = new ArrayList<String>();
+        numLocs = locIDs.size();
+        LocationProvider lP = LocationProviderFactory.newLocationProvider();
+		for (int id : locIDs)
+			locNames.add(lP.getById(id).locName);
+		// save originals for resetting
+		origLocIDs = (ArrayList<Integer>) locIDs.clone();
+		origLocNames = (ArrayList<String>) locNames.clone();
+        
+        LinearLayout container = (LinearLayout) findViewById(R.id.reorder_container);
+        container.setShowDividers(LinearLayout.SHOW_DIVIDER_BEGINNING |
+        		LinearLayout.SHOW_DIVIDER_MIDDLE |
+        		LinearLayout.SHOW_DIVIDER_END);
+        
+		// build TextViews
+        views = new ArrayList<TextView>();
+        for (int i = 0; i < numLocs; ++i)
+        	locNames.add("Number " + (i + 1));
+        LayoutInflater inflater = getLayoutInflater();
+        for (int i = 0; i < numLocs; ++i) {
+        	LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.reorder_name, null);
+        	TextView tv = (TextView) ll.findViewById(R.id.reorder_name);
+        	ImageView iv = (ImageView) ll.findViewById(R.id.reorder_selector);
+        	tv.setText(locNames.get(i));
+        	ll.setOnTouchListener(new ReorderTouchListener(i));
+        	ll.setOnDragListener(new ReorderDragListener(i));
+        	ll.setTag(iv);
+        	tv.setTag(iv);
+        	
+        	container.addView(ll);
+        	views.add(tv);
+        }
+        
+    }
+    
+    //-------------------------------------------------BUTTON CALLBACKS-----------------------------------------------
+    
+    public void done(View v) {
+    	Bundle result = new Bundle();
+    	result.putIntegerArrayList(EXTRA_LOCATIONIDS, locIDs);
+    	Intent intent = new Intent();
+    	intent.putExtras(result);
+    	setResult(RESULT_OK, intent);
+    	finish();
+    }
+    
+    public void reset(View v) {
+    	locIDs.clear();
+    	locNames.clear();
+    	locIDs.addAll(origLocIDs);
+    	locNames.addAll(origLocNames);
+    	// redraw
+    	for (int i = 0; i < numLocs; ++i)
+    		views.get(i).setText(locNames.get(i));
+    }
+    
+    public void cancel(View v) {
+    	setResult(RESULT_CANCELED);
+    	finish();
+    }
+    
+    //-------------------------------------------------DRAG/TOUCH LISTENERS-------------------------------------------
+    
+    private class ReorderTouchListener implements OnTouchListener {
+    	int num;
+    	
+    	public ReorderTouchListener(int num) {
+    		this.num = num;
+    	}
+
+		public boolean onTouch(View v, MotionEvent event) {
+			int action = event.getAction();
+			
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+				DragShadowBuilder builder = new View.DragShadowBuilder();
+				v.startDrag(null, builder, num, 0);
+				return true;
+				
+			default:
+				return false;
+			}
+		}
+    	
+    }
+    
+    private class ReorderDragListener implements OnDragListener {
+    	int num;
+    	
+    	public ReorderDragListener(int num) {
+    		this.num = num;
+    	}
+
+		public boolean onDrag(View v, DragEvent event) {
+			int action = event.getAction();
+			int dragging = (Integer)event.getLocalState();
+			switch (action) {
+			case DragEvent.ACTION_DRAG_STARTED:
+				// clear icon
+				if (dragging != num)
+					((View) v.getTag()).setVisibility(View.INVISIBLE);
+				break;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				// redraw data
+				dragging = (Integer)event.getLocalState();
+				int offset = 0;
+				if (dragging <= num) {
+					for (int i = 0; i < numLocs; ++i) {
+						if (dragging == i)
+							++offset;
+						if (i == num) {
+							views.get(i).setText(locNames.get(dragging));
+							((View) views.get(i).getTag()).setVisibility(View.VISIBLE);
+							--offset;
+							continue;
+						}
+						views.get(i).setText(locNames.get(i + offset));
+					}
+				} else {
+					for (int i = 0; i < numLocs; ++i) {
+						if (i == num) {
+							views.get(i).setText(locNames.get(dragging));
+							((View) views.get(i).getTag()).setVisibility(View.VISIBLE);
+							--offset;
+							continue;
+						}
+						views.get(i).setText(locNames.get(i + offset));
+						if (dragging == i)
+							++offset;
+					}
+				}
+				break;
+			case DragEvent.ACTION_DRAG_EXITED:
+				((View) v.getTag()).setVisibility(View.INVISIBLE);
+				break;
+			case DragEvent.ACTION_DROP:
+				dragging = (Integer) event.getLocalState();
+				locNames.add(num, locNames.remove(dragging));
+				locIDs.add(num, locIDs.remove(dragging));
+				break;
+			case DragEvent.ACTION_DRAG_ENDED:
+				// clear icon
+				((View) v.getTag()).setVisibility(View.VISIBLE);
+				break;
+				
+			}
+			return true;
+		}
+    	
+    }
+    
+}

@@ -408,7 +408,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		startActivity(intent);
     		return true;
     	case R.id.jumptodate:
-    		DatePickerDialogFragment datePicker =DatePickerDialogFragment.newInstance(
+    		DatePickerDialogFragment datePicker = DatePickerDialogFragment.newInstance(
     				mAdapter.getDate(mPager.getCurrentItem()).toString()
     				);
     		datePicker.show(getFragmentManager(), "DatePicker");
@@ -416,6 +416,10 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	case R.id.about:
     		AboutFragment about = new AboutFragment();
     		about.show(getFragmentManager(), "about");
+    		return true;
+    	case R.id.legend:
+    		LegendFragment legend = new LegendFragment();
+    		legend.show(getFragmentManager(), "legend");
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);

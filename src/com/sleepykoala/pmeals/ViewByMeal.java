@@ -4,6 +4,7 @@ import static com.sleepykoala.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.sleepykoala.pmeals.data.C.ALPHA_DISABLED;
 import static com.sleepykoala.pmeals.data.C.ALPHA_ENABLED;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 import static com.sleepykoala.pmeals.data.C.MEAL_PASSED_COLOR;
@@ -11,7 +12,12 @@ import static com.sleepykoala.pmeals.data.C.MINUTES_END_ALERT;
 import static com.sleepykoala.pmeals.data.C.MINUTES_START_ALERT;
 import static com.sleepykoala.pmeals.data.C.NO_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
+import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
+import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
+import static com.sleepykoala.pmeals.data.C.PREF_LOCBASE;
+import static com.sleepykoala.pmeals.data.C.PREF_NUMLOCS;
+import static com.sleepykoala.pmeals.data.C.REQCODE_REORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
@@ -26,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -139,9 +146,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 	public static Drawable pork;
 	public static Drawable nuts;
 	
-	// prefs file
-	public static final String PREFS_NAME = "PMealsPrefs";
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,14 +213,46 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		mealInfoView1 = (TextView) findViewById(R.id.infobar_mealinfo1);
 		infoBar = (FrameLayout) findViewById(R.id.infobar);
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
-		
+
+		// retrieve location order from settings, if exists
+		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
+		int numLocs = prefs.getInt(PREF_NUMLOCS, -1);
+		if (numLocs != -1) { // yay exists
+			locIDsToShow = new ArrayList<Integer>();
+			for (int i = 0; i < numLocs; ++i) {
+				int id = prefs.getInt(PREF_LOCBASE + i, -1);
+				if (id == -1) { // error with prefs, reset!
+					SharedPreferences.Editor editor = prefs.edit();
+					// remove old
+					for (int j = 0; j < numLocs; ++j)
+						editor.remove(PREF_LOCBASE + i);
+					// add new
+					locIDsToShow = lP.getIDsForType(0, 1, 2);
+					// put in prefs
+					numLocs = locIDsToShow.size();
+					for (int j = 0; j < numLocs; ++j)
+						editor.putInt(PREF_LOCBASE + j, locIDsToShow.get(j));
+					editor.putInt(PREF_NUMLOCS, numLocs);
+					editor.commit();
+				}
+				locIDsToShow.add(id);
+			}
+		} else { // new prefs
+			locIDsToShow = lP.getIDsForType(0, 1, 2);
+			// put in prefs
+			numLocs = locIDsToShow.size();
+			SharedPreferences.Editor editor = prefs.edit();
+			for (int i = 0; i < numLocs; ++i)
+				editor.putInt(PREF_LOCBASE + i, locIDsToShow.get(i));
+			editor.putInt(PREF_NUMLOCS, numLocs);
+			editor.commit();
+		}
 		// setup pager adapter
-		locIDsToShow = lP.getIDsForType(0, 1, 2);
-		// hard coded meal type!!
+		// HARD CODED meal type!!
 		mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.getCurrentMeal(0), 0, getSupportFragmentManager());
 		
 		// set meals
-		// hard coded meal type!!
+		// HARD CODED meal type!!
 		currentMeal = mTP.getCurrentMeal(0);
 		mealDisplayed = currentMeal;
 		
@@ -236,14 +272,20 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         aB.setDisplayShowTitleEnabled(true);
         
         
-        // show help dialog on first time
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
-        if (prefs.getBoolean(PREF_FIRSTTIME, true)) {
+        // show help dialog on first time or upgrade
+        int currentVer = 1;
+        try {
+			currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+		} catch (NameNotFoundException e) {
+			// better not get here lol
+		}
+        if (prefs.getBoolean(PREF_FIRSTTIME, true) || (prefs.getInt(PREF_LASTVER, 0) < currentVer)) {
     		FirstTimeFragment ftf = new FirstTimeFragment();
     		ftf.show(getFragmentManager(), "firsttime");
     		
         	SharedPreferences.Editor editor = prefs.edit();
         	editor.putBoolean(PREF_FIRSTTIME, false);
+        	editor.putInt(PREF_LASTVER, currentVer);
         	editor.commit();
         }
     }
@@ -490,18 +532,54 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	case R.id.legend:
     		LegendFragment legend = new LegendFragment();
     		legend.show(getFragmentManager(), "legend");
+    		return true;
+    	case R.id.reorder:
+    		Intent intent = new Intent(this, ReorderLocations.class);
+    		Bundle args = new Bundle();
+    		args.putIntegerArrayList(EXTRA_LOCATIONIDS, locIDsToShow);
+    		intent.putExtras(args);
+    		startActivityForResult(intent, REQCODE_REORDER);
+    		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
     }
     
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (requestCode == REQCODE_REORDER) {
+    		if (resultCode == RESULT_CANCELED)
+    			return;
+    		// result was ok
+    		locIDsToShow = data.getIntegerArrayListExtra(EXTRA_LOCATIONIDS);
+    		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
+    		SharedPreferences.Editor editor = prefs.edit();
+    		int numLocs = prefs.getInt(PREF_NUMLOCS, -1); // better exist!
+    		if (numLocs == -1)
+    			throw new RuntimeException("why is numLocs == -1?");
+    		// delete old ones if necessary
+    		if (numLocs != locIDsToShow.size())
+    			for (int i = 0; i < numLocs; ++i)
+    				editor.remove(PREF_LOCBASE + i);
+    		numLocs = locIDsToShow.size();
+    		// store new order
+    		for (int i = 0; i < numLocs; ++i)
+    			editor.putInt(PREF_LOCBASE + i, locIDsToShow.get(i));
+    		editor.putInt(PREF_NUMLOCS, numLocs);
+    		editor.commit();
+    		// update viewpager
+    		mAdapter.newLocs(locIDsToShow);
+    		mPager.setAdapter(mAdapter);
+    	}
+    }
+
+    @Override
     public void onPause() {
     	super.onPause();
     	// unregister receiver
     	unregisterReceiver(timeChangedReceiver);
     }
-    
+
     @Override
     public void onResume() {
     	super.onResume();

@@ -2,5 +2,7 @@
 <resources>
     <dimen name="foodinfo_height">12sp</dimen>
     <dimen name="foodinfo_width">3dp</dimen>
+    <dimen name="foodinfo_outline_height">13sp</dimen>
+    <dimen name="foodinfo_outline_width">5dp</dimen>
     
 </resources>
