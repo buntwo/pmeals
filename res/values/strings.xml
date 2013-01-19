@@ -17,7 +17,7 @@
     <string name="firsttime1">Thanks for downloading PMeals. Here are some tips to help you use the app.</string>
     <string name="firsttime2">Swipe left and right to view additional menus.</string>
     <string name="firsttime3">Tap on a dining hall\'s name to view an entire day\'s menu.</string>
-    <string name="firsttime4">Each menu item will have anywhere from 0 to 3 dots on its left side. Here\'s what they mean:</string>
+    <string name="firsttime4">Each menu item will have anywhere from 0 to 3 bars on its left side. Here\'s what they mean:</string>
     <string name="legend1">Vegan</string>
     <string name="legend2">Vegetarian</string>
     <string name="legend3">Contains pork</string>

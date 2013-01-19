@@ -45,42 +45,166 @@
 	    android:textColor="@android:color/white"
         android:text="@string/firsttime4"
         />
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="13sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/legend1"
-        android:drawableLeft="@drawable/vegan"
-        android:drawablePadding="3dp"
-        />
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="13sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/legend2"
-        android:drawableLeft="@drawable/vegetarian"
-        android:drawablePadding="3dp"
-        />
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="13sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/legend3"
-        android:drawableLeft="@drawable/pork"
-        android:drawablePadding="3dp"
-        />
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="13sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/legend4"
-        android:drawableLeft="@drawable/nuts"
-        android:drawablePadding="3dp"
-        />
+    <LinearLayout
+        android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        >
+	        
+	    <TextView
+	        android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:textSize="14sp"
+		    android:textColor="@android:color/white"
+	        android:text="@string/legend1"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="6dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/vegan"
+	        />
+	
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+		    
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        >
+	        
+	    <TextView
+	        android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:textSize="14sp"
+		    android:textColor="@android:color/white"
+	        android:text="@string/legend2"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="6dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/vegetarian"
+	        />
+	
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+		    
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        >
+	        
+	    <TextView
+	        android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:textSize="14sp"
+		    android:textColor="@android:color/white"
+	        android:text="@string/legend3"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="6dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/pork"
+	        />
+	
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+		    
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        >
+	        
+	    <TextView
+	        android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:textSize="14sp"
+		    android:textColor="@android:color/white"
+	        android:text="@string/legend4"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+	    
+	    <ImageView
+	        android:layout_width="7dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/foodinfo_outline"
+	        />
+		    
+	    <ImageView
+	        android:layout_width="6dp"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="1dp"
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/nuts"
+	        />
+	
+    </LinearLayout>
     
     <TextView
         android:layout_height="wrap_content"
