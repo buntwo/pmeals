@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -69,7 +70,6 @@ public class ReorderLocations extends Activity {
         	tv.setText(locNames.get(i));
         	ll.setOnTouchListener(new ReorderTouchListener(i));
         	ll.setOnDragListener(new ReorderDragListener(i));
-        	ll.setTag(iv);
         	tv.setTag(iv);
         	
         	container.addView(ll);
@@ -126,7 +126,6 @@ public class ReorderLocations extends Activity {
 				return false;
 			}
 		}
-    	
     }
     
     private class ReorderDragListener implements OnDragListener {
@@ -141,9 +140,10 @@ public class ReorderLocations extends Activity {
 			int dragging = (Integer)event.getLocalState();
 			switch (action) {
 			case DragEvent.ACTION_DRAG_STARTED:
-				// clear icon
-				if (dragging != num)
-					((View) v.getTag()).setVisibility(View.INVISIBLE);
+				if (dragging != num) // clear icon
+					v.findViewById(R.id.reorder_selector).setVisibility(View.INVISIBLE);
+				else // bold text
+					views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
 				// redraw data
@@ -154,8 +154,9 @@ public class ReorderLocations extends Activity {
 						if (dragging == i)
 							++offset;
 						if (i == num) {
-							views.get(i).setText(locNames.get(dragging));
-							((View) views.get(i).getTag()).setVisibility(View.VISIBLE);
+							views.get(num).setText(locNames.get(dragging));
+							views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+							v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
 							--offset;
 							continue;
 						}
@@ -164,8 +165,9 @@ public class ReorderLocations extends Activity {
 				} else {
 					for (int i = 0; i < numLocs; ++i) {
 						if (i == num) {
-							views.get(i).setText(locNames.get(dragging));
-							((View) views.get(i).getTag()).setVisibility(View.VISIBLE);
+							views.get(num).setText(locNames.get(dragging));
+							views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+							v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
 							--offset;
 							continue;
 						}
@@ -176,7 +178,8 @@ public class ReorderLocations extends Activity {
 				}
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
-				((View) v.getTag()).setVisibility(View.INVISIBLE);
+				v.findViewById(R.id.reorder_selector).setVisibility(View.INVISIBLE);
+				views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 				break;
 			case DragEvent.ACTION_DROP:
 				dragging = (Integer) event.getLocalState();
@@ -185,7 +188,9 @@ public class ReorderLocations extends Activity {
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				// clear icon
-				((View) v.getTag()).setVisibility(View.VISIBLE);
+				v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
+				// unbold
+				views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 				break;
 				
 			}
