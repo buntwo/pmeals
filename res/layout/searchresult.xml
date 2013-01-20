@@ -2,6 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@color/menuitem"
     >
     
     <TextView
@@ -10,18 +13,15 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:paddingLeft="10dp"
         android:layout_alignParentTop="true"
         />
     
     <TextView
         android:id="@+id/text2"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:paddingLeft="10dp"
         android:layout_below="@id/text1"
-        android:layout_toLeftOf="@+id/text3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         />
@@ -33,11 +33,10 @@
         android:textSize="12sp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:gravity="center"
-        android:layout_below="@id/text1"
+        android:gravity="left"
+        android:layout_toRightOf="@id/text2"
         android:layout_toLeftOf="@+id/text4"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         />
     
     <TextView
@@ -45,10 +44,8 @@
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="10dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/text1"
         />
 
 </RelativeLayout>

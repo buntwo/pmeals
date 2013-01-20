@@ -1,5 +1,7 @@
 package com.sleepykoala.pmeals.activities;
 
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import android.app.ListActivity;
 import android.app.LoaderManager;
@@ -10,6 +12,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.adapters.SearchResultsListAdapter;
@@ -24,16 +29,19 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_mealsearcher);
-
+		
 		// Get the intent, verify the action and get the query
 		Intent intent = getIntent();
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			doSearch(query);
+			// set title
+			((TextView) findViewById(R.id.searchresults_title)).setText("Search Results: " + query);
+
+			performSearch(query);
 		}
 	}
 	
-	private void doSearch(String query) {
+	private void performSearch(String query) {
 		mAdapter = new SearchResultsListAdapter(this, null);
 		setListAdapter(mAdapter);
 		
@@ -48,6 +56,15 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 		getMenuInflater().inflate(R.menu.activity_meal_searcher, menu);
 	    
 		return true;
+	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		// start VBL
+		Intent intent = new Intent(this, ViewByLocation.class);
+		intent.putExtra(EXTRA_LOCATIONID, (int) id);
+		intent.putExtra(EXTRA_DATE, mAdapter.getDateString(position));
+		startActivity(intent);
 	}
 	
 	//------------------------------------------------LOADER CALLBACKS-----------------------------------

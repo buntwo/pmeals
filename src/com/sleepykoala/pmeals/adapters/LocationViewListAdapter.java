@@ -1,5 +1,10 @@
 package com.sleepykoala.pmeals.adapters;
 
+import static com.sleepykoala.pmeals.activities.ViewByMeal.nuts;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.outline;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.pork;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.vegan;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.vegetarian;
 import static com.sleepykoala.pmeals.data.C.COLOR_ERROR_ITEM;
 import static com.sleepykoala.pmeals.data.C.COLOR_REGULAR_ITEM;
 import static com.sleepykoala.pmeals.data.C.STRING_DOWNLOADING;
@@ -21,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
-import com.sleepykoala.pmeals.activities.ViewByMeal;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
@@ -236,19 +240,19 @@ public class LocationViewListAdapter extends BaseAdapter {
 			// set food info indicators
 			boolean[] info = getFoodInfo(menu);
 			if (info[0])
-				holder.vegan_vegetarian.setImageDrawable(ViewByMeal.vegan);
+				holder.vegan_vegetarian.setImageDrawable(vegan);
 			else if (info[1])
-				holder.vegan_vegetarian.setImageDrawable(ViewByMeal.vegetarian);
+				holder.vegan_vegetarian.setImageDrawable(vegetarian);
 			else
-				holder.vegan_vegetarian.setImageDrawable(null);
+				holder.vegan_vegetarian.setImageDrawable(outline);
 			if (info[2])
-				holder.pork.setImageDrawable(ViewByMeal.pork);
+				holder.pork.setImageDrawable(pork);
 			else
-				holder.pork.setImageDrawable(null);
+				holder.pork.setImageDrawable(outline);
 			if (info[3])
-				holder.nuts.setImageDrawable(ViewByMeal.nuts);
+				holder.nuts.setImageDrawable(nuts);
 			else
-				holder.nuts.setImageDrawable(null);
+				holder.nuts.setImageDrawable(outline);
 		} else if (itemType == 3) { // date
 			DateHolder holder;
 			if (convertView != null) {

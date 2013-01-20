@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 
@@ -17,10 +18,12 @@ public class SearchResultsListAdapter extends BaseAdapter {
 	
 	private Cursor results;
 	private LayoutInflater mInflater;
+	private Date today;
 	
 	public SearchResultsListAdapter(Context context, Cursor c) {
 		results = c;
 		mInflater = ((Activity) context).getLayoutInflater();
+		today = new Date();
 	}
 
 	public void swapCursor(Cursor c) {
@@ -39,8 +42,15 @@ public class SearchResultsListAdapter extends BaseAdapter {
 		return null;
 	}
 
+	// return location ID of position
 	public long getItemId(int position) {
-		return 0;
+		results.moveToPosition(position);
+		return getLocID(results);
+	}
+	
+	public String getDateString(int position) {
+		results.moveToPosition(position);
+		return getDate(results);
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -66,7 +76,15 @@ public class SearchResultsListAdapter extends BaseAdapter {
 			holder.itemName.setText(getItemName(results));
 			holder.mealName.setText(getMealName(results));
 			holder.locationName.setText(getLocName(results));
-			holder.date.setText(getDate(results));
+			Date date = new Date(getDate(results));
+			if (today.isTomorrow(date))
+				holder.date.setText("Tomorrow");
+			else if (today.equals(date))
+				holder.date.setText("Today");
+			else if (today.isYesterday(date))
+				holder.date.setText("Yesterday");
+			else
+			holder.date.setText(date.toString());
 		}
 		
 		return convertView;
@@ -85,11 +103,14 @@ public class SearchResultsListAdapter extends BaseAdapter {
 	private String getLocName(Cursor c) {
 		// should be initialized
 		try {
-			return LocationProviderFactory.newLocationProvider().getById(
-					Integer.valueOf(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.LOCATIONID)))).nickname;
+			return LocationProviderFactory.newLocationProvider().getById(getLocID(c)).nickname;
 		} catch (NumberFormatException e) {
 			return "";
 		}
+	}
+	
+	private int getLocID(Cursor c) {
+		return Integer.valueOf(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.LOCATIONID)));
 	}
 	
 	private String getDate(Cursor c) {

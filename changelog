@@ -24,3 +24,8 @@ Outline replaced by small dots
 Small dots in menu in blank food indicators
 Updated firsttime window (typo, spacing, scrolling)
 SEARCH
+
+1.0.5:
+Can select search results
+Small dots in VBL (oops)
+Reorganized packages (added activites, fragments, adapters packages)
