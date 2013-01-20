@@ -60,7 +60,7 @@ public final class R {
         public static final int vegetarian=0x7f02000f;
     }
     public static final class id {
-        public static final int about=0x7f0b0026;
+        public static final int about=0x7f0b0027;
         public static final int action_viewbylocation_spinnertext=0x7f0b0007;
         public static final int app_info=0x7f0b0003;
         public static final int app_name=0x7f0b0000;
@@ -70,7 +70,7 @@ public final class R {
         public static final int firsttime_pork=0x7f0b0013;
         public static final int firsttime_vegan=0x7f0b0011;
         public static final int firsttime_veget=0x7f0b0012;
-        public static final int gotocurrentmeal=0x7f0b0027;
+        public static final int gotocurrentmeal=0x7f0b0028;
         public static final int gototoday=0x7f0b0023;
         public static final int hr1=0x7f0b0002;
         public static final int hr2=0x7f0b0004;
@@ -78,9 +78,9 @@ public final class R {
         public static final int infobar_mealinfo0=0x7f0b000c;
         public static final int infobar_mealinfo1=0x7f0b000d;
         public static final int itemname=0x7f0b0017;
-        public static final int jumptodate=0x7f0b0025;
+        public static final int jumptodate=0x7f0b0026;
         public static final int leftbar=0x7f0b0010;
-        public static final int legend=0x7f0b0024;
+        public static final int legend=0x7f0b0025;
         public static final int listview_pager=0x7f0b000e;
         public static final int loading_text=0x7f0b0009;
         public static final int nuts=0x7f0b001a;
@@ -92,7 +92,7 @@ public final class R {
         public static final int reorder_container=0x7f0b000a;
         public static final int reorder_name=0x7f0b001d;
         public static final int reorder_selector=0x7f0b001e;
-        public static final int search=0x7f0b0028;
+        public static final int search=0x7f0b0024;
         public static final int searchresults_title=0x7f0b0008;
         public static final int sectionextra=0x7f0b001c;
         public static final int sectiontitle=0x7f0b001b;

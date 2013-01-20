@@ -8,6 +8,13 @@
         android:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/search"
+        android:title="@string/search"
+        android:icon="@drawable/ic_action_search"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:actionViewClass="android.widget.SearchView" />
+    
+    <item
         android:id="@+id/legend"
         android:title="Show legend"
         android:icon="@drawable/ic_help"
