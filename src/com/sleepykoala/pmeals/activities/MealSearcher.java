@@ -23,7 +23,7 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_meal_searcher);
+		setContentView(R.layout.activity_mealsearcher);
 
 		// Get the intent, verify the action and get the query
 		Intent intent = getIntent();
