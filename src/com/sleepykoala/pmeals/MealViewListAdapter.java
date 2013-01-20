@@ -1,5 +1,10 @@
 package com.sleepykoala.pmeals;
 
+import static com.sleepykoala.pmeals.ViewByMeal.nuts;
+import static com.sleepykoala.pmeals.ViewByMeal.outline;
+import static com.sleepykoala.pmeals.ViewByMeal.pork;
+import static com.sleepykoala.pmeals.ViewByMeal.vegan;
+import static com.sleepykoala.pmeals.ViewByMeal.vegetarian;
 import static com.sleepykoala.pmeals.data.C.COLOR_ERROR_ITEM;
 import static com.sleepykoala.pmeals.data.C.COLOR_REGULAR_ITEM;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR_NONMAIN;
@@ -373,19 +378,19 @@ public class MealViewListAdapter extends BaseAdapter {
 			// set food info indicators
 			boolean[] info = getFoodInfo(menu);
 			if (info[0])
-				holder.vegan_vegetarian.setImageDrawable(ViewByMeal.vegan);
+				holder.vegan_vegetarian.setImageDrawable(vegan);
 			else if (info[1])
-				holder.vegan_vegetarian.setImageDrawable(ViewByMeal.vegetarian);
+				holder.vegan_vegetarian.setImageDrawable(vegetarian);
 			else
-				holder.vegan_vegetarian.setImageDrawable(null);
+				holder.vegan_vegetarian.setImageDrawable(outline);
 			if (info[2])
-				holder.pork.setImageDrawable(ViewByMeal.pork);
+				holder.pork.setImageDrawable(pork);
 			else
-				holder.pork.setImageDrawable(null);
+				holder.pork.setImageDrawable(outline);
 			if (info[3])
-				holder.nuts.setImageDrawable(ViewByMeal.nuts);
+				holder.nuts.setImageDrawable(nuts);
 			else
-				holder.nuts.setImageDrawable(null);
+				holder.nuts.setImageDrawable(outline);
 		} else if (itemType == 3) { // date
 			MealInfoHolder holder;
 			if (convertView != null) {

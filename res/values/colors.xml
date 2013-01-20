@@ -2,6 +2,7 @@
 <resources>
 
     <color name="light_gray">#8a8a8a</color>
+    <color name="outline_gray">#c0c0c0</color>
     <color name="menuitem_selectedbg">#bfbfbf</color>
     <color name="menuitem_bg">#eaeaea</color>
     <color name="infobar_neutral_bg">#00000000</color>

@@ -17,3 +17,8 @@ Changed food info indicators, now rectangular bars
 Legend in VBL works (oops)
 Updated legend
 Can reorder location names in VBM!!!
+
+1.0.4:
+Selected item when reordering is bolded
+Outline replaced by small dots
+Small dots in menu in blank food indicators

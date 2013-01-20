@@ -145,6 +145,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 	public static Drawable vegetarian;
 	public static Drawable pork;
 	public static Drawable nuts;
+	public static Drawable outline;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -204,6 +205,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		vegetarian = res.getDrawable(R.drawable.vegetarian);
 		pork = res.getDrawable(R.drawable.pork);
 		nuts = res.getDrawable(R.drawable.nuts);
+		outline = res.getDrawable(R.drawable.foodinfo_outline);
 		
         // not animating
         isInfoBarMoving = false;
