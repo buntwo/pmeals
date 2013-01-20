@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MealSearcher" >
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_results"
+        android:gravity="left"
+	    android:background="@android:color/black"
+        android:textStyle="bold"
+        android:textColor="@color/sectiontitle"
+        android:textSize="20sp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        />
+    
+    
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="5dp"
+        >
+	        
+	    <ProgressBar
+	        android:layout_width="match_parent"
+	        android:layout_height="35dp"
+	        />
+	    <TextView
+	        android:id="@+id/loading_text"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@android:color/black"
+	        android:textSize="16sp"
+	        android:gravity="center"
+	        android:paddingTop="1dp"
+	        android:text="Searching"
+	        />
+        
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,20 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleepykoala.pmeals"
-    android:versionCode="5"
+    android:versionCode="6"
     android:versionName="@string/version" >
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="14"
-        />
-    <uses-permission android:name="android.permission.INTERNET"/>
+        android:targetSdkVersion="14" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@drawable/launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:allowBackup="true" >
         <activity
-            android:name=".ViewByMeal"
+            android:name="com.sleepykoala.pmeals.ViewByMeal"
             android:label="@string/title_activity_viewbymeal"
             android:launchMode="singleTask" >
             <intent-filter>
@@ -24,20 +26,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ViewByLocation"
+            android:name="com.sleepykoala.pmeals.ViewByLocation"
             android:label="@string/title_activity_viewbylocation" >
         </activity>
         <activity
-            android:name=".ReorderLocations"
+            android:name="com.sleepykoala.pmeals.ReorderLocations"
             android:label="@string/title_activity_reorderlocations" >
         </activity>
+        <activity
+            android:name="com.sleepykoala.pmeals.MealSearcher"
+            android:label="@string/title_activity_meal_searcher" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/meal_search" />
+        </activity>
+
         <provider
+            android:name="com.sleepykoala.pmeals.contentprovider.MenuProvider"
             android:authorities="com.sleepykoala.pmeals.contentprovider.MenuProvider"
-            android:name=".contentprovider.MenuProvider"
             android:exported="false" >
         </provider>
+
         <service
-            android:name=".service.MenuDownloaderService"
+            android:name="com.sleepykoala.pmeals.service.MenuDownloaderService"
             android:exported="false" >
         </service>
     </application>

@@ -27,7 +27,9 @@ import java.util.ArrayList;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -50,6 +52,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.sleepykoala.pmeals.DatePickerDialogFragment.OnDateSelectedListener;
@@ -512,6 +515,15 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_viewbymeal, menu);
+        
+		// Get the SearchView and set the searchable configuration
+	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(
+	    		new ComponentName(this, MealSearcher.class)
+	    		));
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+	    
         return true;
     }
     

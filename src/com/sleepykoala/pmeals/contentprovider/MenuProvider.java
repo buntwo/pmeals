@@ -142,8 +142,9 @@ public class MenuProvider extends ContentProvider {
 		return Uri.parse(BASE_PATH + "/" + id);
 	}
 
-	// selectionArgs array must be in following order:
+	// NOTE: if selectionArgs has size 3, it must be in following order:
 	// { locId, date, mealName }
+	// else, performs a regular query
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
@@ -163,54 +164,60 @@ public class MenuProvider extends ContentProvider {
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		
-		String id = selectionArgs[0];
-		String date = selectionArgs[1];
-		// create a lock for this location+date, if needed
-		// this DCL *SHOULD* work, as HashMap is thread-safe
-		// eg, reads and writes are atomic wrt each other
-		if (sLocks.get(id + date) == null) {
-			synchronized (sMasterLock) {
-				if (sLocks.get(id + date) == null)
-					sLocks.put(id + date, new Object());
-			}
-		}
-		
 		Cursor cursor;
-		// synchronized block
-		// each day+location combo gets its own lock
-		synchronized (sLocks.get(id + date)) {
-			cursor = queryBuilder.query(mDB.getReadableDatabase(), projection,
-					selection, selectionArgs, null, null, sortOrder);
-			cursor.setNotificationUri(getContext().getContentResolver(), uri);
-
-			// not downloaded yet; download!!
-			if (cursor.getCount() == 0) {
-				// request download only if not already downloading
-				// need this because a request for one meal forces request for all meals that day!
-				if (!isDownloading(id, date)) {
-					Location l = lP.getById(Integer.parseInt(id));
-					// put arguments
-					Intent dlService = new Intent();
-					dlService.putExtra(EXTRA_LOCATIONID, id);
-					dlService.putExtra(EXTRA_LOCATIONNAME, l.locName);
-					dlService.putExtra(EXTRA_LOCATIONNUMBER, l.locNum);
-					dlService.putExtra(EXTRA_DATE, date);
-					dlService.putExtra(EXTRA_ISREFRESH, false);
-					// get meal names
-					Date dt = new Date(date);
-					dlService.putExtra(EXTRA_MEALNAMES, mTP.getDaysMealNames(l.type, dt.weekDay));
-
-					dlService.setClass(getContext(), MenuDownloaderService.class);
-					getContext().startService(dlService);
-
-					startDownload(id, date);
+		if (selectionArgs.length == 3) {
+			String id = selectionArgs[0];
+			String date = selectionArgs[1];
+			// create a lock for this location+date, if needed
+			// this DCL *SHOULD* work, as HashMap is thread-safe
+			// eg, reads and writes are atomic wrt each other
+			if (sLocks.get(id + date) == null) {
+				synchronized (sMasterLock) {
+					if (sLocks.get(id + date) == null)
+						sLocks.put(id + date, new Object());
 				}
 			}
+
+			// synchronized block
+			// each day+location combo gets its own lock
+			synchronized (sLocks.get(id + date)) {
+				cursor = queryBuilder.query(mDB.getReadableDatabase(), projection,
+						selection, selectionArgs, null, null, sortOrder);
+				cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+				// not downloaded yet; download!!
+				if (cursor.getCount() == 0) {
+					// request download only if not already downloading
+					// need this because a request for one meal forces request for all meals that day!
+					if (!isDownloading(id, date)) {
+						Location l = lP.getById(Integer.parseInt(id));
+						// put arguments
+						Intent dlService = new Intent();
+						dlService.putExtra(EXTRA_LOCATIONID, id);
+						dlService.putExtra(EXTRA_LOCATIONNAME, l.locName);
+						dlService.putExtra(EXTRA_LOCATIONNUMBER, l.locNum);
+						dlService.putExtra(EXTRA_DATE, date);
+						dlService.putExtra(EXTRA_ISREFRESH, false);
+						// get meal names
+						Date dt = new Date(date);
+						dlService.putExtra(EXTRA_MEALNAMES, mTP.getDaysMealNames(l.type, dt.weekDay));
+
+						dlService.setClass(getContext(), MenuDownloaderService.class);
+						getContext().startService(dlService);
+
+						startDownload(id, date);
+					}
+				}
+			}
+		} else {
+			cursor = queryBuilder.query(mDB.getReadableDatabase(), projection, selection,
+					selectionArgs, null, null, sortOrder);
+			//cursor.setNotificationUri(getContext().getContentResolver(), uri);
 		}
-		
+
 		return cursor;
 	}
-	
+
 	//-----------------------------------------------DOWNLOADING STATUS SETTER/GETTERS-----------------------------------
 	
 	// called by service when it finishes downloading
