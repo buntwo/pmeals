@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.adapters;
 
 import static com.sleepykoala.pmeals.data.C.COLOR_ERROR_ITEM;
 import static com.sleepykoala.pmeals.data.C.COLOR_REGULAR_ITEM;
@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.activities.ViewByMeal;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.MealTimeProvider;

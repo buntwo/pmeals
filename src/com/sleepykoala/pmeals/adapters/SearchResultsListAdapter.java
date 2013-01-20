@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 

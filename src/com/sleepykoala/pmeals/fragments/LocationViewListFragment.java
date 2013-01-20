@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.fragments;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ISREFRESH;
@@ -36,6 +36,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.adapters.LocationViewListAdapter;
 import com.sleepykoala.pmeals.contentprovider.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.Date;

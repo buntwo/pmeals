@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import android.app.ListActivity;
@@ -11,6 +11,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.adapters.SearchResultsListAdapter;
 import com.sleepykoala.pmeals.contentprovider.MenuProvider;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 

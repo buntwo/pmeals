@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.adapters;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
+import com.sleepykoala.pmeals.fragments.MealViewListFragment;
 
 public class MealViewPagerAdapter extends FragmentPagerAdapter {
 	

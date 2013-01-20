@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.sleepykoala.pmeals.data.C.ALPHA_DISABLED;
@@ -55,8 +55,8 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.sleepykoala.pmeals.DatePickerDialogFragment.OnDateSelectedListener;
-import com.sleepykoala.pmeals.MealPickerDialogFragment.OnMealSelectedListener;
+import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.adapters.MealViewPagerAdapter;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
@@ -65,6 +65,13 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
+import com.sleepykoala.pmeals.fragments.AboutFragment;
+import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
+import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment.OnDateSelectedListener;
+import com.sleepykoala.pmeals.fragments.FirstTimeFragment;
+import com.sleepykoala.pmeals.fragments.LegendFragment;
+import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment;
+import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment.OnMealSelectedListener;
 
 public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener {
 	

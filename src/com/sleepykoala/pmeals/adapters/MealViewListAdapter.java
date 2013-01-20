@@ -1,10 +1,10 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.adapters;
 
-import static com.sleepykoala.pmeals.ViewByMeal.nuts;
-import static com.sleepykoala.pmeals.ViewByMeal.outline;
-import static com.sleepykoala.pmeals.ViewByMeal.pork;
-import static com.sleepykoala.pmeals.ViewByMeal.vegan;
-import static com.sleepykoala.pmeals.ViewByMeal.vegetarian;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.nuts;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.outline;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.pork;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.vegan;
+import static com.sleepykoala.pmeals.activities.ViewByMeal.vegetarian;
 import static com.sleepykoala.pmeals.data.C.COLOR_ERROR_ITEM;
 import static com.sleepykoala.pmeals.data.C.COLOR_REGULAR_ITEM;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR_NONMAIN;
@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.FoodItem;

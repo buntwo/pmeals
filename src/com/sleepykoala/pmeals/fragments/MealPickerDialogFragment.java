@@ -1,10 +1,8 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.fragments;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAMES;
 
 import java.util.ArrayList;
-
-import com.sleepykoala.pmeals.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +10,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import com.sleepykoala.pmeals.R;
 
 public class MealPickerDialogFragment extends DialogFragment {
 	

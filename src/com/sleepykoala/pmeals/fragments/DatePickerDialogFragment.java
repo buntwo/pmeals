@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals;
+package com.sleepykoala.pmeals.fragments;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import android.app.Activity;

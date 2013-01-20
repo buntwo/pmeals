@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         android:allowBackup="true" >
         <activity
-            android:name="com.sleepykoala.pmeals.ViewByMeal"
+            android:name="com.sleepykoala.pmeals.activities.ViewByMeal"
             android:label="@string/title_activity_viewbymeal"
             android:launchMode="singleTask" >
             <intent-filter>
@@ -26,15 +26,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.sleepykoala.pmeals.ViewByLocation"
+            android:name="com.sleepykoala.pmeals.activities.ViewByLocation"
             android:label="@string/title_activity_viewbylocation" >
         </activity>
         <activity
-            android:name="com.sleepykoala.pmeals.ReorderLocations"
+            android:name="com.sleepykoala.pmeals.activities.ReorderLocations"
             android:label="@string/title_activity_reorderlocations" >
         </activity>
         <activity
-            android:name="com.sleepykoala.pmeals.MealSearcher"
+            android:name="com.sleepykoala.pmeals.activities.MealSearcher"
             android:label="@string/title_activity_meal_searcher" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
