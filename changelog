@@ -29,3 +29,7 @@ SEARCH
 Can select search results
 Small dots in VBL (oops)
 Reorganized packages (added activites, fragments, adapters packages)
+
+1.0.6:
+Recent search suggestions
+Store location order as a set instead of many prefs

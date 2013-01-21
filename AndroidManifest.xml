@@ -27,11 +27,15 @@
         </activity>
         <activity
             android:name="com.sleepykoala.pmeals.activities.ViewByLocation"
-            android:label="@string/title_activity_viewbylocation" >
+            android:label="@string/title_activity_viewbylocation">
         </activity>
         <activity
             android:name="com.sleepykoala.pmeals.activities.ReorderLocations"
-            android:label="@string/title_activity_reorderlocations" >
+            android:label="@string/title_activity_reorderlocations"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.sleepykoala.pmeals.activities.MealSearcher"

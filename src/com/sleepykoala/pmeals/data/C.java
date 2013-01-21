@@ -103,6 +103,8 @@ public final class C {
     // preferences keys
     public static final String PREF_FIRSTTIME = "firsttime";
     public static final String PREF_LASTVER = "lastversion";
+    public static final String PREF_LOCATIONORDER = "locorder";
+    // deprecated keys, needed for upgrade code
     public static final String PREF_NUMLOCS = "numlocs";
     public static final String PREF_LOCBASE = "loc_";
 }

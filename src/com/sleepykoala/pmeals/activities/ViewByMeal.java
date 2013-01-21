@@ -15,6 +15,7 @@ import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
+import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.PREF_LOCBASE;
 import static com.sleepykoala.pmeals.data.C.PREF_NUMLOCS;
 import static com.sleepykoala.pmeals.data.C.REQCODE_REORDER;
@@ -24,6 +25,9 @@ import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
@@ -228,35 +232,21 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 
 		// retrieve location order from settings, if exists
 		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
-		int numLocs = prefs.getInt(PREF_NUMLOCS, -1);
-		if (numLocs != -1) { // yay exists
+		SharedPreferences.Editor editor = prefs.edit();
+		Set<String> locs = prefs.getStringSet(PREF_LOCATIONORDER, null);
+		if (locs != null) { // yay exists
+			// retrieve them in the correct order
+			ArrayList<String> locIDsRaw = new ArrayList<String>(locs);
+			Collections.sort(locIDsRaw);
 			locIDsToShow = new ArrayList<Integer>();
-			for (int i = 0; i < numLocs; ++i) {
-				int id = prefs.getInt(PREF_LOCBASE + i, -1);
-				if (id == -1) { // error with prefs, reset!
-					SharedPreferences.Editor editor = prefs.edit();
-					// remove old
-					for (int j = 0; j < numLocs; ++j)
-						editor.remove(PREF_LOCBASE + i);
-					// add new
-					locIDsToShow = lP.getIDsForType(0, 1, 2);
-					// put in prefs
-					numLocs = locIDsToShow.size();
-					for (int j = 0; j < numLocs; ++j)
-						editor.putInt(PREF_LOCBASE + j, locIDsToShow.get(j));
-					editor.putInt(PREF_NUMLOCS, numLocs);
-					editor.commit();
-				}
-				locIDsToShow.add(id);
-			}
-		} else { // new prefs
+			for (String s : locIDsRaw)
+				locIDsToShow.add(Integer.valueOf(s.substring(2)));
+		} else { // new pref
 			locIDsToShow = lP.getIDsForType(0, 1, 2);
-			// put in prefs
-			numLocs = locIDsToShow.size();
-			SharedPreferences.Editor editor = prefs.edit();
-			for (int i = 0; i < numLocs; ++i)
-				editor.putInt(PREF_LOCBASE + i, locIDsToShow.get(i));
-			editor.putInt(PREF_NUMLOCS, numLocs);
+			locs = new HashSet<String>(locIDsToShow.size());
+			for (Integer i : locIDsToShow)
+				locs.add(String.valueOf(i));
+			editor.putStringSet(PREF_LOCATIONORDER, locs);
 			editor.commit();
 		}
 		// setup pager adapter
@@ -284,6 +274,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         aB.setDisplayShowTitleEnabled(true);
         
         
+        // upgrade code
         // show help dialog on first time or upgrade
         int currentVer = 1;
         try {
@@ -295,9 +286,16 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		FirstTimeFragment ftf = new FirstTimeFragment();
     		ftf.show(getFragmentManager(), "firsttime");
     		
-        	SharedPreferences.Editor editor = prefs.edit();
         	editor.putBoolean(PREF_FIRSTTIME, false);
         	editor.putInt(PREF_LASTVER, currentVer);
+        	editor.commit();
+        }
+        // versions <= 7 used multiple keys to store loc order, delete these
+        if (prefs.getInt(PREF_LASTVER, 0) <= 7) {
+        	int numLocs = prefs.getInt(PREF_NUMLOCS, -1);
+        	for (int i = 0; i < numLocs; ++i)
+        		editor.remove(PREF_LOCBASE + i);
+        	editor.remove(PREF_NUMLOCS);
         	editor.commit();
         }
     }
@@ -556,9 +554,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		return true;
     	case R.id.reorder:
     		Intent intent = new Intent(this, ReorderLocations.class);
-    		Bundle args = new Bundle();
-    		args.putIntegerArrayList(EXTRA_LOCATIONIDS, locIDsToShow);
-    		intent.putExtras(args);
     		startActivityForResult(intent, REQCODE_REORDER);
     		return true;
     	default:
@@ -573,20 +568,15 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     			return;
     		// result was ok
     		locIDsToShow = data.getIntegerArrayListExtra(EXTRA_LOCATIONIDS);
+    		Set<String> locs = new HashSet<String>(locIDsToShow.size());
+    		int numLocs = locIDsToShow.size();
+    		for (int i = 0; i < numLocs; ++i) {
+    			String locNum = String.format("%02d%d", i, locIDsToShow.get(i));
+    			locs.add(String.valueOf(locNum));
+    		}
     		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
     		SharedPreferences.Editor editor = prefs.edit();
-    		int numLocs = prefs.getInt(PREF_NUMLOCS, -1); // better exist!
-    		if (numLocs == -1)
-    			throw new RuntimeException("why is numLocs == -1?");
-    		// delete old ones if necessary
-    		if (numLocs != locIDsToShow.size())
-    			for (int i = 0; i < numLocs; ++i)
-    				editor.remove(PREF_LOCBASE + i);
-    		numLocs = locIDsToShow.size();
-    		// store new order
-    		for (int i = 0; i < numLocs; ++i)
-    			editor.putInt(PREF_LOCBASE + i, locIDsToShow.get(i));
-    		editor.putInt(PREF_NUMLOCS, numLocs);
+    		editor.putStringSet(PREF_LOCATIONORDER, locs);
     		editor.commit();
     		// update viewpager
     		mAdapter.newLocs(locIDsToShow);

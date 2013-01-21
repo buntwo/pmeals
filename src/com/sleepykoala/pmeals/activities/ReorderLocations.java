@@ -1,11 +1,16 @@
 package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
+import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
+import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -42,8 +47,15 @@ public class ReorderLocations extends Activity {
         setContentView(R.layout.activity_reorderlocations);
         
         // build data
-        Intent intent = getIntent();
-        locIDs = intent.getIntegerArrayListExtra(EXTRA_LOCATIONIDS);
+		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
+		Set<String> locs = prefs.getStringSet(PREF_LOCATIONORDER, null);
+		// retrieve them in the correct order
+		ArrayList<String> locIDsRaw = new ArrayList<String>(locs);
+		Collections.sort(locIDsRaw);
+		locIDs = new ArrayList<Integer>();
+		for (String s : locIDsRaw)
+			locIDs.add(Integer.valueOf(s.substring(2)));
+        
         locNames = new ArrayList<String>();
         numLocs = locIDs.size();
         LocationProvider lP = LocationProviderFactory.newLocationProvider();

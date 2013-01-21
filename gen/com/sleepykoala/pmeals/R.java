@@ -131,22 +131,24 @@ public final class R {
         public static final int fragment_menu=0x7f0a0003;
     }
     public static final class string {
+        public static final int about=0x7f090011;
         public static final int app_info=0x7f090007;
         public static final int app_name=0x7f090000;
         public static final int cancel=0x7f09000d;
         public static final int credits_authors=0x7f090009;
         public static final int credits_categories=0x7f090008;
         public static final int done=0x7f09000b;
-        public static final int firsttime1=0x7f090011;
-        public static final int firsttime2=0x7f090012;
-        public static final int firsttime3=0x7f090013;
-        public static final int firsttime4=0x7f090014;
-        public static final int firsttime5=0x7f090019;
-        public static final int legend1=0x7f090015;
-        public static final int legend2=0x7f090016;
-        public static final int legend3=0x7f090017;
-        public static final int legend4=0x7f090018;
+        public static final int firsttime1=0x7f090013;
+        public static final int firsttime2=0x7f090014;
+        public static final int firsttime3=0x7f090015;
+        public static final int firsttime4=0x7f090016;
+        public static final int firsttime5=0x7f09001b;
+        public static final int legend1=0x7f090017;
+        public static final int legend2=0x7f090018;
+        public static final int legend3=0x7f090019;
+        public static final int legend4=0x7f09001a;
         public static final int menu_settings=0x7f090002;
+        public static final int pref_reorderlocs=0x7f090012;
         public static final int reorder_instr=0x7f09000a;
         public static final int reset=0x7f09000c;
         public static final int search=0x7f09000e;
