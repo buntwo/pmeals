@@ -3,7 +3,7 @@
     
     <item
         android:id="@+id/gototoday"
-        android:title="Jump to next meal's day"
+        android:title="Jump to current meal"
         android:icon="@drawable/ic_gotocurrent"
         android:showAsAction="ifRoom" />
 

@@ -3,6 +3,8 @@
     android:label="@string/app_name"
     android:hint="@string/search_hint"
     android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
+    android:searchSuggestAuthority="com.sleepykoala.pmeals.contentproviders.SearchSuggestionsProvider"
+    android:searchSuggestSelection=" ?"
     >
     
 

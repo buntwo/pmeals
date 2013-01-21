@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals.contentprovider;
+package com.sleepykoala.pmeals.contentproviders;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ISREFRESH;
@@ -30,7 +30,7 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
-import com.sleepykoala.pmeals.service.MenuDownloaderService;
+import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
 public class MenuProvider extends ContentProvider {
 	
@@ -50,7 +50,7 @@ public class MenuProvider extends ContentProvider {
 	private static final Object sMasterLock = new Object();
 
 	// constants
-	private static final String AUTHORITY = "com.sleepykoala.pmeals.contentprovider.MenuProvider";
+	private static final String AUTHORITY = "com.sleepykoala.pmeals.contentproviders.MenuProvider";
 	public static final int MENU = 10;
 	public static final int FOODITEM_ID = 20;
 	

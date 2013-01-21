@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
@@ -18,7 +19,8 @@ import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.adapters.SearchResultsListAdapter;
-import com.sleepykoala.pmeals.contentprovider.MenuProvider;
+import com.sleepykoala.pmeals.contentproviders.MenuProvider;
+import com.sleepykoala.pmeals.contentproviders.SearchSuggestionsProvider;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 
 public class MealSearcher extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -35,8 +37,12 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			// set title
-			((TextView) findViewById(R.id.searchresults_title)).setText("Search Results: " + query);
-
+			((TextView) findViewById(R.id.searchresults_title)).setText("Search results: " + query);
+			// save query into recent searches
+			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+					SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+			suggestions.saveRecentQuery(query, null);
+			// do the search
 			performSearch(query);
 		}
 	}

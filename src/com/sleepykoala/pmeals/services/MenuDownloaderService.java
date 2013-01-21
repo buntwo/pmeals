@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals.service;
+package com.sleepykoala.pmeals.services;
 
 import java.util.LinkedList;
 import java.util.Queue;

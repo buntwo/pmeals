@@ -45,13 +45,18 @@
         </activity>
 
         <provider
-            android:name="com.sleepykoala.pmeals.contentprovider.MenuProvider"
-            android:authorities="com.sleepykoala.pmeals.contentprovider.MenuProvider"
+            android:name="com.sleepykoala.pmeals.contentproviders.MenuProvider"
+            android:authorities="com.sleepykoala.pmeals.contentproviders.MenuProvider"
+            android:exported="false" >
+        </provider>
+        <provider
+            android:name="com.sleepykoala.pmeals.contentproviders.SearchSuggestionsProvider"
+            android:authorities="com.sleepykoala.pmeals.contentproviders.SearchSuggestionsProvider"
             android:exported="false" >
         </provider>
 
         <service
-            android:name="com.sleepykoala.pmeals.service.MenuDownloaderService"
+            android:name="com.sleepykoala.pmeals.services.MenuDownloaderService"
             android:exported="false" >
         </service>
     </application>

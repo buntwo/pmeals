@@ -1,4 +1,4 @@
-package com.sleepykoala.pmeals.service;
+package com.sleepykoala.pmeals.services;
 
 import static com.sleepykoala.pmeals.data.C.ACTION_REFRESHFAILED;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
@@ -44,7 +44,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.sleepykoala.pmeals.contentprovider.MenuProvider;
+import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.FoodItem;
 

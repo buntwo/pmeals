@@ -37,7 +37,7 @@ import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.adapters.LocationViewListAdapter;
-import com.sleepykoala.pmeals.contentprovider.MenuProvider;
+import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
@@ -47,7 +47,7 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
-import com.sleepykoala.pmeals.service.MenuDownloaderService;
+import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
 public class LocationViewListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	
