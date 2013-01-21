@@ -35,3 +35,6 @@ Recent search suggestions
 Store location order as a set instead of many prefs
 Search results organized by date
 v9: stupid crash, didn't update default locorder commit
+
+1.0.7:
+Update meal time bar on resume

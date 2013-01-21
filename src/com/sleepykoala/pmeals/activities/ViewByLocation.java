@@ -83,19 +83,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 			if (action.equals(Intent.ACTION_TIME_CHANGED) ||
 					action.equals(Intent.ACTION_TIMEZONE_CHANGED) ||
 					action.equals(Intent.ACTION_TIME_TICK)) {
-				DatedMealTime d = mTP.getCurrentMeal(displayedLoc.type);
-				boolean newMeal = !d.equals(currentMeal);
-				Date oldToday = today;
-				today = new Date();
-				if (newMeal) {
-					currentMeal = d;
-				}
-				if (!today.equals(oldToday)) {
-					Intent newDayIntent = new Intent();
-					newDayIntent.setAction(C.ACTION_NEW_DAY);
-					LocalBroadcastManager.getInstance(ViewByLocation.this).sendBroadcast(newDayIntent);
-				}
-				refreshTitle(newMeal);
+				onTimeChanged();
 			}
 		}
 	};
@@ -214,6 +202,22 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	else
     		dateSelected(currentMeal.date);
     }
+
+	private void onTimeChanged() {
+		DatedMealTime d = mTP.getCurrentMeal(displayedLoc.type);
+		boolean newMeal = !d.equals(currentMeal);
+		Date oldToday = today;
+		today = new Date();
+		if (newMeal) {
+			currentMeal = d;
+		}
+		if (!today.equals(oldToday)) {
+			Intent newDayIntent = new Intent();
+			newDayIntent.setAction(C.ACTION_NEW_DAY);
+			LocalBroadcastManager.getInstance(ViewByLocation.this).sendBroadcast(newDayIntent);
+		}
+		refreshTitle(newMeal);
+	}
     
     // build meal time data text to show in title
     public void refreshTitle(boolean newMeal) {
@@ -455,6 +459,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	// register receiver
         registerReceiver(timeChangedReceiver, sIntentFilter);
 		startPageIndicatorFadeout();
+		onTimeChanged();
     }
 
 }
