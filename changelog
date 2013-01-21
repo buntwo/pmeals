@@ -34,3 +34,4 @@ Reorganized packages (added activites, fragments, adapters packages)
 Recent search suggestions
 Store location order as a set instead of many prefs
 Search results organized by date
+v9: stupid crash, didn't update default locorder commit
