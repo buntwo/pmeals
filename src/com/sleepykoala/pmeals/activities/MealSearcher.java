@@ -15,7 +15,6 @@ import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.adapters.SearchResultsListAdapter;
@@ -37,7 +36,7 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			// set title
-			((TextView) findViewById(R.id.searchresults_title)).setText("Search results: " + query);
+			getActionBar().setTitle("Search results: " + query);
 			// save query into recent searches
 			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
 					SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
@@ -66,11 +65,13 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		// start VBL
-		Intent intent = new Intent(this, ViewByLocation.class);
-		intent.putExtra(EXTRA_LOCATIONID, (int) id);
-		intent.putExtra(EXTRA_DATE, mAdapter.getDateString(position));
-		startActivity(intent);
+		if (mAdapter.getItemViewType(position) == 1) {
+			// start VBL
+			Intent intent = new Intent(this, ViewByLocation.class);
+			intent.putExtra(EXTRA_LOCATIONID, mAdapter.getLocId(position));
+			intent.putExtra(EXTRA_DATE, mAdapter.getDateString(position));
+			startActivity(intent);
+		}
 	}
 	
 	//------------------------------------------------LOADER CALLBACKS-----------------------------------

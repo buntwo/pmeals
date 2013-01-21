@@ -33,3 +33,4 @@ Reorganized packages (added activites, fragments, adapters packages)
 1.0.6:
 Recent search suggestions
 Store location order as a set instead of many prefs
+Search results organized by date

@@ -1,8 +1,11 @@
 package com.sleepykoala.pmeals.adapters;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,26 +19,56 @@ import com.sleepykoala.pmeals.data.PMealsDatabase;
 
 public class SearchResultsListAdapter extends BaseAdapter {
 	
-	private Cursor results;
+	private static final String DATEFORMAT = "EEE, MMM d, yyyy";
+	
+	private ArrayList<String[]> data;
 	private LayoutInflater mInflater;
-	private Date today;
 	
 	public SearchResultsListAdapter(Context context, Cursor c) {
-		results = c;
+		processCursor(c);
 		mInflater = ((Activity) context).getLayoutInflater();
-		today = new Date();
 	}
 
 	public void swapCursor(Cursor c) {
-		results = c;
+		processCursor(c);
 		notifyDataSetChanged();
 	}
 	
+	private void processCursor(Cursor c) {
+		data = new ArrayList<String[]>();
+		if (c == null) {
+			return;
+		} else if (c.getCount() == 0) {
+			data.add(new String[]{"1", "No Results", "", ""});
+			return;	
+		}
+		Date today = new Date();
+		c.moveToFirst();
+		Date curDate = new Date("01/01/1900");
+		while (!c.isAfterLast()) {
+			Date date = new Date(getDate(c));
+			if (!date.equals(curDate)) {
+				String dateStr;
+				if (today.isTomorrow(date))
+					dateStr = "Tomorrow";
+				else if (today.equals(date))
+					dateStr = "Today";
+				else if (today.isYesterday(date))
+					dateStr = "Yesterday";
+				else
+					dateStr = (String) DateFormat.format(DATEFORMAT, date.toMillis(true));
+				data.add(new String[]{"0", dateStr});
+				curDate = date;
+			}
+			data.add(new String[]{"1", getItemName(c), getMealName(c),
+					getLocName(c), getDate(c), String.valueOf(getLocID(c))});
+			c.moveToNext();
+		}
+		return;
+	}
+	
 	public int getCount() {
-		if (results != null)
-			return (results.getCount() == 0) ? 1 : results.getCount();
-		else
-			return 0;
+		return data.size();
 	}
 
 	public Object getItem(int position) {
@@ -44,49 +77,59 @@ public class SearchResultsListAdapter extends BaseAdapter {
 
 	// return location ID of position
 	public long getItemId(int position) {
-		results.moveToPosition(position);
-		return getLocID(results);
+		return 0;
+	}
+	
+	// get location ID of position
+	public int getLocId(int pos) {
+		return Integer.valueOf(data.get(pos)[5]);
+	}
+	
+	public int getViewTypeCount() {
+		return 2;
+	}
+	
+	// 0 - date
+	// 1 - search result
+	public int getItemViewType(int pos) {
+		return Integer.valueOf(data.get(pos)[0]);
 	}
 	
 	public String getDateString(int position) {
-		results.moveToPosition(position);
-		return getDate(results);
+		return data.get(position)[4];
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ResultHolder holder;
-		if (convertView != null)
-			holder = (ResultHolder) convertView.getTag();
-		else {
-			convertView = mInflater.inflate(R.layout.searchresult, parent, false);
-			holder = new ResultHolder();
-			holder.itemName = (TextView) convertView.findViewById(R.id.text1);
-			holder.mealName = (TextView) convertView.findViewById(R.id.text2);
-			holder.locationName = (TextView) convertView.findViewById(R.id.text3);
-			holder.date = (TextView) convertView.findViewById(R.id.text4);
-			convertView.setTag(holder);
+		String[] result = data.get(position);
+		int type = Integer.valueOf(result[0]);
+		if (type == 1) { // menu item
+			ResultHolder holder;
+			if (convertView != null)
+				holder = (ResultHolder) convertView.getTag();
+			else {
+				convertView = mInflater.inflate(R.layout.searchresult, parent, false);
+				holder = new ResultHolder();
+				holder.itemName = (TextView) convertView.findViewById(R.id.text1);
+				holder.mealName = (TextView) convertView.findViewById(R.id.text2);
+				holder.locationName = (TextView) convertView.findViewById(R.id.text3);
+				convertView.setTag(holder);
+			}
+			holder.itemName.setText(result[1]);
+			holder.mealName.setText(result[2]);
+			holder.locationName.setText(result[3]);
+		} else if (type == 0) { // date
+			DateHolder holder;
+			if (convertView != null)
+				holder = (DateHolder) convertView.getTag();
+			else {
+				convertView = mInflater.inflate(R.layout.searchresult_date, parent, false);
+				holder = new DateHolder();
+				holder.date = (TextView) convertView.findViewById(R.id.result_date);
+				convertView.setTag(holder);
+			}
+			holder.date.setText(result[1]);
 		}
-		if (results.getCount() == 0) {
-			holder.itemName.setText("No Results");
-			holder.mealName.setText("");
-			holder.locationName.setText("");
-			holder.date.setText("");
-		} else {
-			results.moveToPosition(position);
-			holder.itemName.setText(getItemName(results));
-			holder.mealName.setText(getMealName(results));
-			holder.locationName.setText(getLocName(results));
-			Date date = new Date(getDate(results));
-			if (today.isTomorrow(date))
-				holder.date.setText("Tomorrow");
-			else if (today.equals(date))
-				holder.date.setText("Today");
-			else if (today.isYesterday(date))
-				holder.date.setText("Yesterday");
-			else
-			holder.date.setText(date.toString());
-		}
-		
+
 		return convertView;
 	}
 	
@@ -119,11 +162,14 @@ public class SearchResultsListAdapter extends BaseAdapter {
 	
 	//---------------------------------------------STATIC HOLDER CLASS--------------------------------
 	
+	private static class DateHolder {
+		TextView date;
+	}
+	
 	private static class ResultHolder {
 		TextView itemName;
 		TextView mealName;
 		TextView locationName;
-		TextView date;
 	}
 
 }
