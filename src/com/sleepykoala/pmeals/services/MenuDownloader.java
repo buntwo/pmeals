@@ -202,8 +202,10 @@ public class MenuDownloader implements Runnable {
 		// use HashMap because webpage could have the meals out of order...
 		// actually probably not...think about using ArrayList instead?? TODO
 		HashMap<String, ArrayList<FoodItem>> mealItems1 = parseMenu1(htmlData);
+		
+		if (mealItems1 == null)
+			return daysMenus;
 
-		// get URI2 data, and aggregate the two
 		for (int i = 0; i < size; ++i) {
 			String mealName = aMealNames.get(i);
 			if (!mealItems1.containsKey(mealName)) {
@@ -243,6 +245,7 @@ public class MenuDownloader implements Runnable {
 	// given HTML data from menuSamp.asp request, returns HashMap of meals and items
 	// Meal name (pulled from data) -> items, as ArrayList<MenuItem>
 	// DatedMealTime (name pulled from data, date given in constructor) -> items, as ArrayList<MenuItem>
+	// returns null on download error
 	private HashMap<String, ArrayList<FoodItem>> parseMenu1(String htmlData) {
 		HashMap<String, ArrayList<FoodItem>> meals = new HashMap<String, ArrayList<FoodItem>>();
 
@@ -268,7 +271,9 @@ public class MenuDownloader implements Runnable {
 				eventType = p.next();
 			}
 		} catch (XmlPullParserException e) {
-			throw new RuntimeException("XmlPullParseException");
+			// assume that this means the xml file is malformed, eg, not my error
+			return null;
+			//throw new RuntimeException("XmlPullParseException");
 		} catch (IOException e) {
 			throw new RuntimeException("IOException");
 		} finally { // release parser resources

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleepykoala.pmeals"
-    android:versionCode="9"
+    android:versionCode="10"
     android:versionName="@string/version" >
 
     <uses-sdk
@@ -63,6 +63,16 @@
             android:name="com.sleepykoala.pmeals.services.MenuDownloaderService"
             android:exported="false" >
         </service>
+        
+        <!--
+        <receiver android:name="MenuWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                	   android:resource="@xml/menuwidget_info" />
+        </receiver>"
+          -->
     </application>
 
 </manifest>

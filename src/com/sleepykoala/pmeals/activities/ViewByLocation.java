@@ -191,7 +191,10 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         // hard coded info type!! (nickname)
         aB.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.actionbar_viewbylocation_spinner,
         		R.id.action_viewbylocation_spinnertext, lP.getInfoArray(1)), this);
-        aB.setSelectedNavigationItem(LocationProvider.idToIndex(intent.getIntExtra(EXTRA_LOCATIONID, -1)));
+        int index = LocationProvider.idToIndex(intent.getIntExtra(EXTRA_LOCATIONID, -1));
+        displayedLoc = lP.getByIndex(index);
+        currentMeal = mTP.getCurrentMeal(displayedLoc.type);
+        aB.setSelectedNavigationItem(index);
     }
 
     // go to today
