@@ -249,6 +249,7 @@ public class MenuDownloader implements Runnable {
 	// returns null on download error
 	private HashMap<String, ArrayList<FoodItem>> parseMenu1(String htmlData) {
 		// stupid patch for malformed XML on 1.21.2013:
+		// TODO: think of something better...
 		htmlData = htmlData.replace("black", "\"black\"");
 		
 		HashMap<String, ArrayList<FoodItem>> meals = new HashMap<String, ArrayList<FoodItem>>();

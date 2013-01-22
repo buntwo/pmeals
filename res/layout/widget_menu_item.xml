@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/widget_itemname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+	    android:paddingBottom="1dp"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
+        />
+
+    <ImageView
+        android:id="@+id/widget_vegan_vegetarian"
+        android:layout_width="5dp"
+        android:layout_height="9dp"
+        android:paddingRight="1dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerInside"
+        />
+
+    <ImageView
+        android:id="@+id/widget_pork"
+        android:layout_width="5dp"
+        android:layout_height="9dp"
+        android:paddingRight="1dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerInside"
+        />
+    
+    <ImageView
+        android:id="@+id/widget_nuts"
+        android:layout_width="5dp"
+        android:layout_height="9dp"
+        android:paddingRight="1dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerInside"
+        />
+
+</LinearLayout>

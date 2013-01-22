@@ -56,6 +56,7 @@ public final class C {
 	public static final String EXTRA_MEALNAMES = "com.sleepykoala.pmeals.MEALNAMES";
 	public static final String EXTRA_DATE = "com.sleepykoala.pmeals.DATE";
 	public static final String EXTRA_ISREFRESH = "com.sleepykoala.pmeals.ISREFRESH";
+	public static final String EXTRA_TYPE = "com.sleepykoala.pmeals.TYPE";
 	// NOTE: this is for an arraylist of ID's
 	// the similarly named one above is for a single ID
 	public static final String EXTRA_LOCATIONIDS = "com.sleepykoala.pmeals.LOCATIONIDS";

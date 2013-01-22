@@ -212,7 +212,7 @@ public class MenuProvider extends ContentProvider {
 		} else {
 			cursor = queryBuilder.query(mDB.getReadableDatabase(), projection, selection,
 					selectionArgs, null, null, sortOrder);
-			//cursor.setNotificationUri(getContext().getContentResolver(), uri);
+			cursor.setNotificationUri(getContext().getContentResolver(), uri);
 		}
 
 		return cursor;

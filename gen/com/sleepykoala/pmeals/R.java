@@ -21,7 +21,7 @@ public final class R {
         public static final int efriendly=0x7f06000e;
         public static final int infobar_neutral_bg=0x7f060004;
         public static final int light_gray=0x7f060000;
-        public static final int menuitem=0x7f06000f;
+        public static final int menuitem=0x7f060010;
         public static final int menuitem_bg=0x7f060003;
         public static final int menuitem_selectedbg=0x7f060002;
         public static final int nuts=0x7f06000d;
@@ -29,11 +29,12 @@ public final class R {
         public static final int pageindicators=0x7f060009;
         public static final int pork=0x7f06000c;
         public static final int refresh_background=0x7f060008;
-        public static final int sectiontitle=0x7f060010;
+        public static final int sectiontitle=0x7f060011;
         public static final int selectedPrincetonOrange=0x7f060007;
         public static final int text_lightgray=0x7f060005;
         public static final int vegan=0x7f06000a;
         public static final int vegetarian=0x7f06000b;
+        public static final int widget_bg=0x7f06000f;
     }
     public static final class dimen {
         public static final int foodinfo_height=0x7f080000;
@@ -62,7 +63,7 @@ public final class R {
         public static final int vegetarian=0x7f020011;
     }
     public static final class id {
-        public static final int about=0x7f0b0029;
+        public static final int about=0x7f0b0031;
         public static final int action_viewbylocation_spinnertext=0x7f0b0007;
         public static final int app_info=0x7f0b0003;
         public static final int app_name=0x7f0b0000;
@@ -72,41 +73,49 @@ public final class R {
         public static final int firsttime_pork=0x7f0b0012;
         public static final int firsttime_vegan=0x7f0b0010;
         public static final int firsttime_veget=0x7f0b0011;
-        public static final int gotocurrentmeal=0x7f0b002a;
-        public static final int gototoday=0x7f0b0025;
+        public static final int gotocurrentmeal=0x7f0b0032;
+        public static final int gototoday=0x7f0b002d;
         public static final int hr1=0x7f0b0002;
         public static final int hr2=0x7f0b0004;
         public static final int infobar=0x7f0b000a;
         public static final int infobar_mealinfo0=0x7f0b000b;
         public static final int infobar_mealinfo1=0x7f0b000c;
         public static final int itemname=0x7f0b0016;
-        public static final int jumptodate=0x7f0b0028;
+        public static final int jumptodate=0x7f0b0030;
         public static final int leftbar=0x7f0b000f;
-        public static final int legend=0x7f0b0027;
+        public static final int legend=0x7f0b002f;
         public static final int listview_pager=0x7f0b000d;
         public static final int loading_text=0x7f0b0008;
         public static final int nuts=0x7f0b0019;
         public static final int pageindicators=0x7f0b000e;
         public static final int pork=0x7f0b0018;
-        public static final int refresh=0x7f0b002c;
+        public static final int refresh=0x7f0b0034;
         public static final int refreshicon=0x7f0b0014;
-        public static final int reorder=0x7f0b002b;
+        public static final int reorder=0x7f0b0033;
         public static final int reorder_container=0x7f0b0009;
-        public static final int reorder_name=0x7f0b001f;
-        public static final int reorder_selector=0x7f0b0020;
-        public static final int result_date=0x7f0b0024;
-        public static final int search=0x7f0b0026;
+        public static final int reorder_name=0x7f0b001c;
+        public static final int reorder_selector=0x7f0b001d;
+        public static final int result_date=0x7f0b0021;
+        public static final int search=0x7f0b002e;
         public static final int sectionextra=0x7f0b001b;
         public static final int sectiontitle=0x7f0b001a;
-        public static final int text1=0x7f0b0021;
-        public static final int text2=0x7f0b0022;
-        public static final int text3=0x7f0b0023;
+        public static final int text1=0x7f0b001e;
+        public static final int text2=0x7f0b001f;
+        public static final int text3=0x7f0b0020;
         public static final int title=0x7f0b0015;
         public static final int vegan_vegetarian=0x7f0b0017;
         public static final int version=0x7f0b0001;
-        public static final int widget_list=0x7f0b001e;
-        public static final int widget_next=0x7f0b001d;
-        public static final int widget_prev=0x7f0b001c;
+        public static final int widget_itemname=0x7f0b0028;
+        public static final int widget_list=0x7f0b0027;
+        public static final int widget_loading=0x7f0b0022;
+        public static final int widget_locname=0x7f0b0025;
+        public static final int widget_mealname=0x7f0b0023;
+        public static final int widget_next=0x7f0b0026;
+        public static final int widget_nuts=0x7f0b002b;
+        public static final int widget_pork=0x7f0b002a;
+        public static final int widget_prev=0x7f0b0024;
+        public static final int widget_vegan_vegetarian=0x7f0b0029;
+        public static final int widgetconfig_locname=0x7f0b002c;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -115,20 +124,25 @@ public final class R {
         public static final int activity_reorderlocations=0x7f030003;
         public static final int activity_viewbylocation=0x7f030004;
         public static final int activity_viewbymeal=0x7f030005;
-        public static final int firsttime=0x7f030006;
-        public static final int legend=0x7f030007;
-        public static final int listfragment_menu=0x7f030008;
-        public static final int menu_header=0x7f030009;
-        public static final int menu_item=0x7f03000a;
-        public static final int menu_loading=0x7f03000b;
-        public static final int menu_sectiontitle=0x7f03000c;
-        public static final int menu_sectiontitle_nonclickable=0x7f03000d;
-        public static final int menuwidget=0x7f03000e;
+        public static final int activity_widgetconfigurator=0x7f030006;
+        public static final int firsttime=0x7f030007;
+        public static final int legend=0x7f030008;
+        public static final int listfragment_menu=0x7f030009;
+        public static final int menu_header=0x7f03000a;
+        public static final int menu_item=0x7f03000b;
+        public static final int menu_loading=0x7f03000c;
+        public static final int menu_sectiontitle=0x7f03000d;
+        public static final int menu_sectiontitle_nonclickable=0x7f03000e;
         public static final int pageindicator=0x7f03000f;
         public static final int refresh_icon=0x7f030010;
         public static final int reorder_name=0x7f030011;
         public static final int searchresult=0x7f030012;
         public static final int searchresult_date=0x7f030013;
+        public static final int widget_loading=0x7f030014;
+        public static final int widget_meal_name=0x7f030015;
+        public static final int widget_menu=0x7f030016;
+        public static final int widget_menu_item=0x7f030017;
+        public static final int widgetconfig_row=0x7f030018;
     }
     public static final class menu {
         public static final int activity_meal_searcher=0x7f0a0000;
@@ -144,17 +158,18 @@ public final class R {
         public static final int credits_authors=0x7f090009;
         public static final int credits_categories=0x7f090008;
         public static final int done=0x7f09000b;
-        public static final int firsttime1=0x7f090013;
-        public static final int firsttime2=0x7f090014;
-        public static final int firsttime3=0x7f090015;
-        public static final int firsttime4=0x7f090016;
-        public static final int firsttime5=0x7f09001b;
-        public static final int legend1=0x7f090017;
-        public static final int legend2=0x7f090018;
-        public static final int legend3=0x7f090019;
-        public static final int legend4=0x7f09001a;
+        public static final int firsttime1=0x7f090015;
+        public static final int firsttime2=0x7f090016;
+        public static final int firsttime3=0x7f090017;
+        public static final int firsttime4=0x7f090018;
+        public static final int firsttime5=0x7f09001d;
+        public static final int legend1=0x7f090019;
+        public static final int legend2=0x7f09001a;
+        public static final int legend3=0x7f09001b;
+        public static final int legend4=0x7f09001c;
+        public static final int loading=0x7f090013;
         public static final int menu_settings=0x7f090002;
-        public static final int pref_reorderlocs=0x7f090012;
+        public static final int pref_reorderlocs=0x7f090014;
         public static final int reorder_instr=0x7f09000a;
         public static final int reset=0x7f09000c;
         public static final int search=0x7f09000e;
@@ -165,6 +180,7 @@ public final class R {
         public static final int title_activity_viewbylocation=0x7f090004;
         public static final int title_activity_viewbymeal=0x7f090003;
         public static final int version=0x7f090001;
+        public static final int widgetconfig_instr=0x7f090012;
     }
     public static final class style {
         public static final int AppTheme=0x7f070001;

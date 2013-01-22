@@ -38,3 +38,6 @@ v9: stupid crash, didn't update default locorder commit
 
 1.0.7:
 Update meal time bar on resume
+
+1.0.7.1:
+Applied stupid patch to fix malformed XML
