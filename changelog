@@ -41,3 +41,9 @@ Update meal time bar on resume
 
 1.0.7.1:
 Applied stupid patch to fix malformed XML
+
+1.0.8:
+Fixed: VBL shows correct day
+
+1.1.0:
+Added widget support (only 1 widget)

@@ -192,9 +192,14 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         aB.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.actionbar_viewbylocation_spinner,
         		R.id.action_viewbylocation_spinnertext, lP.getInfoArray(1)), this);
         int index = LocationProvider.idToIndex(intent.getIntExtra(EXTRA_LOCATIONID, -1));
+        // setup displayedLoc and mPager
         displayedLoc = lP.getByIndex(index);
         currentMeal = mTP.getCurrentMeal(displayedLoc.type);
         aB.setSelectedNavigationItem(index);
+		mAdapter = new LocationViewPagerAdapter(displayedLoc, currentCenter, getSupportFragmentManager());
+		mPager.setAdapter(mAdapter);
+		mPager.setOnPageChangeListener(new TitleChangeListener());
+        mPager.setCurrentItem(VBL_NUMLISTS_BEFORE);
     }
 
     // go to today

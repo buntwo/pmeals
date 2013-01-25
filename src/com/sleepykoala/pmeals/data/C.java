@@ -93,6 +93,8 @@ public final class C {
     public static final String ACTION_REFRESHDONE = "com.sleepykoala.pmeals.action.REFRESHDONE";
     public static final String ACTION_REFRESHFAILED = "com.sleepykoala.pmeals.action.REFRESHFAILED";
     public static final String ACTION_DATEFORMATTOGGLED = "com.sleepykoala.pmeals.action.DATEFORMATTOGGLED";
+    public static final String ACTION_WIDGET_FORWARD = "com.sleepykoala.pmeals.action.WIDGETFORWARD";
+    public static final String ACTION_WIDGET_BACKWARD = "com.sleepykoala.pmeals.action.WIDGETBACKWARD";
     // request codes
     public static final int REQCODE_REORDER = 1;
     
@@ -105,7 +107,7 @@ public final class C {
     public static final String PREF_FIRSTTIME = "firsttime";
     public static final String PREF_LASTVER = "lastversion";
     public static final String PREF_LOCATIONORDER = "locorder";
-    // deprecated keys, needed for upgrade code
-    public static final String PREF_NUMLOCS = "numlocs";
-    public static final String PREF_LOCBASE = "loc_";
+    public static final String PREF_WIDGET_LOCID = "widget_locid";
+    public static final String PREF_WIDGET_LOCNAME = "widget_locname";
+    public static final String PREF_WIDGET_TYPE = "widget_type";
 }

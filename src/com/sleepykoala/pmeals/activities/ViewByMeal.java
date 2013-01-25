@@ -16,8 +16,6 @@ import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
 import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
-import static com.sleepykoala.pmeals.data.C.PREF_LOCBASE;
-import static com.sleepykoala.pmeals.data.C.PREF_NUMLOCS;
 import static com.sleepykoala.pmeals.data.C.REQCODE_REORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
@@ -219,20 +217,8 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			ArrayList<String> locIDsRaw = new ArrayList<String>(locs);
 			Collections.sort(locIDsRaw);
 			locIDsToShow = new ArrayList<Integer>();
-			try { // TODO: remove this block when everyone is >= ver 9
-				for (String s : locIDsRaw)
-					locIDsToShow.add(Integer.valueOf(s.substring(2)));
-			} catch (RuntimeException e) {
-				locIDsToShow = lP.getIDsForType(0, 1, 2);
-				locs = new HashSet<String>(locIDsToShow.size());
-				int numLocs = locIDsToShow.size();
-				for (int i = 0; i < numLocs; ++i) {
-					String locNum = String.format("%02d%d", i, locIDsToShow.get(i));
-					locs.add(String.valueOf(locNum));
-				}
-				editor.putStringSet(PREF_LOCATIONORDER, locs);
-				editor.commit();
-			}
+			for (String s : locIDsRaw)
+				locIDsToShow.add(Integer.valueOf(s.substring(2)));
 		} else { // new pref
 			locIDsToShow = lP.getIDsForType(0, 1, 2);
 			locs = new HashSet<String>(locIDsToShow.size());
@@ -283,15 +269,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		
         	editor.putBoolean(PREF_FIRSTTIME, false);
         	editor.putInt(PREF_LASTVER, currentVer);
-        	editor.commit();
-        }
-        // versions <= 7 used multiple keys to store loc order, delete these
-        // TODO: remove when everyone is >= 9
-        if (prefs.getInt(PREF_LASTVER, 0) <= 7) {
-        	int numLocs = prefs.getInt(PREF_NUMLOCS, -1);
-        	for (int i = 0; i < numLocs; ++i)
-        		editor.remove(PREF_LOCBASE + i);
-        	editor.remove(PREF_NUMLOCS);
         	editor.commit();
         }
     }

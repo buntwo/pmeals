@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleepykoala.pmeals"
-    android:versionCode="11"
+    android:versionCode="12"
     android:versionName="@string/version" >
 
     <uses-sdk
@@ -71,6 +71,10 @@
         <service
             android:name=".services.MenuWidgetAdapterService"
             android:permission="android.permission.BIND_REMOTEVIEWS" >
+        </service>
+        <service
+            android:name=".services.WidgetSwitcherService"
+		    android:exported="false" >
         </service>
         
         <receiver android:name=".receivers.MenuWidgetProvider">

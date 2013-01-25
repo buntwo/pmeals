@@ -43,7 +43,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
@@ -53,7 +52,7 @@ import com.sleepykoala.pmeals.data.FoodItem;
 // downloads and writes to the content resolver
 public class MenuDownloader implements Runnable {
 	
-	private static final String TAG = "MenuDownloader";
+	//private static final String TAG = "MenuDownloader";
 
 	// base URI's
 	private static final String MENU1_BASEURI = "http://facilities.princeton.edu/dining/_Foodpro/menu.asp?";
@@ -248,10 +247,6 @@ public class MenuDownloader implements Runnable {
 	// DatedMealTime (name pulled from data, date given in constructor) -> items, as ArrayList<MenuItem>
 	// returns null on download error
 	private HashMap<String, ArrayList<FoodItem>> parseMenu1(String htmlData) {
-		// stupid patch for malformed XML on 1.21.2013:
-		// TODO: think of something better...
-		htmlData = htmlData.replace("black", "\"black\"");
-		
 		HashMap<String, ArrayList<FoodItem>> meals = new HashMap<String, ArrayList<FoodItem>>();
 
 		XmlPullParser p = null;

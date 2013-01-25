@@ -163,6 +163,7 @@ public final class R {
         public static final int firsttime3=0x7f090017;
         public static final int firsttime4=0x7f090018;
         public static final int firsttime5=0x7f09001d;
+        public static final int firsttime6=0x7f09001e;
         public static final int legend1=0x7f090019;
         public static final int legend2=0x7f09001a;
         public static final int legend3=0x7f09001b;

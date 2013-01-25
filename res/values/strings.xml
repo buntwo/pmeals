@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">PMeals</string>
-    <string name="version">1.0.7.1</string>
+    <string name="version">1.1.0</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_viewbymeal">PMeals</string>
     <string name="title_activity_viewbylocation">PMeals</string>
@@ -33,5 +33,6 @@
     <string name="legend3">Contains pork</string>
     <string name="legend4">Contains nuts</string>
     <string name="firsttime5">&#8226; Tap on the date to toggle between simple and detailed dates.</string>
+    <string name="firsttime6">&#8226; Widget support! Add to your desktop, shows the current meal for the dining hall of your choice.</string>
 
 </resources>

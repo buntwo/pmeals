@@ -8,20 +8,23 @@ import android.widget.RemoteViewsService;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
-import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 
 public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFactory {
 	
+	//private static final String TAG = "MenuWidgetListFactory";
+	
 	private final int locID;
-	private final DatedMealTime dmt;
+	private final String mealName;
+	private final String date;
 	private ContentResolver cr;
 	private Cursor menu;
 	private final String packageName;
 
-	public MenuWidgetListFactory(Context context, int locID, DatedMealTime dmt) {
+	public MenuWidgetListFactory(Context context, int locID, String mealName, String date) {
 		this.locID = locID;
-		this.dmt = dmt;
+		this.date = date;
+		this.mealName = mealName;
 		cr = context.getContentResolver();
 		packageName = context.getPackageName();
 	}
@@ -43,7 +46,7 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 		
 		if (position == 0) { // meal name
 			views = new RemoteViews(packageName, R.layout.widget_meal_name);
-			views.setTextViewText(R.id.widget_mealname, dmt.mealName);
+			views.setTextViewText(R.id.widget_mealname, mealName);
 		} else { // menu item
 			views = new RemoteViews(packageName, R.layout.widget_menu_item);
 			menu.moveToPosition(position - 1);
@@ -70,7 +73,7 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 	}
 
 	public int getViewTypeCount() {
-		return 1;
+		return 2;
 	}
 
 	public boolean hasStableIds() {
@@ -78,7 +81,6 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 	}
 
 	public void onCreate() {
-		getMenu();
 	}
 
 	private void getMenu() {
@@ -92,8 +94,8 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 		String select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
 				+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?))";
 		String[] selectArgs = new String[]{ String.valueOf(locID),
-				dmt.date.toString(),
-				dmt.mealName
+				date,
+				mealName
 		};
 		menu = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
 	}
@@ -103,7 +105,9 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 	}
 
 	public void onDestroy() {
-		menu.close();
+		try {
+			menu.close();
+		} catch (RuntimeException e) { }
 	}
 
 	//--------------------------------------------------CURSOR GETTERS------------------------------------

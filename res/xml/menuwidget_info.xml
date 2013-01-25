@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="180dp"
     android:minHeight="110dp"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="100"
     android:initialLayout="@layout/widget_menu"
     android:resizeMode="vertical|horizontal"
     android:configure="com.sleepykoala.pmeals.activities.WidgetConfigurator"
