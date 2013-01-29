@@ -4,6 +4,8 @@ import android.text.format.DateFormat;
 import android.text.format.Time;
 
 public class Date extends Time {
+	
+	private static final String DATEFORMAT = "EEE, MMM d";
 
 	// new date that points to today
 	public Date() {
@@ -73,7 +75,23 @@ public class Date extends Time {
 	public String toString() {
 		return DateFormat.format("MM/dd/yyyy", toMillis(false)).toString();
 	}
-	
+
+	public String toStringPretty(boolean capitalize, boolean isAdverb) {
+		Date today = new Date();
+		String dateStr;
+		if (today.isTomorrow(this))
+			dateStr = capitalize ? "Tomorrow" : "tomorrow";
+		else if (today.equals(this))
+			dateStr = capitalize ? "Today" : "today";
+		else if (today.isYesterday(this))
+			dateStr = capitalize ? "Yesterday" : "yesterday";
+		else
+			dateStr = ((isAdverb) ? capitalize ? "On " : "on" : "" ) +
+				(String) DateFormat.format(DATEFORMAT, toMillis(true));
+		
+		return dateStr;
+	}
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -85,10 +103,10 @@ public class Date extends Time {
 				year ==  d.year &&
 				weekDay == d.weekDay;
 	}
-	
+
 	public int hashCode() {
 		int code = 17;
-		
+
 		code = code * 31 + month;
 		code = code * 31 + monthDay;
 		code = code * 31 + year;

@@ -558,6 +558,8 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		return super.onOptionsItemSelected(item);
     	}
     }
+
+    //---------------------------------------------------------------------------------------------
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

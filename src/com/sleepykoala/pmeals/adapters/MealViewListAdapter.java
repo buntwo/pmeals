@@ -20,7 +20,6 @@ import static com.sleepykoala.pmeals.data.C.STRING_LOADINGDATA;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.text.format.DateFormat;
 import android.util.SparseArray;
@@ -63,10 +62,10 @@ public class MealViewListAdapter extends BaseAdapter {
 	private static final String DATEFORMAT = "EEE, MMM d, yyyy";
 	
 	// CONSTRUCTOR
-	public MealViewListAdapter(Context context, SparseArray<DatedMealTime> dmtMap, ArrayList<Location> locs) {
+	public MealViewListAdapter(Activity act, SparseArray<DatedMealTime> dmtMap, ArrayList<Location> locs) {
 		mealsToShow = dmtMap;
 		locsToShow = locs;
-		mInflater = ((Activity) context).getLayoutInflater();
+		mInflater = act.getLayoutInflater();
 		
 		// HARD CODED MAIN TYPE
 		mainType = 0;
@@ -133,40 +132,64 @@ public class MealViewListAdapter extends BaseAdapter {
 		}
 		return count;
 	}
-
-	public Object getItem(int pos) {
+	
+	// given position, return the location it belongs to
+	public Location getLocation(int pos) {
 		int counter = 1;
-		int itemType = 0;
 		Location loc = null;
 		Cursor menu = null;
 		for (int locPos = 0; locPos < locsToShow.size(); ++locPos) {
 			loc = locsToShow.get(locPos);
 			menu = data.get(locPos);
-			if (pos == counter) {
-				itemType = 0;
+			if (pos == counter)
 				break;
-			}
 			boolean loaded = menu != null && menu.getCount()!= 0;
 			counter += (loaded) ? menu.getCount() : 1;
-			if (pos <= counter) {
-				itemType = (loaded) ? 2 : 1;
+			if (pos <= counter)
 				break;
-			}
 			++counter;
 		}
-		// if type is menu item (2), counter now points to last menu item's position in that location
 		
-		if (itemType == 0)
-			return loc;
-		else if (itemType == 2) {
-			menu.moveToPosition(menu.getCount() - counter + pos - 1);
-			return inflateItem(menu);
+		return loc;
+	}
+
+	public Object getItem(int pos) {
+		if (pos == 0)
+			;
+		else {
+			int counter = 1;
+			int itemType = 0;
+			Location loc = null;
+			Cursor menu = null;
+			for (int locPos = 0; locPos < locsToShow.size(); ++locPos) {
+				loc = locsToShow.get(locPos);
+				menu = data.get(locPos);
+				if (pos == counter) {
+					itemType = 0;
+					break;
+				}
+				boolean loaded = menu != null && menu.getCount()!= 0;
+				counter += (loaded) ? menu.getCount() : 1;
+				if (pos <= counter) {
+					itemType = (loaded) ? 2 : 1;
+					break;
+				}
+				++counter;
+			}
+			// if type is menu item (2), counter now points to last menu item's position in that location
+
+			if (itemType == 0)
+				return loc;
+			else if (itemType == 2) {
+				menu.moveToPosition(menu.getCount() - counter + pos - 1);
+				return inflateItem(menu);
+			}
 		}
 		
 		return null;
 	}
 
-	// -1 = title
+	// -1 = date
 	// -2 = menu item
 	// -3 = loading
 	// -4 = unknown
@@ -190,6 +213,7 @@ public class MealViewListAdapter extends BaseAdapter {
 		return -4;
 	}
 	
+	@Override
 	public int getViewTypeCount() {
 		return 4;
 	}
@@ -198,6 +222,7 @@ public class MealViewListAdapter extends BaseAdapter {
 	// 1 - loading
 	// 2 - menu item
 	// 3 - meal info
+	@Override
 	public int getItemViewType(int pos) {
 		if (pos == 0) {
 			return 3;
@@ -416,16 +441,15 @@ public class MealViewListAdapter extends BaseAdapter {
 					text.append(mainMeal.mealName);
 				} else {
 					if (today.equals(mainMeal.date)) {
-						text.append("Today's ");
+						text.append("Today");
 					} else if (today.isTomorrow(mainMeal.date)) {
-						text.append("Tomorrow's ");
+						text.append("Tomorrow");
 					} else if (today.isYesterday(mainMeal.date)) {
-						text.append("Yesterday's ");
+						text.append("Yesterday");
 					} else {
 						text.append(DateFormat.format("EEEE", mainMeal.date.toMillis(true)));
-						text.append("'s ");
 					}
-					text.append(mainMeal.mealName.toLowerCase());
+					text.append("'s ").append(mainMeal.mealName.toLowerCase());
 				}
 			} else {
 				text.append(mainMeal.mealName);

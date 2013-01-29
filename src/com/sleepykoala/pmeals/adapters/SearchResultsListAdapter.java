@@ -42,22 +42,12 @@ public class SearchResultsListAdapter extends BaseAdapter {
 			data.add(new String[]{"1", "No Results", "", ""});
 			return;	
 		}
-		Date today = new Date();
 		c.moveToFirst();
 		Date curDate = new Date("01/01/1900");
 		while (!c.isAfterLast()) {
 			Date date = new Date(getDate(c));
 			if (!date.equals(curDate)) {
-				String dateStr;
-				if (today.isTomorrow(date))
-					dateStr = "Tomorrow";
-				else if (today.equals(date))
-					dateStr = "Today";
-				else if (today.isYesterday(date))
-					dateStr = "Yesterday";
-				else
-					dateStr = (String) DateFormat.format(DATEFORMAT, date.toMillis(true));
-				data.add(new String[]{"0", dateStr});
+				data.add(new String[]{"0", date.toStringPretty(true, false)});
 				curDate = date;
 			}
 			data.add(new String[]{"1", getItemName(c), getMealName(c),

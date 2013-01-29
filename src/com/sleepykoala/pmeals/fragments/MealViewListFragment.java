@@ -14,7 +14,10 @@ import static com.sleepykoala.pmeals.data.C.STRING_CLOSED;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,6 +29,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.SparseArray;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,16 +39,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.activities.MealSearcher;
 import com.sleepykoala.pmeals.activities.ViewByLocation;
 import com.sleepykoala.pmeals.adapters.MealViewListAdapter;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
+import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
+import com.sleepykoala.pmeals.data.FoodItem;
 import com.sleepykoala.pmeals.data.Location;
 import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
@@ -107,6 +116,7 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 	private static HashMap<String, Boolean> failedToastDisplayed = new HashMap<String, Boolean>();
 	private ArrayList<Bundle> loaderArgs;
 	private String mDate;
+	private String mealName;
 	private ArrayList<Location> mLocsToShow;
 	private SparseArray<DatedMealTime> mMealArr;
 	
@@ -134,7 +144,7 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 		Bundle args = getArguments();
 		ArrayList<Integer> locIDs = args.getIntegerArrayList(EXTRA_LOCATIONIDS);
 		mDate = args.getString(EXTRA_DATE);
-		String mealName = args.getString(EXTRA_MEALNAME);
+		mealName = args.getString(EXTRA_MEALNAME);
 		
 		// build locsToShow
 		mLocsToShow = new ArrayList<Location>();
@@ -193,6 +203,9 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
+		// register listview for context menu
+		registerForContextMenu(getListView());
+		
 		// load cursors
 		LoaderManager lM = getLoaderManager();
 		for (int i = 0; i < loaderArgs.size(); ++i)
@@ -236,6 +249,8 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 		LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bCastReceiver);
 	}
 
+	//-------------------------------------------------OPTIONS MENU STUFF-----------------------------------------
+	
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_menu, menu);
@@ -261,6 +276,54 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);
+    	}
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
+    	super.onCreateContextMenu(menu, v, info);
+    	if (((AdapterContextMenuInfo) info).id == -2) {
+    		MenuInflater inflater = getActivity().getMenuInflater();
+    		inflater.inflate(R.menu.menuitem_context, menu);
+    	}
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+    	String query, itemName, locName;
+    	switch (item.getItemId()) {
+    	case R.id.share:
+    		locName = ((MealViewListAdapter) getListAdapter()).getLocation(info.position).nickname;
+    		itemName = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
+    		Intent share = new Intent(Intent.ACTION_SEND);
+    		share.setType("text/plain");
+    		share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+    		share.putExtra(Intent.EXTRA_SUBJECT, "Entree at " + locName);
+    		StringBuilder body = new StringBuilder();
+    		Date dateShown = new Date(mDate);
+    		body.append(locName).append(" h").append(dateShown.after(new Date()) ? "as" : "ad" )
+    			.append(" ").append(itemName).append(" for ") .append(mealName.toLowerCase())
+    			.append(" ").append((new Date(mDate)).toStringPretty(false, true))
+	    		.append("!");
+    		share.putExtra(Intent.EXTRA_TEXT, body.toString());
+    		startActivity(Intent.createChooser(share, "Share this entree..."));
+    		return true;
+    	case R.id.copy:
+    		ClipboardManager cbm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    		itemName = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
+    		cbm.setPrimaryClip(ClipData.newPlainText("pmeals item", itemName));
+    		Toast.makeText(getActivity(), "Copied: " +itemName, Toast.LENGTH_SHORT).show();
+    		return true;
+    	case R.id.search:
+    		query = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
+    		Intent searchIntent = new Intent(getActivity(), MealSearcher.class);
+    		searchIntent.setAction(Intent.ACTION_SEARCH);
+    		searchIntent.putExtra(SearchManager.QUERY, query);
+    		startActivity(searchIntent);
+    		return true;
+    	default:
+    		return super.onContextItemSelected(item);
     	}
     }
     

@@ -13,7 +13,6 @@ import static com.sleepykoala.pmeals.data.C.STRING_LOADINGDATA;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.text.format.DateFormat;
 import android.view.Gravity;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
+import com.sleepykoala.pmeals.data.FoodItem;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 
@@ -46,9 +46,9 @@ public class LocationViewListAdapter extends BaseAdapter {
 	private static boolean isDetailedDate = false;
 	private static final String DATEFORMAT = "EEEE, MMM d, yyyy";
 	
-	public LocationViewListAdapter(Context context, ArrayList<DatedMealTime> daysMeals, Date d) {
+	public LocationViewListAdapter(Activity act, ArrayList<DatedMealTime> daysMeals, Date d) {
 		mealsToShow = daysMeals;
-		mInflater = ((Activity) context).getLayoutInflater();
+		mInflater = act.getLayoutInflater();
 		
 		// init data and ID array
 		data = new ArrayList<Cursor>();
@@ -110,22 +110,91 @@ public class LocationViewListAdapter extends BaseAdapter {
 			return count;
 		}
 	}
-
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	// given position, return the meal it belongs to
+	public DatedMealTime getMeal(int pos) {
+		DatedMealTime meal = null;
+		int counter = 1;
+		for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
+			meal = mealsToShow.get(mealPos);
+			if (pos == counter)
+				break;
+			Cursor menu = data.get(mealPos);
+			boolean loaded = menu != null && menu.getCount() != 0;
+			counter += (loaded) ? menu.getCount() : 1;
+			if (pos <= counter)
+				break;
+			++counter;
+		}
+		
+		return meal;
 	}
 
+	public Object getItem(int position) {
+		if (position == 0)
+			;
+		else {
+			DatedMealTime meal = null;
+			int counter = 1;
+			int itemType = 2;
+			Cursor menu = null;
+			for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
+				meal = mealsToShow.get(mealPos);
+				if (position == counter) {
+					itemType = 0;
+					break;
+				}
+				menu = data.get(mealPos);
+				boolean loaded = menu != null && menu.getCount() != 0;
+				counter += (loaded) ? menu.getCount() : 1;
+				if (position <= counter) {
+					itemType = (loaded) ? 2 : 1;
+					break;
+				}
+				++counter;
+			}
+
+			if (itemType == 0)
+				return meal;
+			else if (itemType == 2) {
+				menu.moveToPosition(menu.getCount() - counter + position - 1);
+				return inflateItem(menu);
+			}
+		}
+		
+		return null;
+	}
+	
+	// -1 = date
+	// -2 = menu item
+	// -3 = loading
+	// -4 = meal name
+	// -5 = unknown (shouldn't ever return this...)
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (position == 0)
+			return -1;
+		else {
+			int counter = 1;
+			for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
+				if (position == counter)
+					return -4;
+				Cursor menu = data.get(mealPos);
+				boolean loaded = menu != null && menu.getCount() != 0;
+				counter += (loaded) ? menu.getCount() : 1;
+				if (position <= counter)
+					return (loaded) ? -2 : -3;
+				++counter;
+			}
+		}
+		
+		return -5;
 	}
 
 	public int getViewTypeCount() {
 		return 4;
 	}
 
-	// 0 - location name
+	// 0 - meal name
 	// 1 - loading
 	// 2 - menu item
 	// 3 - date
@@ -280,6 +349,20 @@ public class LocationViewListAdapter extends BaseAdapter {
 		}
 		
 		return convertView;
+	}
+	
+	// get a FoodItem from cursor's current position
+	private FoodItem inflateItem(Cursor c) {
+		boolean[] params = { c.getInt(c.getColumnIndex(PMealsDatabase.ITEMVEGAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMVEGETARIAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMPORK)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMNUTS)) == 1 ? true : false,
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMEFRIENDLY)) == 1 ? true : false
+		};
+		return new FoodItem(c.getString(c.getColumnIndex(PMealsDatabase.ITEMNAME)),
+				c.getInt(c.getColumnIndex(PMealsDatabase.ITEMERROR)) == 1 ? true : false,
+				params
+				);
 	}
 
 	// get the name of the food item the cursor is pointing at
