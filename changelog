@@ -47,3 +47,7 @@ Fixed: VBL shows correct day
 
 1.1.0:
 Added widget support (only 1 widget)
+
+1.1.1:
+Long press context menu (share, copy, search)
+Fixed widget buttons....

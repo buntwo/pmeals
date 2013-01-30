@@ -6,6 +6,8 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -15,6 +17,7 @@ import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.adapters.SearchResultsListAdapter;
@@ -25,6 +28,7 @@ import com.sleepykoala.pmeals.data.PMealsDatabase;
 public class MealSearcher extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	
 	private SearchResultsListAdapter mAdapter;
+	private String query;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 		// Get the intent, verify the action and get the query
 		Intent intent = getIntent();
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
+			query = intent.getStringExtra(SearchManager.QUERY);
 			// set title
 			getActionBar().setTitle("Search results: " + query);
 			// save query into recent searches
@@ -60,7 +64,15 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_meal_searcher, menu);
 	    
-		return true;
+		// Get the SearchView and set the searchable configuration
+	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(
+	    		new ComponentName(this, MealSearcher.class)
+	    		));
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+	    
+        return true;
 	}
 	
 	@Override

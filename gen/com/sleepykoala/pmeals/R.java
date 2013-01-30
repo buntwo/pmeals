@@ -75,7 +75,7 @@ public final class R {
         public static final int firsttime_vegan=0x7f0b0010;
         public static final int firsttime_veget=0x7f0b0011;
         public static final int gotocurrentmeal=0x7f0b0032;
-        public static final int gototoday=0x7f0b002d;
+        public static final int gototoday=0x7f0b002e;
         public static final int hr1=0x7f0b0002;
         public static final int hr2=0x7f0b0004;
         public static final int infobar=0x7f0b000a;
@@ -97,7 +97,7 @@ public final class R {
         public static final int reorder_name=0x7f0b001c;
         public static final int reorder_selector=0x7f0b001d;
         public static final int result_date=0x7f0b0021;
-        public static final int search=0x7f0b002e;
+        public static final int search=0x7f0b002d;
         public static final int sectionextra=0x7f0b001b;
         public static final int sectiontitle=0x7f0b001a;
         public static final int share=0x7f0b0035;

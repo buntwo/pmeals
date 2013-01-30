@@ -14,13 +14,13 @@
         android:layout_weight="1"
 	    android:paddingBottom="1dp"
         android:textColor="@android:color/black"
-        android:textSize="10sp"
+        android:textSize="12sp"
         />
 
     <ImageView
         android:id="@+id/widget_vegan_vegetarian"
         android:layout_width="5dp"
-        android:layout_height="9dp"
+        android:layout_height="10dp"
         android:paddingRight="1dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerInside"
@@ -29,7 +29,7 @@
     <ImageView
         android:id="@+id/widget_pork"
         android:layout_width="5dp"
-        android:layout_height="9dp"
+        android:layout_height="10dp"
         android:paddingRight="1dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerInside"
@@ -38,7 +38,7 @@
     <ImageView
         android:id="@+id/widget_nuts"
         android:layout_width="5dp"
-        android:layout_height="9dp"
+        android:layout_height="10dp"
         android:paddingRight="1dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerInside"

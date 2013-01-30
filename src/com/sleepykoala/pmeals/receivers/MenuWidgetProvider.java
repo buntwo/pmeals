@@ -25,6 +25,7 @@ import android.text.format.Time;
 import android.widget.RemoteViews;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.activities.ViewByLocation;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
@@ -54,36 +55,39 @@ public class MenuWidgetProvider extends AppWidgetProvider {
 		Intent update = new Intent(context, MenuWidgetProvider.class);
 		update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-		PendingIntent pIUpdate = PendingIntent.getBroadcast(context, 0, update, 0);
+		PendingIntent pIUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).
 			set(AlarmManager.RTC, nextTime.toMillis(false), pIUpdate);
+		
+		int locId = prefs.getInt(PREF_WIDGET_LOCID, -1);
 		
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_menu);
 		// meal name
 		views.setTextViewText(R.id.widget_locname, prefs.getString(PREF_WIDGET_LOCNAME, ""));
-		Intent clickUpdate = new Intent(context, MenuWidgetProvider.class);
-		clickUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-		PendingIntent pIClick = PendingIntent.getBroadcast(context, 0, clickUpdate, 0);
+		Intent locNameClick = new Intent(context, ViewByLocation.class);
+		locNameClick.setAction(Intent.ACTION_MAIN);
+		locNameClick.putExtra(EXTRA_LOCATIONID, locId);
+		locNameClick.putExtra(EXTRA_DATE, dmt.date.toString());
+		PendingIntent pIClick = PendingIntent.getActivity(context, 0, locNameClick, PendingIntent.FLAG_CANCEL_CURRENT);
 		views.setOnClickPendingIntent(R.id.widget_locname, pIClick);
 		
 		// switcher buttons
 		Intent switcherF = new Intent(context, WidgetSwitcherService.class);
 		switcherF.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 		switcherF.setAction(ACTION_WIDGET_FORWARD);
-		PendingIntent pIF = PendingIntent.getService(context, 0, switcherF, 0);
+		PendingIntent pIF = PendingIntent.getService(context, 0, switcherF, PendingIntent.FLAG_CANCEL_CURRENT);
 		views.setOnClickPendingIntent(R.id.widget_next, pIF);
 		Intent switcherB = new Intent(context, WidgetSwitcherService.class);
 		switcherB.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 		switcherB.setAction(ACTION_WIDGET_BACKWARD);
-		PendingIntent pIB = PendingIntent.getService(context, 0, switcherB, 0);
+		PendingIntent pIB = PendingIntent.getService(context, 0, switcherB, PendingIntent.FLAG_CANCEL_CURRENT);
 		views.setOnClickPendingIntent(R.id.widget_prev, pIB);
 
 		// adapter
 		Intent adapter = new Intent(context, MenuWidgetAdapterService.class);
 		// glom everything as intent data to differentiate it from previous
 		// intents (more extras does not differentiate, causing it to not update!)
-		int locId = prefs.getInt(PREF_WIDGET_LOCID, -1);
-		adapter.setData(Uri.fromParts("content", dmt.mealName + locId + dmt.date, null));
+		adapter.setData(Uri.fromParts("content", String.format("%s.%s.%s", dmt.mealName, locId, dmt.date), null));
 		adapter.putExtra(EXTRA_LOCATIONID, locId);
 		adapter.putExtra(EXTRA_MEALNAME, dmt.mealName);
 		adapter.putExtra(EXTRA_DATE, dmt.date.toString());
