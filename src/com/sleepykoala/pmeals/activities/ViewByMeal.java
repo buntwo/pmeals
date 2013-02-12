@@ -4,8 +4,7 @@ import static com.sleepykoala.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.sleepykoala.pmeals.data.C.ALPHA_DISABLED;
 import static com.sleepykoala.pmeals.data.C.ALPHA_ENABLED;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR;
-import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
-import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
+import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 import static com.sleepykoala.pmeals.data.C.MEAL_PASSED_COLOR;
 import static com.sleepykoala.pmeals.data.C.MINUTES_END_ALERT;
@@ -15,7 +14,6 @@ import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
-import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.REQCODE_REORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
@@ -23,9 +21,6 @@ import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
@@ -62,10 +57,9 @@ import com.sleepykoala.pmeals.adapters.MealViewPagerAdapter;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
-import com.sleepykoala.pmeals.data.LocationProvider;
-import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
+import com.sleepykoala.pmeals.data.PreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
 import com.sleepykoala.pmeals.fragments.AboutFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
@@ -145,7 +139,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         setContentView(R.layout.activity_viewbymeal);
         
         // set 24 hour status
-        C.IS24HOURFORMAT = DateFormat.is24HourFormat(this);
+        IS24HOURFORMAT = DateFormat.is24HourFormat(this);
 
         // get meal time provider
 		try {
@@ -154,6 +148,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			throw new RuntimeException("Cannot find asset " + MEALTIMESXML + "!!");
 		}
 		mTP = MealTimeProviderFactory.newMealTimeProvider();
+		/*
         // get location provider
         try {
         	LocationProviderFactory.initialize(getAssets().open(LOCATIONSXML));
@@ -161,6 +156,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			throw new RuntimeException("Cannot find asset " + LOCATIONSXML + "!!");
 		}
         LocationProvider lP = LocationProviderFactory.newLocationProvider();
+        */
         
         // cache animations
         dropdown0 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown0);
@@ -209,27 +205,8 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
 
 		// retrieve location order from settings, if exists
-		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
-		SharedPreferences.Editor editor = prefs.edit();
-		Set<String> locs = prefs.getStringSet(PREF_LOCATIONORDER, null);
-		if (locs != null) { // yay exists
-			// retrieve them in the correct order
-			ArrayList<String> locIDsRaw = new ArrayList<String>(locs);
-			Collections.sort(locIDsRaw);
-			locIDsToShow = new ArrayList<Integer>();
-			for (String s : locIDsRaw)
-				locIDsToShow.add(Integer.valueOf(s.substring(2)));
-		} else { // new pref
-			locIDsToShow = lP.getIDsForType(0, 1, 2);
-			locs = new HashSet<String>(locIDsToShow.size());
-			int numLocs = locIDsToShow.size();
-    		for (int i = 0; i < numLocs; ++i) {
-    			String locNum = String.format("%02d%d", i, locIDsToShow.get(i));
-    			locs.add(String.valueOf(locNum));
-    		}
-			editor.putStringSet(PREF_LOCATIONORDER, locs);
-			editor.commit();
-		}
+		PreferenceManager.initialize(this);
+		locIDsToShow = PreferenceManager.getLocIds();
 		// setup pager adapter
 		// HARD CODED meal type!!
 		mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.getCurrentMeal(0), 0, getSupportFragmentManager());
@@ -263,10 +240,12 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		} catch (NameNotFoundException e) {
 			// better not get here lol
 		}
+		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
         if (prefs.getBoolean(PREF_FIRSTTIME, true) || (prefs.getInt(PREF_LASTVER, 0) < currentVer)) {
     		FirstTimeFragment ftf = new FirstTimeFragment();
     		ftf.show(getFragmentManager(), "firsttime");
     		
+    		SharedPreferences.Editor editor = prefs.edit();
         	editor.putBoolean(PREF_FIRSTTIME, false);
         	editor.putInt(PREF_LASTVER, currentVer);
         	editor.commit();
@@ -567,17 +546,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		if (resultCode == RESULT_CANCELED)
     			return;
     		// result was ok
-    		locIDsToShow = data.getIntegerArrayListExtra(EXTRA_LOCATIONIDS);
-    		Set<String> locs = new HashSet<String>(locIDsToShow.size());
-    		int numLocs = locIDsToShow.size();
-    		for (int i = 0; i < numLocs; ++i) {
-    			String locNum = String.format("%02d%d", i, locIDsToShow.get(i));
-    			locs.add(String.valueOf(locNum));
-    		}
-    		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
-    		SharedPreferences.Editor editor = prefs.edit();
-    		editor.putStringSet(PREF_LOCATIONORDER, locs);
-    		editor.commit();
+    		locIDsToShow = PreferenceManager.getLocIds();
     		// update viewpager
     		mAdapter.newLocs(locIDsToShow);
     		mPager.setAdapter(mAdapter);

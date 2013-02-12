@@ -6,6 +6,7 @@ import static com.sleepykoala.pmeals.data.C.ALPHA_ENABLED;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
+import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 import static com.sleepykoala.pmeals.data.C.MEAL_PASSED_COLOR;
@@ -18,6 +19,7 @@ import static com.sleepykoala.pmeals.data.C.VBL_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBL_NUMLISTS_BEFORE;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
@@ -59,6 +61,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
+import com.sleepykoala.pmeals.data.PreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
 import com.sleepykoala.pmeals.fragments.AboutFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
@@ -123,6 +126,9 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewbylocation);
+
+        // set 24 hour status
+        IS24HOURFORMAT = DateFormat.is24HourFormat(this);
 
         // get meal time provider
 		try {
@@ -189,8 +195,13 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         aB.setDisplayHomeAsUpEnabled(true);
         aB.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         // hard coded info type!! (nickname)
+        PreferenceManager.initialize(this);
+        ArrayList<Integer> locIds = PreferenceManager.getLocIds();
+        ArrayList<String> locNames = new ArrayList<String>(locIds.size());
+        for (Integer i : locIds)
+        	locNames.add(lP.getById(i).nickname);
         aB.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.actionbar_viewbylocation_spinner,
-        		R.id.action_viewbylocation_spinnertext, lP.getInfoArray(1)), this);
+        		R.id.action_viewbylocation_spinnertext, locNames), this);
         int index = LocationProvider.idToIndex(intent.getIntExtra(EXTRA_LOCATIONID, -1));
         // setup displayedLoc and mPager
         displayedLoc = lP.getByIndex(index);
