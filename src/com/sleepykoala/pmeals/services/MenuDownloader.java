@@ -57,6 +57,9 @@ public class MenuDownloader implements Runnable {
 	// base URI's
 	private static final String MENU1_BASEURI = "http://facilities.princeton.edu/dining/_Foodpro/menu.asp?";
 
+	// XML charset
+	private static final String CHARSET = "ISO-8859-1";
+	
 	/*
 	 *  Field names used for building the .asp request
 	 */
@@ -201,6 +204,7 @@ public class MenuDownloader implements Runnable {
 			return daysMenus;
 		// use HashMap because webpage could have the meals out of order...
 		// actually probably not...think about using ArrayList instead?? TODO
+		htmlData = cleanData(htmlData);
 		HashMap<String, ArrayList<FoodItem>> mealItems1 = parseMenu1(htmlData);
 		
 		if (mealItems1 == null)
@@ -224,6 +228,12 @@ public class MenuDownloader implements Runnable {
 		}
 
 		return daysMenus;
+	}
+	
+	// replace diacritical characters with non-accented ones
+	// and for some reason e' -> y' lol
+	private String cleanData(String s) {
+		return s.replace('ý', 'e');
 	}
 
 	// given location number, location name, date, constructs URI that has the day's menu items
@@ -354,7 +364,7 @@ public class MenuDownloader implements Runnable {
 			while ((charRead = in.read()) != -1)
 				content.write(charRead);
 
-			return new String(content.toByteArray());
+			return new String(content.toByteArray(), CHARSET);
 
 		} catch (IOException e) {
 			return null;
