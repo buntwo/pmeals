@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.sleepykoala.pmeals.data.PMealsDatabase;
 
 public class SearchResultsListAdapter extends BaseAdapter {
 	
-	private static final String DATEFORMAT = "EEE, MMM d, yyyy";
+	//private static final String DATEFORMAT = "EEE, MMM d, yyyy";
 	
 	private ArrayList<String[]> data;
 	private LayoutInflater mInflater;

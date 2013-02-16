@@ -252,11 +252,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         }
     }
     
-    // refresh button onClick method
-    public void refreshList() {
-    	mAdapter.refreshList(mPager.getCurrentItem());
-    }
-    
     // go to current meal
     public void gotoCurrentMeal() {
     	int currentMealIndex = mAdapter.findMealIndex(currentMeal);
@@ -548,8 +543,10 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		// result was ok
     		locIDsToShow = PreferenceManager.getLocIds();
     		// update viewpager
+    		int savePos = mPager.getCurrentItem();
     		mAdapter.newLocs(locIDsToShow);
     		mPager.setAdapter(mAdapter);
+    		mPager.setCurrentItem(savePos);
     	}
     }
 

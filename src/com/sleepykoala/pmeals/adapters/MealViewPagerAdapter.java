@@ -93,10 +93,6 @@ public class MealViewPagerAdapter extends FragmentPagerAdapter {
 		return meals.size();
 	}
 
-	public void refreshList(int pos) {
-		
-	}
-	
 	public void newLocs(ArrayList<Integer> locIDs) {
 		locIDsToShow = locIDs;
 		mPagerId += 100;

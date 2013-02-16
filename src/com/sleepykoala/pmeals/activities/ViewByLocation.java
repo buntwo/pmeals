@@ -173,6 +173,14 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         // load fadeout animation
         fadeoutAnim = AnimationUtils.loadAnimation(ViewByLocation.this, R.anim.pageindicator_fadeout);
 		
+        // cache food indicator drawables if not already cached by VBM
+        // (e.g., entry from widget)
+		ViewByMeal.vegan = res.getDrawable(R.drawable.vegan);
+		ViewByMeal.vegetarian = res.getDrawable(R.drawable.vegetarian);
+		ViewByMeal.pork = res.getDrawable(R.drawable.pork);
+		ViewByMeal.nuts = res.getDrawable(R.drawable.nuts);
+		ViewByMeal.outline = res.getDrawable(R.drawable.foodinfo_outline);
+		
 		// set location
 		Intent intent = getIntent();
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
