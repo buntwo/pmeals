@@ -18,7 +18,7 @@
         android:id="@+id/legend"
         android:title="Show legend"
         android:icon="@drawable/ic_help"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="never" />
     
     <item
         android:id="@+id/jumptodate"
