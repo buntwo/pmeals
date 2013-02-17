@@ -2,14 +2,22 @@
 <!--
      Location XML file
 Each location has a name, number, and type
+num is the number used to retrieve from server
 Type differentiates based on meal times
-type = 0, residential dining hall
-       1, CJL
-       2, Grad College
+Types with a * are locations that do not have meals (eg, Frist, Witherspoons, etc)
+type = 0: residential dining hall
+       1: CJL
+       2: Grad College
+     * 3: Frist Gallery
+     * 4: Witherspoon's
+     * 5: Cafe Vivian
+     * 6: Chancellor Green Cafe
+     * 7: Chemistry CaFe
+     * 8: Woodrow Wilson Cafe
 
 ** Entries should be in numeric order by type!! **
 ID is a nonnegative number identifying the location. Names and 
-nicknames may change, but not the ID
+nicknames may change, but *NOT* the ID
 -->
 
 <!-- type 0 -->
@@ -57,5 +65,53 @@ nicknames may change, but not the ID
         <num>04</num>
         <type>2</type>
         <id>5</id>
+    </location>
+<!-- type 3 -->
+    <location>
+        <name>Frist Gallery</name>
+        <nickname>Frist Gallery</nickname>
+        <num>15</num>
+        <type>3</type>
+        <id>6</id>
+    </location>
+<!-- type 4 -->
+    <location>
+        <name>Witherspoon's</name>
+        <nickname>Witherspoon's</nickname>
+        <num>16</num>
+        <type>4</type>
+        <id>7</id>
+    </location>
+<!-- type 5 -->
+    <location>
+        <name>Cafe Vivian</name>
+        <nickname>Cafe Viv</nickname>
+        <num>17</num>
+        <type>5</type>
+        <id>8</id>
+    </location>
+<!-- type 6 -->
+    <location>
+        <name>Chancellor Green Cafe</name>
+        <nickname>Chancellor Green</nickname>
+        <num>19</num>
+        <type>6</type>
+        <id>9</id>
+    </location>
+<!-- type 7 -->
+    <location>
+        <name>Chemistry CaFe</name>
+        <nickname>Chemistry CaFe</nickname>
+        <num>23</num>
+        <type>7</type>
+        <id>10</id>
+    </location>
+<!-- type 8 -->
+    <location>
+        <name>Woodrow Wilson Cafe</name>
+        <nickname>Woody Woo Cafe</nickname>
+        <num>07</num>
+        <type>8</type>
+        <id>11</id>
     </location>
 </locations>

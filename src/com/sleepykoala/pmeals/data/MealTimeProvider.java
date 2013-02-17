@@ -239,9 +239,13 @@ public class MealTimeProvider {
 		if (IS24HOURFORMAT)
 			return String.format("%d:%02d", time[0], time[1]);
 		else {
-			boolean inAM = time[0] < 12;
-			return String.format("%d:%02d%s", inAM ? time[0] : time[0]-12,
-					time[1], inAM ? "am" : "pm");
+			boolean inAM = (time[0] < 12);
+			int hour;
+			if (inAM)
+				hour = (time[0] == 0) ? 12 : time[0];
+			else
+				hour = (time[0] == 12) ? 12 : time[0] - 12;
+			return String.format("%d:%02d%s", hour, time[1], inAM ? "am" : "pm");
 		}
 	}
 	

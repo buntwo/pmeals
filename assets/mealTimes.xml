@@ -1,103 +1,497 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Meal times XML file
-type is same as in locations.xml
+Type is same as in locations.xml
+If there is no meal for a day, just put nothing between the tags
+Times have to be xx:xx, eg, 7 must be 07, and are in 24hr
+Meal names must match the ones on the XML feed
+Weekday names start with sunday = 0, ..., saturday = 6
 
 -->
 <mealTimes>
     <week>
         <type>0</type>
-        <weekDay>
-            <breakfast>
+        <day number="1">
+            <meal name="Breakfast">
                 <start>07:30</start>
                 <end>11:00</end>
-            </breakfast>
-            <lunch>
+            </meal>
+            <meal name="Lunch">
                 <start>11:30</start>
                 <end>14:00</end>
-            </lunch>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:00</start>
                 <end>20:00</end>
-            </dinner>
-        </weekDay>
-        <saturday>
-            <lunch>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>11:00</end>
+            </meal>
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>14:00</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>11:00</end>
+            </meal>
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>14:00</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>11:00</end>
+            </meal>
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>14:00</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>11:00</end>
+            </meal>
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>14:00</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="6">
+            <meal name="Lunch">
                 <start>10:00</start>
                 <end>14:00</end>
-            </lunch>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:00</start>
                 <end>20:00</end>
-            </dinner>
-        </saturday>
-        <sunday>
-            <lunch>
+            </meal>
+        </day>
+        <day number="0">
+            <meal name="Lunch">
                 <start>11:00</start>
                 <end>14:00</end>
-            </lunch>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:00</start>
                 <end>20:00</end>
-            </dinner>
-        </sunday>
+            </meal>
+        </day>
     </week>
     <week>
         <type>1</type>
-        <weekDay>
-            <breakfast>
+        <day number="1">
+            <meal name="Breakfast">
                 <start>08:00</start>
                 <end>09:00</end>
-            </breakfast>
-            <lunch>
+            </meal>
+            <meal name="Lunch">
                 <start>11:30</start>
                 <end>13:30</end>
-            </lunch>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:30</start>
                 <end>19:00</end>
-            </dinner>
-        </weekDay>
-        <saturday>
-            <lunch>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Breakfast">
+                <start>08:00</start>
+                <end>09:00</end>
+            </meal>
+            <meal name="Lunch">
                 <start>11:30</start>
                 <end>13:30</end>
-            </lunch>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:30</start>
                 <end>19:00</end>
-            </dinner>
-        </saturday>
-        <sunday>
-            <lunch>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Breakfast">
+                <start>08:00</start>
+                <end>09:00</end>
+            </meal>
+            <meal name="Lunch">
                 <start>11:30</start>
                 <end>13:30</end>
-            </lunch>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:30</start>
                 <end>19:00</end>
-            </dinner>
-        </sunday>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Breakfast">
+                <start>08:00</start>
+                <end>09:00</end>
+            </meal>
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>13:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:30</start>
+                <end>19:00</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Breakfast">
+                <start>08:00</start>
+                <end>09:00</end>
+            </meal>
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>13:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:30</start>
+                <end>19:00</end>
+            </meal>
+        </day>
+        <day number="6">
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>13:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:30</start>
+                <end>19:00</end>
+            </meal>
+        </day>
+        <day number="0">
+            <meal name="Lunch">
+                <start>11:30</start>
+                <end>13:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:30</start>
+                <end>19:00</end>
+            </meal>
+        </day>
     </week>
     <week>
         <type>2</type>
-        <weekDay>
-            <breakfast>
+        <day number="1">
+            <meal name="Breakfast">
                 <start>07:30</start>
                 <end>09:30</end>
-            </breakfast>
-            <dinner>
+            </meal>
+            <meal name="Dinner">
                 <start>17:00</start>
                 <end>20:00</end>
-            </dinner>
-        </weekDay>
-        <saturday>
-        </saturday>
-        <sunday>
-            <lunch>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>09:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>09:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>09:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Breakfast">
+                <start>07:30</start>
+                <end>09:30</end>
+            </meal>
+            <meal name="Dinner">
+                <start>17:00</start>
+                <end>20:00</end>
+            </meal>
+        </day>
+        <day number="6">
+        </day>
+        <day number="0">
+            <meal name="Lunch">
                 <start>11:00</start>
                 <end>14:00</end>
-            </lunch>
-        </sunday>
+            </meal>
+        </day>
+    </week>
+    <week>
+        <type>3</type>
+        <day number="1">
+            <meal name="In the Gallery...">
+                <start>07:00</start>
+                <end>22:00</end>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="In the Gallery...">
+                <start>07:00</start>
+                <end>22:00</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="In the Gallery...">
+                <start>07:00</start>
+                <end>22:00</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="In the Gallery...">
+                <start>07:00</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="In the Gallery...">
+                <start>07:00</start>
+                <end>19:00</end>
+            </meal>
+        </day>
+        <day number="6">
+            <meal name="In the Gallery...">
+                <start>07:30</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="0">
+        </day>
+    </week>
+    <week>
+        <type>4</type>
+        <day number="1">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>08:00</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>08:00</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>08:00</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>08:00</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>08:00</start>
+                <end>23:00</end>
+            </meal>
+        </day>
+        <day number="6">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>12:00</start>
+                <end>23:00</end>
+            </meal>
+        </day>
+        <day number="0">
+            <meal name="Witherspoon's Baked Goods &amp; Smoothies">
+                <start>12:00</start>
+                <end>23:00</end>
+            </meal>
+        </day>
+    </week>
+    <week>
+        <type>5</type>
+        <day number="1">
+            <meal name="Our Menu">
+                <start>11:30</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Our Menu">
+                <start>11:30</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Our Menu">
+                <start>11:30</start>
+                <end>23:59</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Our Menu">
+                <start>11:30</start>
+                <end>23:00</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Our Menu">
+                <start>11:30</start>
+                <end>23:00</end>
+            </meal>
+        </day>
+        <day number="6">
+        </day>
+        <day number="0">
+            <meal name="Our Menu">
+                <start>12:00</start>
+                <end>23:00</end>
+            </meal>
+        </day>
+    </week>
+    <week>
+        <type>6</type>
+        <day number="1">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>07:45</start>
+                <end>16:30</end>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>07:45</start>
+                <end>16:30</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>07:45</start>
+                <end>16:30</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>07:45</start>
+                <end>16:30</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>07:45</start>
+                <end>16:00</end>
+            </meal>
+        </day>
+        <day number="6">
+        </day>
+        <day number="0">
+        </day>
+    </week>
+    <week>
+        <type>7</type>
+        <day number="1">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:00</end>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:00</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:00</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:00</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:00</end>
+            </meal>
+        </day>
+        <day number="6">
+        </day>
+        <day number="0">
+        </day>
+    </week>
+    <week>
+        <type>8</type>
+        <day number="1">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:30</end>
+            </meal>
+        </day>
+        <day number="2">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:30</end>
+            </meal>
+        </day>
+        <day number="3">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:30</end>
+            </meal>
+        </day>
+        <day number="4">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>15:30</end>
+            </meal>
+        </day>
+        <day number="5">
+            <meal name="Today's Breakfast &amp; Lunch">
+                <start>08:00</start>
+                <end>14:00</end>
+            </meal>
+        </day>
+        <day number="6">
+        </day>
+        <day number="0">
+        </day>
     </week>
 </mealTimes>

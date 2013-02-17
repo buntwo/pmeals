@@ -44,7 +44,7 @@ public class LocationProvider {
 		return null;
 	}
 	
-	// return an arraylist of info about locations on file
+	// return an arraylist of info about all locations on file
 	// used in dropdown lists
 	// type = 0, name
 	//		= 1, nickname

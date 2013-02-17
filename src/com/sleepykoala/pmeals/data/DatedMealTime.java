@@ -7,8 +7,8 @@ public class DatedMealTime extends MealTime {
 	public final Date date;
 	
 	// time is set to be allDay
-	public DatedMealTime(int mealNameIndex, int[] start, int[] end, int type, Time tm) {
-		super(mealNameIndex, start, end, type);
+	public DatedMealTime(String name, int[] start, int[] end, int type, Time tm) {
+		super(name, start, end, type);
 		this.date = new Date(tm);
 	}
 	
@@ -26,7 +26,7 @@ public class DatedMealTime extends MealTime {
 	
 	// copy constructor
 	public DatedMealTime(DatedMealTime dmt) {
-		super(dmt.mealNameIndex, dmt.startTime, dmt.endTime, dmt.type);
+		super(dmt.mealName, dmt.startTime, dmt.endTime, dmt.type);
 		this.date = new Date(dmt.date);
 	}
 	
@@ -38,14 +38,12 @@ public class DatedMealTime extends MealTime {
 		DatedMealTime d = (DatedMealTime) obj;
 		return date.equals(d.date) &&
 				type == d.type &&
-				mealNameIndex == d.mealNameIndex &&
 				mealName.equals(d.mealName);
 	}
 	
 	public int hashCode() {
 		int code = 17;
 		
-		code = code * 31 + mealNameIndex;
 		code = code * 31 + mealName.hashCode();
 		code = code * 31 + type;
 		code = code * 31 + date.hashCode();

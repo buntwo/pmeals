@@ -1,7 +1,5 @@
 package com.sleepykoala.pmeals.data;
 
-import static com.sleepykoala.pmeals.data.C.MEAL_NAMES;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -10,17 +8,14 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.text.format.Time;
-
 public class MealTimeProviderFactory {
 	
 	private static boolean isInitialized = false;
 	
 	// XML tags
-    private static final String TAG_WEEKDAY = "weekDay";
-    private static final String TAG_SATURDAY = "saturday";
-    private static final String TAG_SUNDAY = "sunday";
+    private static final String TAG_DAY = "day";
     private static final String TAG_TYPE  = "type";
+    private static final String TAG_MEAL = "meal";
     
     // data
 	// each top level entry is like week, which is an array of 7 days
@@ -63,20 +58,15 @@ public class MealTimeProviderFactory {
 									newWeek = new ArrayList[7];
 									mealTimes.add(newWeek);
 									break;
-								case 3: // type, weekDay, saturday, or sunday
+								case 3: // type or day
 									String tagName = p.getName();
 									if (tagName.equals(TAG_TYPE)) {
 										type = Integer.parseInt(p.nextText());
-									} else if (tagName.equals(TAG_WEEKDAY)) {
-										// after this, parser should be at </weekDay>
-										ArrayList<MealTime> weekDay = processDay(type, p);
-										// add to weekdays
-										for (int i = Time.MONDAY; i <= Time.FRIDAY; ++i)
-											newWeek[i] = weekDay;
-									} else if (tagName.equals(TAG_SATURDAY)) {
-										newWeek[Time.SATURDAY] = processDay(type, p);
-									} else if (tagName.equals(TAG_SUNDAY)) {
-										newWeek[Time.SUNDAY] = processDay(type, p);
+									} else if (tagName.equals(TAG_DAY)) {
+										int dayNum = Integer.valueOf(p.getAttributeValue(0));
+										// after this, parser should be at </day>
+										ArrayList<MealTime> day = processDay(type, p);
+										newWeek[dayNum] = day;
 									}
 									break;
 								}
@@ -113,21 +103,16 @@ public class MealTimeProviderFactory {
 		
 		int eventType = p.next();
 		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(tagName))) {
-			if (eventType == XmlPullParser.START_TAG) {
-				for (int i = 0; i < MEAL_NAMES.length; ++i) { // match meal name
-					if (p.getName().equalsIgnoreCase(MEAL_NAMES[i])) {
-						day.add(processMeal(i, type, p));
-						break;
-					}
-				}
-			}
+			if (eventType == XmlPullParser.START_TAG && p.getName().equals(TAG_MEAL))
+				day.add(processMeal(type, p));
 			eventType = p.next();
 		}
 		return day;
 	}
 	
 	// expects next tags to be <start> and <end>, in that order
-	private static MealTime processMeal(int mealIndex, int type, XmlPullParser p) throws XmlPullParserException, IOException {
+	private static MealTime processMeal(int type, XmlPullParser p) throws XmlPullParserException, IOException {
+		String mealName = p.getAttributeValue(0);
 		int[] start = new int[2];
 		int[] end = new int[2];
 		while (p.next() != XmlPullParser.START_TAG); // <start>
@@ -138,6 +123,6 @@ public class MealTimeProviderFactory {
 		time = p.nextText(); // end time
 		end[0] = Integer.parseInt(time.substring(0,2));
 		end[1] = Integer.parseInt(time.substring(3));
-		return new MealTime(mealIndex, start, end, type);
+		return new MealTime(mealName, start, end, type);
 	}
 }

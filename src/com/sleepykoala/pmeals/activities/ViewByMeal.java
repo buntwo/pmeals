@@ -204,7 +204,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		infoBar = (FrameLayout) findViewById(R.id.infobar);
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
 
-		// retrieve location order from settings, if exists
+		// retrieve location order from settings
 		PreferenceManager.initialize(this);
 		locIDsToShow = PreferenceManager.getLocIds();
 		// setup pager adapter
@@ -222,6 +222,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		// set up viewpager
 		mPager.setAdapter(mAdapter);
 		mPager.setCurrentItem(mAdapter.getMiddleIndex());
+		mPager.setOffscreenPageLimit(1);
 		TitleChangeListener tCL = new TitleChangeListener();
 		mPager.setOnPageChangeListener(tCL);
 		tCL.onPageSelected(mPager.getCurrentItem());

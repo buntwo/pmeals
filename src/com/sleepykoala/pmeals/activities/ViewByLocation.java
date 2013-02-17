@@ -19,7 +19,6 @@ import static com.sleepykoala.pmeals.data.C.VBL_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBL_NUMLISTS_BEFORE;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
@@ -61,7 +60,6 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
 import com.sleepykoala.pmeals.fragments.AboutFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
@@ -203,20 +201,24 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         aB.setDisplayHomeAsUpEnabled(true);
         aB.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         // hard coded info type!! (nickname)
+        /*
         PreferenceManager.initialize(this);
         ArrayList<Integer> locIds = PreferenceManager.getLocIds();
         ArrayList<String> locNames = new ArrayList<String>(locIds.size());
         for (Integer i : locIds)
         	locNames.add(lP.getById(i).nickname);
+         */
         aB.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.actionbar_viewbylocation_spinner,
-        		R.id.action_viewbylocation_spinnertext, locNames), this);
+        		R.id.action_viewbylocation_spinnertext, lP.getInfoArray(1)), this);
         int index = LocationProvider.idToIndex(intent.getIntExtra(EXTRA_LOCATIONID, -1));
+        
         // setup displayedLoc and mPager
         displayedLoc = lP.getByIndex(index);
         currentMeal = mTP.getCurrentMeal(displayedLoc.type);
         aB.setSelectedNavigationItem(index);
 		mAdapter = new LocationViewPagerAdapter(displayedLoc, currentCenter, getSupportFragmentManager());
 		mPager.setAdapter(mAdapter);
+		mPager.setOffscreenPageLimit(1);
 		mPager.setOnPageChangeListener(new TitleChangeListener());
         mPager.setCurrentItem(VBL_NUMLISTS_BEFORE);
     }

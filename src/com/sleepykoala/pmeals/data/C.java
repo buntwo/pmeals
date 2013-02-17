@@ -65,9 +65,6 @@ public final class C {
 	public static final String EXTRA_ISCURRENTMEAL = "com.sleepykoala.pmeals.ISCURRENTMEAL";
 	public static final String EXTRA_MEALEXISTS = "com.sleepykoala.pmeals.MEALEXISTS";
     
-	// meal names
-	public static final String[] MEAL_NAMES = {"Breakfast", "Lunch", "Dinner", "Brunch"};
-	
 	// icon alpha constants
 	public static final int ALPHA_ENABLED = 255;
 	public static final int ALPHA_DISABLED = 77;
