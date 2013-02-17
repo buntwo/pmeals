@@ -66,6 +66,7 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 	static {
 		sIntentFilter = new IntentFilter();
 		sIntentFilter.addAction(C.ACTION_NEW_DAY);
+		sIntentFilter.addAction(C.ACTION_NEW_MEAL);
 		sIntentFilter.addAction(C.ACTION_REFRESHDONE);
 		sIntentFilter.addAction(C.ACTION_REFRESHFAILED);
 		sIntentFilter.addAction(C.ACTION_DATEFORMATTOGGLED);
@@ -74,7 +75,9 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (action.equals(C.ACTION_NEW_DAY)) {
-				((LocationViewListAdapter) getListAdapter()).newDay();
+				mAdapter.newDay();
+			} else if (action.equals(C.ACTION_NEW_MEAL)) {
+				mAdapter.notifyDataSetChanged();
 			} else if (action.equals(C.ACTION_REFRESHDONE)) {
 				if (!isRefreshing()) {
 					mRefreshIcon.clearAnimation();
@@ -137,7 +140,7 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 			mDaysMealNames.add(dmt.mealName);
 		
 		// set adapter
-		mAdapter = new LocationViewListAdapter(getActivity(), daysMeals, dt);
+		mAdapter = new LocationViewListAdapter(getActivity(), daysMeals, dt, LocationProvider.isDiningHall(mLoc));
 		setListAdapter(mAdapter);
 		
 		// cache loader args

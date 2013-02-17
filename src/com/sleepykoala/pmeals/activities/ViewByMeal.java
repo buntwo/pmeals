@@ -267,31 +267,35 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	}
     		
     }
-    
-	// do housekeeping when time ticks
-	private void onTimeChanged() {
-		DatedMealTime d = mTP.getCurrentMeal(0);
-		boolean newMeal = !d.equals(currentMeal);
-		Date oldToday = today;
-		today = new Date();
-		if (newMeal) {
-			Intent newMealIntent = new Intent();
-			newMealIntent.setAction(C.ACTION_NEW_MEAL);
-			LocalBroadcastManager.getInstance(ViewByMeal.this).sendBroadcast(newMealIntent);
 
-			currentMeal = d;
-		} else if (!today.equals(oldToday)) { // new day?
-				Intent newDayIntent = new Intent();
-				newDayIntent.setAction(C.ACTION_NEW_DAY);
-				LocalBroadcastManager.getInstance(ViewByMeal.this).sendBroadcast(newDayIntent);
-		} else { // only send if others haven't been sent
-			// send time changed broadcast to receivers (fragments)
-			Intent timeChangedIntent = new Intent();
-			timeChangedIntent.setAction(C.ACTION_TIME_CHANGED);
-			LocalBroadcastManager.getInstance(ViewByMeal.this).sendBroadcast(timeChangedIntent);
-		}
-		refreshTitle(newMeal);
-	}
+    // do housekeeping when time ticks
+    private void onTimeChanged() {
+    	DatedMealTime d = mTP.getCurrentMeal(0);
+    	boolean newMeal = !d.equals(currentMeal);
+    	Date oldToday = today;
+    	today = new Date();
+    	if (newMeal) {
+    		Intent newMealIntent = new Intent();
+    		newMealIntent.setAction(C.ACTION_NEW_MEAL);
+    		LocalBroadcastManager.getInstance(this).sendBroadcast(newMealIntent);
+    		currentMeal = d;
+    		refreshTitle(newMeal);
+    		return;
+    	}
+    	if (!today.equals(oldToday)) { // new day?
+    		Intent newDayIntent = new Intent();
+    		newDayIntent.setAction(C.ACTION_NEW_DAY);
+    		LocalBroadcastManager.getInstance(this).sendBroadcast(newDayIntent);
+    		refreshTitle(newMeal);
+    		return;
+    	}
+    	// gets here only if others have not sent
+    	// send time changed broadcast to receivers (fragments)
+    	Intent timeChangedIntent = new Intent();
+    	timeChangedIntent.setAction(C.ACTION_TIME_CHANGED);
+    	LocalBroadcastManager.getInstance(this).sendBroadcast(timeChangedIntent);
+    	refreshTitle(newMeal);
+    }
 	
     // build meal time data text to show in title
     public void refreshTitle(boolean newMeal) {
@@ -342,7 +346,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 					newTitleText.append("s");
 			} else {
 				newTitleText.append("at ");
-				int[] time;
+				long time;
 				if (inMeal)
 					time = mealDisplayed.endTime;
 				else
@@ -472,7 +476,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	int oldPosition = mPager.getCurrentItem();
     	mPager.setAdapter(mAdapter);
     	mPager.setOnPageChangeListener(new TitleChangeListener());
-    	mPager.setCurrentItem(oldPosition);
+		mPager.setCurrentItem(mAdapter.getMiddleIndex());
     	startPageIndicatorFadeout();
     }
 

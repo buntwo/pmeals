@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.text.format.Time;
 import android.widget.RemoteViews;
 
 import com.sleepykoala.pmeals.R;
@@ -50,14 +49,12 @@ public class MenuWidgetProvider extends AppWidgetProvider {
 		int type = prefs.getInt(PREF_WIDGET_TYPE, 0);
 		DatedMealTime dmt = mTP.getCurrentMeal(type);
 		// set update alarm
-		Time nextTime = new Time();
-		nextTime.set(0, dmt.endTime[1], dmt.endTime[0], dmt.date.monthDay, dmt.date.month, dmt.date.year);
 		Intent update = new Intent(context, MenuWidgetProvider.class);
 		update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 		PendingIntent pIUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).
-			set(AlarmManager.RTC, nextTime.toMillis(false), pIUpdate);
+			set(AlarmManager.RTC, dmt.endTime, pIUpdate);
 		
 		int locId = prefs.getInt(PREF_WIDGET_LOCID, -1);
 		

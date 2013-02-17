@@ -99,4 +99,10 @@ public class LocationProvider {
 		return ID;
 	}
 	
+	// is the given location a dining hall?
+	// a dining hall is a location that has different menus depending on
+	// what meal it is
+	public static boolean isDiningHall(Location l) {
+		return l.type <= 2;
+	}
 }

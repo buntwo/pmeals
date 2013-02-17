@@ -26,7 +26,7 @@ public final class C {
 	public static final String STRING_DOWNLOADFAILED = "Download failed";
 	public static final String STRING_CLOSED = "Closed";
 	public static final String STRING_NODATA = "No data";
-	public static final String STRING_NOMEALSTODAY = "No meals today";
+	public static final String STRING_NOMEALSTODAY = "Closed today";
 	
 	// loading item strings (in ListView)
 	public static final String STRING_LOADINGDATA = "Loading menu data";

@@ -102,6 +102,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     private Drawable indic_selected;
     private Animation fadeoutAnim;
     private static int TOTAL_NUMLISTS = VBL_NUMLISTS_BEFORE + VBL_NUMLISTS_AFTER + 1;
+    public static boolean isWeird;
     
     private MealTimeProvider mTP;
     private LocationProvider lP;
@@ -191,7 +192,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		// set today
 		today = new Date();
 		
-		displayedLoc = null;
 		dateDisplayed = currentCenter = new Date(intent.getStringExtra(EXTRA_DATE));
 		
         // setup action bar
@@ -220,12 +220,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		mPager.setAdapter(mAdapter);
 		mPager.setOffscreenPageLimit(1);
 		mPager.setOnPageChangeListener(new TitleChangeListener());
-        mPager.setCurrentItem(VBL_NUMLISTS_BEFORE);
+        mPager.setCurrentItem(mAdapter.getMiddleIndex());
     }
 
     // go to today
     public void gotoToday() {
-    	int todayIndex = mAdapter.getMealIndex(currentMeal.date);
+    	int todayIndex = mAdapter.getDateIndex(currentMeal.date);
     	if (todayIndex != -1) // -1 means not found, eg, different date picked out of range
     		mPager.setCurrentItem(todayIndex, true);
     	else
@@ -238,12 +238,15 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		Date oldToday = today;
 		today = new Date();
 		if (newMeal) {
-			currentMeal = d;
+    		Intent newMealIntent = new Intent();
+    		newMealIntent.setAction(C.ACTION_NEW_MEAL);
+    		LocalBroadcastManager.getInstance(this).sendBroadcast(newMealIntent);
+    		currentMeal = d;
 		}
 		if (!today.equals(oldToday)) {
 			Intent newDayIntent = new Intent();
 			newDayIntent.setAction(C.ACTION_NEW_DAY);
-			LocalBroadcastManager.getInstance(ViewByLocation.this).sendBroadcast(newDayIntent);
+			LocalBroadcastManager.getInstance(this).sendBroadcast(newDayIntent);
 		}
 		refreshTitle(newMeal);
 	}
@@ -256,11 +259,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		boolean inMeal = (mealStatus < 1) ? false : true;
 
 		int[] timeTo = MealTimeProvider.getTimeUntilMeal(currentMeal, !inMeal);
-		if (newTitleText.length() == 0)
+		if (LocationProvider.isDiningHall(displayedLoc)) {
 			newTitleText.append(currentMeal.mealName);
-		else
-			newTitleText.append(currentMeal.mealName.toLowerCase());
-		newTitleText.append((inMeal) ? " ends " : " starts ");
+			newTitleText.append((inMeal) ? " ends " : " starts ");
+		} else {
+			newTitleText.append((inMeal) ? "Closes " : "Opens ");
+		}
 		if ((timeTo[0] == 1 && timeTo[1] <= ONEHOUR_RADIUS) ||
 				timeTo[0] == 0 && 60 - timeTo[1] <= ONEHOUR_RADIUS) {
 			newTitleText.append("in ");
@@ -275,7 +279,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 				newTitleText.append("s");
 		} else {
 			newTitleText.append("at ");
-			int[] time;
+			long time;
 			if (inMeal)
 				time = currentMeal.endTime;
 			else
@@ -286,6 +290,8 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		if (!today.equals(currentMeal.date)) { // next meal is not today
 			if (today.isTomorrow(currentMeal.date)) { // next meal is tomorrow
 				newTitleText.append(" tomorrow");
+			} else if (today.isYesterday(currentMeal.date)) {
+				// do nothing, this means we're on the next day of a next-day closing time
 			} else { // not tomorrow
 				newTitleText.append(" on ");
 				newTitleText.append(DateFormat.format("EEEE", currentMeal.date.toMillis(true)));
@@ -405,6 +411,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 			currentMeal = mTP.getCurrentMeal(displayedLoc.type);
 			oldPosition = mPager.getCurrentItem();
 		}
+		isWeird = (MealTimeProvider.currentMealStatus(currentMeal) == 1) && !today.equals(currentMeal.date);
 		mAdapter = new LocationViewPagerAdapter(displayedLoc, currentCenter, getSupportFragmentManager());
 		mPager.setAdapter(mAdapter);
 		mPager.setOnPageChangeListener(new TitleChangeListener());

@@ -7,9 +7,10 @@ public class DatedMealTime extends MealTime {
 	public final Date date;
 	
 	// time is set to be allDay
-	public DatedMealTime(String name, int[] start, int[] end, int type, Time tm) {
-		super(name, start, end, type);
+	public DatedMealTime(String name, long start, long end, int type, Time tm) {
+		super(name, type);
 		this.date = new Date(tm);
+		setProperTimes(start, end, tm);
 	}
 	
 	// construct new meal with same date but different name
@@ -20,14 +21,14 @@ public class DatedMealTime extends MealTime {
 	
 	// copy-ish constructor
 	public DatedMealTime(MealTime mt, Time tm) {
-		super(mt);
+		super(mt.mealName, mt.type);
 		this.date = new Date(tm);
+		setProperTimes(mt.startTime, mt.endTime, tm);
 	}
 	
 	// copy constructor
 	public DatedMealTime(DatedMealTime dmt) {
-		super(dmt.mealName, dmt.startTime, dmt.endTime, dmt.type);
-		this.date = new Date(dmt.date);
+		this(dmt.mealName, dmt.startTime, dmt.endTime, dmt.type, dmt.date);
 	}
 	
 	public boolean equals(Object obj) {

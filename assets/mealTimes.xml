@@ -279,7 +279,7 @@ Weekday names start with sunday = 0, ..., saturday = 6
         <day number="4">
             <meal name="In the Gallery...">
                 <start>07:00</start>
-                <end>23:59</end>
+                <end>03:00</end>
             </meal>
         </day>
         <day number="5">
@@ -291,7 +291,7 @@ Weekday names start with sunday = 0, ..., saturday = 6
         <day number="6">
             <meal name="In the Gallery...">
                 <start>07:30</start>
-                <end>23:59</end>
+                <end>03:00</end>
             </meal>
         </day>
         <day number="0">
@@ -302,25 +302,25 @@ Weekday names start with sunday = 0, ..., saturday = 6
         <day number="1">
             <meal name="Witherspoon's Baked Goods &amp; Smoothies">
                 <start>08:00</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="2">
             <meal name="Witherspoon's Baked Goods &amp; Smoothies">
                 <start>08:00</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="3">
             <meal name="Witherspoon's Baked Goods &amp; Smoothies">
                 <start>08:00</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="4">
             <meal name="Witherspoon's Baked Goods &amp; Smoothies">
                 <start>08:00</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="5">
@@ -347,19 +347,19 @@ Weekday names start with sunday = 0, ..., saturday = 6
         <day number="1">
             <meal name="Our Menu">
                 <start>11:30</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="2">
             <meal name="Our Menu">
                 <start>11:30</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="3">
             <meal name="Our Menu">
                 <start>11:30</start>
-                <end>23:59</end>
+                <end>00:00</end>
             </meal>
         </day>
         <day number="4">

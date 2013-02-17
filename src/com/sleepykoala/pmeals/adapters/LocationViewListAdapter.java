@@ -1,5 +1,6 @@
 package com.sleepykoala.pmeals.adapters;
 
+import static com.sleepykoala.pmeals.activities.ViewByLocation.isWeird;
 import static com.sleepykoala.pmeals.activities.ViewByMeal.nuts;
 import static com.sleepykoala.pmeals.activities.ViewByMeal.outline;
 import static com.sleepykoala.pmeals.activities.ViewByMeal.pork;
@@ -31,7 +32,7 @@ import com.sleepykoala.pmeals.data.FoodItem;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
 
-// shows meal for one day for one location
+// shows meals for one day for one location
 public class LocationViewListAdapter extends BaseAdapter {
 
 	private ArrayList<Cursor> data;
@@ -43,13 +44,15 @@ public class LocationViewListAdapter extends BaseAdapter {
 	private Date dateShowing; // the date we are showing
 	
 	private final boolean isEmpty;
+	private final boolean isDiningHall;
 	private static boolean isDetailedDate = false;
 	private static final String DATEFORMAT = "EEEE, MMM d, yyyy";
 	
-	public LocationViewListAdapter(Activity act, ArrayList<DatedMealTime> daysMeals, Date d) {
+	public LocationViewListAdapter(Activity act, ArrayList<DatedMealTime> daysMeals, Date d, boolean iDH) {
 		mealsToShow = daysMeals;
 		mInflater = act.getLayoutInflater();
 		
+		this.isDiningHall = iDH;
 		// init data and ID array
 		data = new ArrayList<Cursor>();
 		int size = daysMeals.size();
@@ -262,7 +265,10 @@ public class LocationViewListAdapter extends BaseAdapter {
 				holder.extra = (TextView) convertView.findViewById(R.id.sectionextra);
 				convertView.setTag(holder);
 			}
-			holder.name.setText(meal.mealName);
+			if (isDiningHall) 
+				holder.name.setText(meal.mealName);
+			else
+				holder.name.setText("Menu");
 			// set meal times
 			StringBuilder sb = new StringBuilder();
 			sb.append(MealTimeProvider.getFormattedTime(meal.startTime));
@@ -332,18 +338,31 @@ public class LocationViewListAdapter extends BaseAdapter {
 				holder.date = (TextView) convertView.findViewById(R.id.title);
 				convertView.setTag(holder);
 			}		// set header text
-			CharSequence text;
-			if (!isDetailedDate) {
-				if (today.equals(dateShowing))
-					text = "Today";
-				else if (today.isTomorrow(dateShowing))
-					text = "Tomorrow";
-				else if (today.isYesterday(dateShowing))
-					text = "Yesterday";
+			String text;
+			if (today.equals(dateShowing)) {
+				if (isDetailedDate)
+					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
 				else
-					text = DateFormat.format("EEEE", dateShowing.toMillis(true));
+					text = "Today";
+				if (isWeird)
+					text += " (tomorrow's menu)";
+			} else if (today.isTomorrow(dateShowing)) {
+				if (isDetailedDate)
+					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+				else
+					text = "Tomorrow";
+			} else if (today.isYesterday(dateShowing)) {
+				if (isDetailedDate)
+					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+				else
+					text = "Yesterday";
+				if (isWeird)
+					text += " (today's menu)";
 			} else {
-				text = DateFormat.format(DATEFORMAT, dateShowing.toMillis(true));
+				if (isDetailedDate)
+					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+				else
+					text = String.valueOf(DateFormat.format("EEEE", dateShowing.toMillis(true)));
 			}
 			holder.date.setText(text);
 		}

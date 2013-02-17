@@ -9,7 +9,7 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 	
 	// V1 had _ID, locationid, date, mealname, itemname, itemerror
 	// V2 had food info
-	private static final int DB_VERSION = 3;
+	private static final int DB_VERSION = 4;
 	private static final String DB_NAME = "pmeals";
 	
 	// table names
@@ -79,6 +79,9 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 		if (oldVersion < 3 && newVersion >= 3) {
 			db.execSQL("update " + TABLE_MEALS + " set " + ITEMNAME + " = replace(" + ITEMNAME +
 					", '�', 'e') where " + ITEMNAME + " like '%�%'");
+		}
+		if (oldVersion < 4 && newVersion >= 4) {
+			db.execSQL("update " + TABLE_MEALS + " set " + ITEMNAME + " = 'Closed today' where " + ITEMNAME + " like 'No meals today'");
 		}
 	}
 

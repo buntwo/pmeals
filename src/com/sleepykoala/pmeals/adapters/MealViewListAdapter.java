@@ -309,11 +309,7 @@ public class MealViewListAdapter extends BaseAdapter {
 							}
 						} else {
 							newTitleText.append("at ");
-							int[] time;
-							time = meal.endTime;
-							boolean inAM = time[0] < 12;
-							newTitleText.append(String.format("%d:%02d%s", inAM ? time[0] : time[0]-12,
-									time[1], inAM ? "am" : "pm"));
+							newTitleText.append(MealTimeProvider.getFormattedTime(meal.endTime));
 						}
 					} else {
 						timeTo = MealTimeProvider.getTimeUntilMeal(meal, !inMeal);
@@ -332,7 +328,7 @@ public class MealViewListAdapter extends BaseAdapter {
 								newTitleText.append("s");
 						} else {
 							newTitleText.append("at ");
-							int[] time;
+							long time;
 							if (inMeal)
 								time = meal.endTime;
 							else

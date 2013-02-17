@@ -8,13 +8,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.text.format.Time;
+
 public class MealTimeProviderFactory {
 	
 	private static boolean isInitialized = false;
 	
 	// XML tags
     private static final String TAG_DAY = "day";
-    private static final String TAG_TYPE  = "type";
+    private static final String TAG_TYPE = "type";
     private static final String TAG_MEAL = "meal";
     
     // data
@@ -113,16 +115,24 @@ public class MealTimeProviderFactory {
 	// expects next tags to be <start> and <end>, in that order
 	private static MealTime processMeal(int type, XmlPullParser p) throws XmlPullParserException, IOException {
 		String mealName = p.getAttributeValue(0);
-		int[] start = new int[2];
-		int[] end = new int[2];
 		while (p.next() != XmlPullParser.START_TAG); // <start>
 		String time = p.nextText(); // start time
-		start[0] = Integer.parseInt(time.substring(0,2));
-		start[1] = Integer.parseInt(time.substring(3));
+		Time tm = new Time();
+		tm.setToNow();
+		tm.hour = Integer.parseInt(time.substring(0,2));
+		tm.minute = Integer.parseInt(time.substring(3));
+		long start = tm.toMillis(false);
+		
 		while (p.next() != XmlPullParser.START_TAG); // <end>
 		time = p.nextText(); // end time
-		end[0] = Integer.parseInt(time.substring(0,2));
-		end[1] = Integer.parseInt(time.substring(3));
+		tm.hour = Integer.parseInt(time.substring(0,2));
+		tm.minute = Integer.parseInt(time.substring(3));
+		long end = tm.toMillis(false);
+		if (end < start) {
+			++tm.monthDay;
+			end = tm.toMillis(true);
+		}
+		
 		return new MealTime(mealName, start, end, type);
 	}
 }

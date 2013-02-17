@@ -51,7 +51,7 @@ public class LocationViewPagerAdapter extends FragmentPagerAdapter {
 	// if not found, return -1
 	// well it just returns the number of lists before today, and since it's
 	// 0-indexed, this works
-	public int getMealIndex(Date dt) {
+	public int getDateIndex(Date dt) {
 		for (int i = 0; i < dates.size(); ++i) {
 			if (dates.get(i).equals(dt))
 				return i;

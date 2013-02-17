@@ -87,7 +87,7 @@ public class Date extends Time {
 			dateStr = capitalize ? "Yesterday" : "yesterday";
 		else
 			dateStr = ((isAdverb) ? capitalize ? "On " : "on" : "" ) +
-				(String) DateFormat.format(DATEFORMAT, toMillis(true));
+				(String) DateFormat.format(DATEFORMAT, toMillis(false));
 		
 		return dateStr;
 	}

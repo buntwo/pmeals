@@ -3,6 +3,7 @@ package com.sleepykoala.pmeals.data;
 import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import android.text.format.Time;
 
@@ -46,7 +47,22 @@ public class MealTimeProvider {
 	// it is specified in mealTimes.xml file
 	private DatedMealTime getMealAtTime(int type, Time tm) {
 		int wkDay = tm.weekDay;
+		// check the last meal of the day before us first
+		// for checking next-day closing times
+		Time tm_ = new Time(tm);
+		--tm_.monthDay;
+		ArrayList<MealTime> arr = mealTimes.get(type)[(wkDay + 6) % 7];
+		try {
+			MealTime mtmt = arr.get(arr.size() - 1);
+			mtmt.setProperTimes(tm_);
+			if (isBeforeMeal(tm, mtmt) || isDuringMeal(tm, mtmt))
+				return new DatedMealTime(mtmt, tm_);
+		} catch (ArrayIndexOutOfBoundsException e) { }
+		// restore monthDay
+		++tm_.monthDay;
+		// now start checking from given date
 		for (MealTime mt : mealTimes.get(type)[wkDay]) { // loop through our day
+			mt.setProperTimes(tm);
 			if (isBeforeMeal(tm, mt) || isDuringMeal(tm, mt)) // found meal!
 				return new DatedMealTime(mt, tm);
 		}
@@ -61,10 +77,9 @@ public class MealTimeProvider {
 			}
 		}
 		// make new time with correct date
-		Time tm_new = new Time(tm);
-		tm_new.monthDay += daysRolled;
-		tm_new.normalize(true);
-		return new DatedMealTime(meal, tm_new);
+		tm_.monthDay += daysRolled;
+		tm_.normalize(true);
+		return new DatedMealTime(meal, tm_);
 	}
 	
 	// return the meal that is before given Time
@@ -75,6 +90,7 @@ public class MealTimeProvider {
 		ArrayList<MealTime> daysMeals = mealTimes.get(type)[wkDay];
 		for (int i = daysMeals.size() - 1; i >= 0; --i) { // loop through our day in reverse
 			MealTime mt = daysMeals.get(i);
+			mt.setProperTimes(tm);
 			if (isAfterMeal(tm, mt)) // found
 				return new DatedMealTime(mt, tm);
 		}
@@ -90,40 +106,34 @@ public class MealTimeProvider {
 			}
 		}
 		if (meal == null)
-			throw new RuntimeException("wtf null meal");
+			throw new RuntimeException("Null meal, should never happen!");
 		// make new time with correct date
-		Time tm_new = new Time(tm);
-		tm_new.monthDay -= daysRolledBack;
-		tm_new.normalize(true);
-		return new DatedMealTime(meal, tm_new);
+		Time tm_ = new Time(tm);
+		tm_.monthDay -= daysRolledBack;
+		tm_.normalize(true);
+		return new DatedMealTime(meal, tm_);
 	}
 	
 	// given a meal, find the next one
 	public DatedMealTime getNextMeal(int type, DatedMealTime meal) {
-		Time tm = new Time(meal.date);
-		tm.allDay = false;
-		tm.hour = meal.endTime[0];
-		tm.minute = meal.endTime[1];
-		tm.normalize(true);
+		Time tm = new Time();
+		tm.set(meal.endTime);
 		return getMealAtTime(type, tm);
 	}
 	
 	// given a meal, find the previous one
 	public DatedMealTime getPreviousMeal(int type, DatedMealTime meal) {
-		Time tm = new Time(meal.date);
-		tm.allDay = false;
-		tm.hour = meal.startTime[0];
-		tm.minute = meal.startTime[1];
-		tm.normalize(true);
+		Time tm = new Time();
+		tm.set(meal.startTime);
 		return getMealBeforeTime(type, tm);
 	}
 	
 	// returns -1 if before a meal, 0 if after a meal, 1 if in a meal
 	public static int currentMealStatus(DatedMealTime meal) {
 		Time tm = getCurTime();
-		if (afterDate (tm, meal) || sameDate(tm, meal) && isAfterMeal(tm, meal))
+		if (tm.toMillis(false) >= meal.endTime)
 			return 0;
-		else if (beforeDate(tm, meal) || sameDate(tm, meal) && isBeforeMeal(tm, meal))
+		else if (tm.toMillis(false) < meal.startTime)
 			return -1;
 		else
 			return 1;
@@ -197,9 +207,9 @@ public class MealTimeProvider {
 		return (!isBeforeMeal(tm, meal) && !isAfterMeal(tm, meal));
 	}
 	
-	// whether or not given Time is before given int[] time
-	private static boolean isBefore(Time tm, int[] time) {
-		return (tm.hour < time[0]) || ((tm.hour == time[0]) && (tm.minute < time[1]));
+	// whether or not given Time is before given long time
+	private static boolean isBefore(Time tm, long time) {
+		return tm.toMillis(false) < time;
 	}
 	
 	private static Time getCurTime() {
@@ -219,33 +229,28 @@ public class MealTimeProvider {
 	public static int[] getTimeUntilMeal(DatedMealTime meal, boolean start) {
 		Time tm = getCurTime();
 		int[] timeTill = new int[2];
-		int[] mealTime = (start) ? meal.startTime : meal.endTime;
-		timeTill[0] = mealTime[0] - tm.hour;
-		timeTill[1] = mealTime[1] - tm.minute;
-		// correct for negative values
-		if ((timeTill[1] < 0) && (timeTill[0] > 0)) {
-			timeTill[1] += 60;
-			--timeTill[0];
-		}
-		if (afterDate(tm, meal))
-			timeTill[0] -= 24;
-		else if (beforeDate(tm, meal))
-			timeTill[0] += 24;
+		long mealTime = (start) ? meal.startTime : meal.endTime;
+		long till = mealTime - tm.toMillis(false);
+		till = TimeUnit.MILLISECONDS.toMinutes(till);
+		timeTill[0] = (int) (till / 60);
+		timeTill[1] = (int) (till % 60);
 		return timeTill;
 	}
 	
 	// get 12/24 hour setting-aware time
-	public static String getFormattedTime(int[] time) {
+	public static String getFormattedTime(long time) {
+		Time tm = new Time();
+		tm.set(time);
 		if (IS24HOURFORMAT)
-			return String.format("%d:%02d", time[0], time[1]);
+			return String.format("%d:%02d", tm.hour, tm.minute);
 		else {
-			boolean inAM = (time[0] < 12);
+			boolean inAM = (tm.hour < 12);
 			int hour;
 			if (inAM)
-				hour = (time[0] == 0) ? 12 : time[0];
+				hour = (tm.hour == 0) ? 12 : tm.hour;
 			else
-				hour = (time[0] == 12) ? 12 : time[0] - 12;
-			return String.format("%d:%02d%s", hour, time[1], inAM ? "am" : "pm");
+				hour = (tm.hour == 12) ? 12 : tm.hour - 12;
+			return String.format("%d:%02d%s", hour, tm.minute, inAM ? "am" : "pm");
 		}
 	}
 	
