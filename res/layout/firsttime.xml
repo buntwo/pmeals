@@ -233,14 +233,5 @@
 	    android:paddingTop="4dp"
         />
     
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="14sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/firsttime6"
-	    android:paddingTop="4dp"
-        />
-    
     </LinearLayout>
 </ScrollView>

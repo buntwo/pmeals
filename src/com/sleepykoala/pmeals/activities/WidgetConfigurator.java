@@ -2,16 +2,12 @@ package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
-import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.PREF_WIDGET_LOCID;
 import static com.sleepykoala.pmeals.data.C.PREF_WIDGET_LOCNAME;
 import static com.sleepykoala.pmeals.data.C.PREF_WIDGET_TYPE;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.app.ListActivity;
 import android.appwidget.AppWidgetManager;
@@ -64,33 +60,7 @@ public class WidgetConfigurator extends ListActivity {
         LocationProvider lP = LocationProviderFactory.newLocationProvider();
         
         // get list of locations
-		// retrieve location order from settings, if exists
-		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
-		SharedPreferences.Editor editor = prefs.edit();
-		Set<String> locOrder = prefs.getStringSet(PREF_LOCATIONORDER, null);
-		ArrayList<Integer> locIDs;
-		if (locOrder != null) { // yay exists
-			// retrieve them in the correct order
-			ArrayList<String> locIDsRaw = new ArrayList<String>(locOrder);
-			Collections.sort(locIDsRaw);
-			locIDs = new ArrayList<Integer>();
-			for (String s : locIDsRaw)
-				locIDs.add(Integer.valueOf(s.substring(2)));
-		} else { // new pref
-			locIDs = lP.getIDsForType(0, 1, 2);
-			locOrder = new HashSet<String>(locIDs.size());
-			int numLocs = locIDs.size();
-    		for (int i = 0; i < numLocs; ++i) {
-    			String locNum = String.format("%02d%d", i, locIDs.get(i));
-    			locOrder.add(String.valueOf(locNum));
-    		}
-			editor.putStringSet(PREF_LOCATIONORDER, locOrder);
-			editor.commit();
-		}
-		
-		locs = new ArrayList<Location>();
-		for (int i : locIDs)
-			locs.add(lP.getById(i));
+		locs = lP.getAllLocations();
 		int numLocs = locs.size();
 		ArrayList<String> locNames = new ArrayList<String>(numLocs);
 		for (Location l : locs)

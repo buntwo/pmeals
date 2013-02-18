@@ -15,8 +15,6 @@ import static com.sleepykoala.pmeals.data.C.MINUTES_START_ALERT;
 import static com.sleepykoala.pmeals.data.C.NO_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
-import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
-import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
 import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
@@ -39,7 +37,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -74,7 +71,6 @@ import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment.OnDateSelectedListener;
-import com.sleepykoala.pmeals.fragments.FirstTimeFragment;
 import com.sleepykoala.pmeals.fragments.LegendFragment;
 import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment.OnMealSelectedListener;
@@ -241,25 +237,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         aB.setTitle("PMeals");
         aB.setDisplayShowTitleEnabled(true);
         
-        
-        // upgrade code
-        // show help dialog on first time or upgrade
-		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
-        int currentVer = 1;
-        try {
-			currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-		} catch (NameNotFoundException e) {
-			// better not get here lol
-		}
-        if (prefs.getBoolean(PREF_FIRSTTIME, true) || (prefs.getInt(PREF_LASTVER, 0) < currentVer)) {
-    		FirstTimeFragment ftf = new FirstTimeFragment();
-    		ftf.show(getFragmentManager(), "firsttime");
-    		
-    		SharedPreferences.Editor editor = prefs.edit();
-        	editor.putBoolean(PREF_FIRSTTIME, false);
-        	editor.putInt(PREF_LASTVER, currentVer);
-        	editor.commit();
-        }
         
         // register pref listener
         getSharedPreferences(PREFSFILENAME, 0).registerOnSharedPreferenceChangeListener(this);

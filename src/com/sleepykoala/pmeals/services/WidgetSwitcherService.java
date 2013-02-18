@@ -3,15 +3,12 @@ package com.sleepykoala.pmeals.services;
 import static com.sleepykoala.pmeals.data.C.ACTION_WIDGET_FORWARD;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
-import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.PREF_WIDGET_LOCID;
 import static com.sleepykoala.pmeals.data.C.PREF_WIDGET_LOCNAME;
 import static com.sleepykoala.pmeals.data.C.PREF_WIDGET_TYPE;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
 
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
@@ -46,29 +43,25 @@ public class WidgetSwitcherService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-        // get list of locations
-		// retrieve location order from settings, if exists
 		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
 		SharedPreferences.Editor editor = prefs.edit();
-		Set<String> locOrder = prefs.getStringSet(PREF_LOCATIONORDER, null);
-		ArrayList<Integer> locIDs;
-		// retrieve them in the correct order
-		ArrayList<String> locIDsRaw = new ArrayList<String>(locOrder);
-		Collections.sort(locIDsRaw);
-		locIDs = new ArrayList<Integer>();
-		for (String s : locIDsRaw)
-			locIDs.add(Integer.valueOf(s.substring(2)));
+        // get list of locations
+		ArrayList<Location> locs = lP.getAllLocations();
+		int size = locs.size();
+		ArrayList<Integer> locIDs = new ArrayList<Integer>(size);
+		for (Location l : locs)
+			locIDs.add(l.ID);
 		// select new location
 		Location newLoc;
 		if (intent.getAction().equals(ACTION_WIDGET_FORWARD)) {
 			// select next one
 			newLoc = lP.getById(locIDs.get(
-					(locIDs.indexOf(prefs.getInt(PREF_WIDGET_LOCID, -1)) + 1) % locIDs.size()
+					(locIDs.indexOf(prefs.getInt(PREF_WIDGET_LOCID, -1)) + 1) % size
 					));
 		} else {
 			// select previous one
 			newLoc = lP.getById(locIDs.get(
-					(locIDs.indexOf(prefs.getInt(PREF_WIDGET_LOCID, -1)) + 5) % locIDs.size()
+					(locIDs.indexOf(prefs.getInt(PREF_WIDGET_LOCID, -1)) + size - 1) % size
 					));
 		}
 		// save in prefs

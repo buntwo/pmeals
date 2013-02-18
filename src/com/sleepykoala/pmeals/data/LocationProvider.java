@@ -15,6 +15,15 @@ public class LocationProvider {
 		locations = aLocations;
 	}
 	
+	// dump and arraylist of all locations
+	public ArrayList<Location> getAllLocations() {
+		ArrayList<Location> allLocs = new ArrayList<Location>();
+		for (ArrayList<Location> arr : locations)
+			allLocs.addAll(arr);
+		
+		return allLocs;
+	}
+	
 	// return Location ArrayList for the given type(s)
 	public ArrayList<Location> getLocationsForType(int...type) {
 		ArrayList<Location> locs = new ArrayList<Location>();

@@ -21,7 +21,7 @@
     <string name="searchHint">Search meals</string>
     <string name="searching">Searching</string>
     <string name="about">About</string>
-    <string name="widgetconfig_instr">Select the dining hall you would like to display</string>
+    <string name="widgetconfig_instr">Select the location you would like to display</string>
     <string name="loading">Loading&#8230;</string>
     <string name="feedback">Email developer</string>
     <string name="feedbackSummary">Feedback, bugs, comments, or anything else!</string>
@@ -39,14 +39,13 @@
     
     <!-- First time dialog strings -->
     <string name="firsttime1">Thanks for downloading PMeals! Here are some tips to help you use the app.</string>
-    <string name="firsttime2">&#8226; Swipe left and right to view additional menus.</string>
-    <string name="firsttime3">&#8226; Tap on a dining hall\'s name to view an entire day\'s menu.</string>
+    <string name="firsttime2">&#8226; Swipe left and right to view additional menus/days.</string>
+    <string name="firsttime3">&#8226; NEW: You can view non-dining hall locations now; look under the menu.</string>
     <string name="firsttime4">&#8226; Each menu item will have anywhere from 0 to 3 bars on its right side. Here\'s what they mean:</string>
     <string name="legend1">Vegan</string>
     <string name="legend2">Vegetarian</string>
     <string name="legend3">Contains pork</string>
     <string name="legend4">Contains nuts</string>
-    <string name="firsttime5">&#8226; Tap on the date to toggle between simple and detailed dates.</string>
-    <string name="firsttime6">&#8226; Widget support! Add to your desktop, shows the current meal for the dining hall of your choice (only 1 for now).</string>
+    <string name="firsttime5">&#8226; Add a widget to your desktop to show current meal for the location of your choice (max 1).</string>
 
 </resources>
