@@ -18,20 +18,26 @@
     <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
     <string name="search">Search meals</string>
-    <string name="search_hint">Search meals</string>
+    <string name="searchHint">Search meals</string>
     <string name="searching">Searching</string>
     <string name="about">About</string>
     <string name="widgetconfig_instr">Select the dining hall you would like to display</string>
     <string name="loading">Loading&#8230;</string>
     <string name="feedback">Email developer</string>
+    <string name="feedbackSummary">Feedback, bugs, comments, or anything else!</string>
     
     <!-- Context menu -->
     <string name="share">Share</string>
     <string name="copy">Copy</string>
     <string name="context_search">Search</string>
     
-    <string name="pref_reorderlocs">Set display order of dining halls</string>
+    <!-- Preference strings -->
+    <string name="pref_reorderLocsTitle">Set dining hall display order</string>
+    <string name="pref_defaultShowKey">defaultShowId</string>
+    <string name="pref_defaultShowTitle">Set default location</string>
+    <string name="pref_defaultShowSummary">Location shown on startup</string>
     
+    <!-- First time dialog strings -->
     <string name="firsttime1">Thanks for downloading PMeals! Here are some tips to help you use the app.</string>
     <string name="firsttime2">&#8226; Swipe left and right to view additional menus.</string>
     <string name="firsttime3">&#8226; Tap on a dining hall\'s name to view an entire day\'s menu.</string>

@@ -17,6 +17,7 @@ import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
+import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
@@ -37,6 +38,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
@@ -68,7 +70,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PreferenceManager;
+import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment.OnDateSelectedListener;
@@ -77,7 +79,7 @@ import com.sleepykoala.pmeals.fragments.LegendFragment;
 import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment.OnMealSelectedListener;
 
-public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener {
+public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener,  OnSharedPreferenceChangeListener {
 	
     //private static final String TAG = "ViewByMeal";
     
@@ -132,7 +134,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     private Drawable indic_selected;
     private Animation fadeoutAnim;
     private static int TOTAL_NUMLISTS = VBM_NUMLISTS_BEFORE + VBM_NUMLISTS_AFTER + 1;
-    public static boolean locOrderChanged = false;
     
     private boolean isInfoBarMoving;
     
@@ -213,8 +214,8 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		mPager = (ViewPager) findViewById(R.id.listview_pager);
 
 		// retrieve location order from settings
-		PreferenceManager.initialize(this);
-		locIDsToShow = PreferenceManager.getLocIds();
+		PMealsPreferenceManager.initialize(this);
+		locIDsToShow = PMealsPreferenceManager.getLocIds();
 		// setup pager adapter
 		// HARD CODED meal type!!
 		mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.getCurrentMeal(0), 0, getSupportFragmentManager());
@@ -243,13 +244,13 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         
         // upgrade code
         // show help dialog on first time or upgrade
+		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
         int currentVer = 1;
         try {
 			currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
 			// better not get here lol
 		}
-		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
         if (prefs.getBoolean(PREF_FIRSTTIME, true) || (prefs.getInt(PREF_LASTVER, 0) < currentVer)) {
     		FirstTimeFragment ftf = new FirstTimeFragment();
     		ftf.show(getFragmentManager(), "firsttime");
@@ -259,6 +260,9 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         	editor.putInt(PREF_LASTVER, currentVer);
         	editor.commit();
         }
+        
+        // register pref listener
+        getSharedPreferences(PREFSFILENAME, 0).registerOnSharedPreferenceChangeListener(this);
     }
     
     // go to current meal
@@ -498,6 +502,17 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	startPageIndicatorFadeout();
     }
 
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (key.equals(PREF_LOCATIONORDER)) {
+			// update viewpager
+			int savePos = mPager.getCurrentItem();
+			mAdapter.newLocs(locIDsToShow);
+			mPager.setAdapter(mAdapter);
+			mPager.setCurrentItem(savePos);
+		}
+	}
+
     //----------------------------------------------------------------------------------------------------------
 
     @Override
@@ -583,14 +598,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         registerReceiver(timeChangedReceiver, sIntentFilter);
         startPageIndicatorFadeout();
         onTimeChanged();
-        if (locOrderChanged) {
-    		// update viewpager
-    		int savePos = mPager.getCurrentItem();
-    		mAdapter.newLocs(locIDsToShow);
-    		mPager.setAdapter(mAdapter);
-    		mPager.setCurrentItem(savePos);
-    		locOrderChanged = false;
-        }
     }
     
 }

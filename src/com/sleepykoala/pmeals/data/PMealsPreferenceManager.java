@@ -13,7 +13,7 @@ import java.util.Set;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class PreferenceManager {
+public class PMealsPreferenceManager {
 	
 	private static boolean isInitialized;
 	private static SharedPreferences prefs;
@@ -21,7 +21,7 @@ public class PreferenceManager {
 	private static Context ctx;
 
 	// can't be initialized
-	private PreferenceManager() {};
+	private PMealsPreferenceManager() {};
 
 	public static void initialize(Context c) {
 		if (!isInitialized) {

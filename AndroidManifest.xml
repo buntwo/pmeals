@@ -17,14 +17,18 @@
         android:theme="@style/AppTheme"
         android:allowBackup="true" >
         <activity
-            android:name=".activities.ViewByMeal"
-            android:label="@string/title_activity_viewbymeal"
+            android:name=".activities.Launcher"
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.ViewByMeal"
+            android:label="@string/title_activity_viewbymeal"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".activities.ViewByLocation"

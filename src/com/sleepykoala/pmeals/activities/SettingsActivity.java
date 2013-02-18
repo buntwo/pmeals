@@ -20,7 +20,7 @@ public class SettingsActivity extends Activity {
 		sIntentFilter = new IntentFilter();
 		sIntentFilter.addAction(C.ACTION_ABOUT);
 	}
-	private final BroadcastReceiver timeChangedReceiver = new BroadcastReceiver() {
+	private final BroadcastReceiver preferenceReceiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		Toast.makeText(SettingsActivity.this, "lol", Toast.LENGTH_SHORT).show();
@@ -45,13 +45,13 @@ public class SettingsActivity extends Activity {
     public void onPause() {
     	super.onPause();
     	// unregister receiver
-    	unregisterReceiver(timeChangedReceiver);
+    	unregisterReceiver(preferenceReceiver);
     }
 
     @Override
     public void onResume() {
     	super.onResume();
     	// register receiver
-        registerReceiver(timeChangedReceiver, sIntentFilter);
+        registerReceiver(preferenceReceiver, sIntentFilter);
     }
 }

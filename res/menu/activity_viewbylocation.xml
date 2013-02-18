@@ -15,6 +15,11 @@
         android:actionViewClass="android.widget.SearchView" />
     
     <item
+        android:id="@+id/selectDiningHalls"
+        android:title="View dining halls"
+        android:showAsAction="never" />
+    
+    <item
         android:id="@+id/legend"
         android:title="Show legend"
         android:icon="@drawable/ic_help"

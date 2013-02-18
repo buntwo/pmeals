@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
-    <Preference android:title="@string/title_activity_reorderlocations" >
+    <ListPreference android:key="@string/pref_defaultShowKey"
+        android:title="@string/pref_defaultShowTitle"
+        android:summary="@string/pref_defaultShowSummary"
+        android:entries="@array/pref_defaultShowEntries"
+        android:entryValues="@array/pref_defaultShowValues"
+        android:defaultValue="-1" />
+    
+    <Preference android:title="@string/pref_reorderLocsTitle" >
         <intent 
             android:targetPackage="com.sleepykoala.pmeals"
             android:targetClass="com.sleepykoala.pmeals.activities.ReorderLocations" />
     </Preference>
         
-    
     <Preference android:title="@string/feedback"
-        android:summary="Feedback or bugs" >
+        android:summary="@string/feedbackSummary" >
         <intent android:action="android.intent.action.VIEW"
             android:data="mailto:sleepykoala03@gmail.com?subject=PMeals Feedack" />
     </Preference>

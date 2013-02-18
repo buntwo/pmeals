@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
-import com.sleepykoala.pmeals.data.PreferenceManager;
+import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 
 public class ReorderLocations extends Activity {
 	
@@ -39,7 +39,7 @@ public class ReorderLocations extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reorderlocations);
         
-        locIDs = PreferenceManager.getLocIds();
+        locIDs = PMealsPreferenceManager.getLocIds();
         
         locNames = new ArrayList<String>();
         numLocs = locIDs.size();
@@ -78,9 +78,7 @@ public class ReorderLocations extends Activity {
     //-------------------------------------------------BUTTON CALLBACKS-----------------------------------------------
     
     public void done(View v) {
-    	PreferenceManager.storeLocIds(locIDs);
-    	
-    	ViewByMeal.locOrderChanged = true;
+    	PMealsPreferenceManager.storeLocIds(locIDs);
     	finish();
     }
     
@@ -95,7 +93,6 @@ public class ReorderLocations extends Activity {
     }
     
     public void cancel(View v) {
-    	setResult(RESULT_CANCELED);
     	finish();
     }
     

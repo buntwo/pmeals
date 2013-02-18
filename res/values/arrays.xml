@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_defaultShowEntries" >
+        <item>Dining halls</item>
+        <item>Frist Gallery</item>
+        <item>Whitherspoon\'s</item>
+        <item>Cafe Vivian</item>
+        <item>Chancellor Green Cafe</item>
+        <item>Chemistry CaFe</item>
+        <item>Woody Woo Cafe</item>
+    </string-array>
+    <string-array name="pref_defaultShowValues" >
+        <item>-1</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+    </string-array>
+    
+</resources>

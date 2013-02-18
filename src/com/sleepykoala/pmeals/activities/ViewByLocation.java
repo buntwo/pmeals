@@ -201,14 +201,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         aB.setDisplayShowTitleEnabled(true);
         aB.setDisplayHomeAsUpEnabled(true);
         aB.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        // hard coded info type!! (nickname)
-        /*
-        PreferenceManager.initialize(this);
-        ArrayList<Integer> locIds = PreferenceManager.getLocIds();
-        ArrayList<String> locNames = new ArrayList<String>(locIds.size());
-        for (Integer i : locIds)
-        	locNames.add(lP.getById(i).nickname);
-         */
         aB.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.actionbar_viewbylocation_spinner,
         		R.id.action_viewbylocation_spinnertext, lP.getInfoArray(1)), this);
         int index = LocationProvider.idToIndex(intent.getIntExtra(EXTRA_LOCATIONID, -1));
@@ -460,8 +452,13 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		gotoToday();
     		return true;
     	case android.R.id.home:
-    		Intent intent = new Intent(this, ViewByMeal.class);
-    		startActivity(intent);
+    		Intent home = new Intent(this, ViewByMeal.class);
+    		home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    		startActivity(home);
+    		return true;
+    	case R.id.selectDiningHalls:
+    		Intent vbm = new Intent(this, ViewByMeal.class);
+    		startActivity(vbm);
     		return true;
     	case R.id.jumptodate:
     		DatePickerDialogFragment datePicker = DatePickerDialogFragment.newInstance(
