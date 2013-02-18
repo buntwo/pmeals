@@ -55,3 +55,7 @@ Fixed widget buttons....
 1.1.2
 Bugfixes
 Annoying "sauteed" bug fixed
+
+1.2.0
+Added non dining hall locations
+Internally all times stored as longs (millis since epoch)

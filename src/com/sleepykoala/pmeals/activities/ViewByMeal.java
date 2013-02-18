@@ -4,7 +4,10 @@ import static com.sleepykoala.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.sleepykoala.pmeals.data.C.ALPHA_DISABLED;
 import static com.sleepykoala.pmeals.data.C.ALPHA_ENABLED;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR;
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
+import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 import static com.sleepykoala.pmeals.data.C.MEAL_PASSED_COLOR;
 import static com.sleepykoala.pmeals.data.C.MINUTES_END_ALERT;
@@ -14,7 +17,6 @@ import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
-import static com.sleepykoala.pmeals.data.C.REQCODE_REORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
@@ -24,10 +26,14 @@ import java.util.ArrayList;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -57,11 +63,13 @@ import com.sleepykoala.pmeals.adapters.MealViewPagerAdapter;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
+import com.sleepykoala.pmeals.data.Location;
+import com.sleepykoala.pmeals.data.LocationProvider;
+import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.PreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
-import com.sleepykoala.pmeals.fragments.AboutFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment.OnDateSelectedListener;
 import com.sleepykoala.pmeals.fragments.FirstTimeFragment;
@@ -93,6 +101,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 	};
 	
     private MealTimeProvider mTP;
+    private LocationProvider lP;
     
     private DatedMealTime mealDisplayed;
     private DatedMealTime currentMeal;
@@ -123,6 +132,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     private Drawable indic_selected;
     private Animation fadeoutAnim;
     private static int TOTAL_NUMLISTS = VBM_NUMLISTS_BEFORE + VBM_NUMLISTS_AFTER + 1;
+    public static boolean locOrderChanged = false;
     
     private boolean isInfoBarMoving;
     
@@ -148,15 +158,13 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			throw new RuntimeException("Cannot find asset " + MEALTIMESXML + "!!");
 		}
 		mTP = MealTimeProviderFactory.newMealTimeProvider();
-		/*
         // get location provider
         try {
         	LocationProviderFactory.initialize(getAssets().open(LOCATIONSXML));
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot find asset " + LOCATIONSXML + "!!");
 		}
-        LocationProvider lP = LocationProviderFactory.newLocationProvider();
-        */
+        lP = LocationProviderFactory.newLocationProvider();
         
         // cache animations
         dropdown0 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown0);
@@ -378,17 +386,13 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			} else 
 				infoBarColor = NO_ALERT_COLOR;
 		}
-		
-		if (newMeal) {
-			if (!isInfoBarMoving) {
-				// fancy dropdown animation
-				mealInfoView0.startAnimation(dropdown0);
-				mealInfoView1.startAnimation(dropdown1);
-				updateInfoBar();
-			} else
-				updateInfoBar();
-		} else
-			updateInfoBar();
+
+		if (newMeal && !isInfoBarMoving) {
+			// fancy dropdown animation
+			mealInfoView0.startAnimation(dropdown0);
+			mealInfoView1.startAnimation(dropdown1);
+		}
+		updateInfoBar();
     }
     
     private void updateInfoBar() {
@@ -458,6 +462,21 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	}
     }
     
+    private class NonDiningHallClickListener implements OnClickListener {
+    	int[] ids;
+    	public NonDiningHallClickListener(int[] ids) {
+    		this.ids = ids;
+    	}
+    	
+    	public void onClick(DialogInterface dialog, int which) {
+    		dialog.dismiss();
+    		Intent intent = new Intent(ViewByMeal.this, ViewByLocation.class);
+    		intent.putExtra(EXTRA_LOCATIONID,  ids[which]);
+    		intent.putExtra(EXTRA_DATE, mealDisplayed.date.toString());
+    		startActivity(intent);
+    	}
+    }
+
     // date picker dialog callback
     // create another dialog for meal selection
     public void dateSelected(Date dt) {
@@ -473,7 +492,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     public void onMealSelected(String mealName) {
     	mAdapter = new MealViewPagerAdapter(locIDsToShow, mTP.constructMeal(mealName, selectedDate, 0),
     			0, getSupportFragmentManager());
-    	int oldPosition = mPager.getCurrentItem();
     	mPager.setAdapter(mAdapter);
     	mPager.setOnPageChangeListener(new TitleChangeListener());
 		mPager.setCurrentItem(mAdapter.getMiddleIndex());
@@ -521,17 +539,28 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     				);
     		datePicker.show(getFragmentManager(), "datePicker");
     		return true;
-    	case R.id.about:
-    		AboutFragment about = new AboutFragment();
-    		about.show(getFragmentManager(), "about");
+    	case R.id.selectOthers:
+    		AlertDialog.Builder b = new Builder(this, R.style.Theme_Dialog_NoFrame);
+    		b.setTitle("Select location");
+    		ArrayList<Location> locs = lP.getNonDiningHalls();
+    		int size = locs.size();
+    		String[] locNames = new String[size];
+    		int[] ids = new int[size];
+    		for (int i = 0; i < size; ++i) {
+    			Location l = locs.get(i);
+    			locNames[i] = l.nickname;
+    			ids[i] = l.ID;
+    		}
+    		b.setItems(locNames, new NonDiningHallClickListener(ids));
+    		b.show();
     		return true;
     	case R.id.legend:
     		LegendFragment legend = new LegendFragment();
     		legend.show(getFragmentManager(), "legend");
     		return true;
-    	case R.id.reorder:
-    		Intent intent = new Intent(this, ReorderLocations.class);
-    		startActivityForResult(intent, REQCODE_REORDER);
+    	case R.id.settings:
+    		Intent settings = new Intent(this, SettingsActivity.class);
+    		startActivity(settings);
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);
@@ -540,21 +569,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 
     //---------------------------------------------------------------------------------------------
     
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if (requestCode == REQCODE_REORDER) {
-    		if (resultCode == RESULT_CANCELED)
-    			return;
-    		// result was ok
-    		locIDsToShow = PreferenceManager.getLocIds();
-    		// update viewpager
-    		int savePos = mPager.getCurrentItem();
-    		mAdapter.newLocs(locIDsToShow);
-    		mPager.setAdapter(mAdapter);
-    		mPager.setCurrentItem(savePos);
-    	}
-    }
-
     @Override
     public void onPause() {
     	super.onPause();
@@ -569,6 +583,14 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         registerReceiver(timeChangedReceiver, sIntentFilter);
         startPageIndicatorFadeout();
         onTimeChanged();
+        if (locOrderChanged) {
+    		// update viewpager
+    		int savePos = mPager.getCurrentItem();
+    		mAdapter.newLocs(locIDsToShow);
+    		mPager.setAdapter(mAdapter);
+    		mPager.setCurrentItem(savePos);
+    		locOrderChanged = false;
+        }
     }
     
 }

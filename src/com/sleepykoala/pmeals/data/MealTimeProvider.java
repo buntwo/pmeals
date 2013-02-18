@@ -172,26 +172,6 @@ public class MealTimeProvider {
 	
 	//-----------------------------------------PRIVATE STATIC METHODS--------------------------------
 	
-	// check if given Time is same date as given DatedMealTime
-	private static boolean sameDate(Time tm, DatedMealTime meal) {
-		Time date = meal.date;
-		return tm.year == date.year && tm.month == date.month && tm.monthDay == date.monthDay;
-	}
-	
-	// check if given Time's date is before given DatedMealTime
-	private static boolean beforeDate(Time tm, DatedMealTime meal) {
-		Time date = meal.date;
-		return tm.year < date.year || tm.year == date.year &&
-				(tm.month < date.month || tm.month == date.month && tm.monthDay < date.monthDay);
-	}
-	
-	// check if given Time's date is after given DatedMealTime
-	private static boolean afterDate(Time tm, DatedMealTime meal) {
-		Time date = meal.date;
-		return tm.year > date.year || tm.year == date.year &&
-				(tm.month > date.month || tm.month == date.month && tm.monthDay > date.monthDay);
-	}
-	
 	// whether or not the given Time is before the given meal's starting time
 	private static boolean isBeforeMeal(Time tm, MealTime meal) {
 		return isBefore(tm, meal.startTime);
@@ -209,7 +189,8 @@ public class MealTimeProvider {
 	
 	// whether or not given Time is before given long time
 	private static boolean isBefore(Time tm, long time) {
-		return tm.toMillis(false) < time;
+		return TimeUnit.MILLISECONDS.toMinutes(tm.toMillis(false))
+				< TimeUnit.MILLISECONDS.toMinutes(time);
 	}
 	
 	private static Time getCurTime() {
@@ -230,8 +211,8 @@ public class MealTimeProvider {
 		Time tm = getCurTime();
 		int[] timeTill = new int[2];
 		long mealTime = (start) ? meal.startTime : meal.endTime;
-		long till = mealTime - tm.toMillis(false);
-		till = TimeUnit.MILLISECONDS.toMinutes(till);
+		long till = TimeUnit.MILLISECONDS.toMinutes(mealTime)
+				- TimeUnit.MILLISECONDS.toMinutes(tm.toMillis(false));
 		timeTill[0] = (int) (till / 60);
 		timeTill[1] = (int) (till % 60);
 		return timeTill;

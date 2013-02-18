@@ -61,7 +61,6 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
-import com.sleepykoala.pmeals.fragments.AboutFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment.OnDateSelectedListener;
 import com.sleepykoala.pmeals.fragments.LegendFragment;
@@ -171,14 +170,16 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         indic_selected = res.getDrawable(R.drawable.pageindicator_selected);
         // load fadeout animation
         fadeoutAnim = AnimationUtils.loadAnimation(ViewByLocation.this, R.anim.pageindicator_fadeout);
-		
+
         // cache food indicator drawables if not already cached by VBM
         // (e.g., entry from widget)
-		ViewByMeal.vegan = res.getDrawable(R.drawable.vegan);
-		ViewByMeal.vegetarian = res.getDrawable(R.drawable.vegetarian);
-		ViewByMeal.pork = res.getDrawable(R.drawable.pork);
-		ViewByMeal.nuts = res.getDrawable(R.drawable.nuts);
-		ViewByMeal.outline = res.getDrawable(R.drawable.foodinfo_outline);
+        if (ViewByMeal.vegan == null) {
+        	ViewByMeal.vegan = res.getDrawable(R.drawable.vegan);
+        	ViewByMeal.vegetarian = res.getDrawable(R.drawable.vegetarian);
+        	ViewByMeal.pork = res.getDrawable(R.drawable.pork);
+        	ViewByMeal.nuts = res.getDrawable(R.drawable.nuts);
+        	ViewByMeal.outline = res.getDrawable(R.drawable.foodinfo_outline);
+        }
 		
 		// set location
 		Intent intent = getIntent();
@@ -318,9 +319,8 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 			// fancy dropdown animation
 			mealInfoView0.startAnimation(dropdown0);
 			mealInfoView1.startAnimation(dropdown1);
-			updateInfoBar();
-		} else
-			updateInfoBar();
+		}
+		updateInfoBar();
     }
     
     private void updateInfoBar() {
@@ -469,13 +469,13 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     				);
     		datePicker.show(getFragmentManager(), "DatePicker");
     		return true;
-    	case R.id.about:
-    		AboutFragment about = new AboutFragment();
-    		about.show(getFragmentManager(), "about");
-    		return true;
     	case R.id.legend:
     		LegendFragment legend = new LegendFragment();
     		legend.show(getFragmentManager(), "legend");
+    		return true;
+    	case R.id.settings:
+    		Intent settings = new Intent(this, SettingsActivity.class);
+    		startActivity(settings);
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);

@@ -20,6 +20,7 @@ public class SearchResultsListAdapter extends BaseAdapter {
 	
 	//private static final String DATEFORMAT = "EEE, MMM d, yyyy";
 	
+	// double array, first index is type
 	private ArrayList<String[]> data;
 	private LayoutInflater mInflater;
 	
@@ -49,8 +50,11 @@ public class SearchResultsListAdapter extends BaseAdapter {
 				data.add(new String[]{"0", date.toStringPretty(true, false)});
 				curDate = date;
 			}
-			data.add(new String[]{"1", getItemName(c), getMealName(c),
-					getLocName(c), getDate(c), String.valueOf(getLocID(c))});
+			String[] result = new String[]{"1", getItemName(c), getMealName(c),
+					getLocName(c), getDate(c), String.valueOf(getLocID(c))};
+			if (!isDiningHall(result[2]))
+				result[2] = "";
+			data.add(result);
 			c.moveToNext();
 		}
 		return;
@@ -122,6 +126,19 @@ public class SearchResultsListAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
+	/**
+	 * Given a meal name, check if it is Breakfast, Lunch, or Dinner.
+	 * This occurs exactly when the location is a dining hall, hence
+	 * the method name.
+	 * 
+	 * @param mealName Meal name from location
+	 * @return If name is Breakfast, Lunch, or Dinner
+	 */
+	private boolean isDiningHall(String mealName) {
+		return (mealName.equals("Breakfast") || mealName.equals("Lunch")
+				|| mealName.equals("Dinner"));
+	}
+	
 	//---------------------------------------------CURSOR GETTERS-------------------------------------
 	
 	private String getItemName(Cursor c) {
@@ -149,7 +166,7 @@ public class SearchResultsListAdapter extends BaseAdapter {
 		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.DATE));
 	}
 	
-	//---------------------------------------------STATIC HOLDER CLASS--------------------------------
+	//---------------------------------------------STATIC HOLDER CLASSES--------------------------------
 	
 	private static class DateHolder {
 		TextView date;

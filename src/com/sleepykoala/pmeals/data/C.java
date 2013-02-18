@@ -92,6 +92,7 @@ public final class C {
     public static final String ACTION_DATEFORMATTOGGLED = "com.sleepykoala.pmeals.action.DATEFORMATTOGGLED";
     public static final String ACTION_WIDGET_FORWARD = "com.sleepykoala.pmeals.action.WIDGETFORWARD";
     public static final String ACTION_WIDGET_BACKWARD = "com.sleepykoala.pmeals.action.WIDGETBACKWARD";
+    public static final String ACTION_ABOUT = "com.sleepykoala.pmeals.action.ABOUT";
     // request codes
     public static final int REQCODE_REORDER = 1;
     
@@ -107,4 +108,7 @@ public final class C {
     public static final String PREF_WIDGET_LOCID = "widget_locid";
     public static final String PREF_WIDGET_LOCNAME = "widget_locname";
     public static final String PREF_WIDGET_TYPE = "widget_type";
+    
+    // feedback email
+    public static final String FEEDBACK_EMAIL = "sleepykoala03@gmail.com";
 }

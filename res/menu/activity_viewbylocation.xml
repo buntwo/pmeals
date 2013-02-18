@@ -25,8 +25,9 @@
         android:title="Jump to date"
         android:showAsAction="never" />
     
-    <item android:id="@+id/about"
-        android:title="About"
+    <item
+        android:id="@+id/settings"
+        android:title="Settings"
         android:showAsAction="never" />
-
+    
 </menu>

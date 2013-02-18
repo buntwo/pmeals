@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style
         name="Theme_Dialog_NoFrame"
-        parent="android:Theme.Holo.Dialog"
-        >
+        parent="android:Theme.Holo.Dialog" >
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

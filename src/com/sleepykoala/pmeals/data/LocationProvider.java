@@ -8,6 +8,7 @@ public class LocationProvider {
 	
 	//private static final String DEBUG_TAG = "LocationProvider";
 	
+	// double array, top level is type, second level is locations
 	private ArrayList<ArrayList<Location>> locations;
 
 	public LocationProvider(ArrayList<ArrayList<Location>> aLocations) {
@@ -63,6 +64,14 @@ public class LocationProvider {
 			}
 		}
 		return info;
+	}
+	
+	// return arraylist of non-dining hall locations
+	public ArrayList<Location> getNonDiningHalls() {
+		ArrayList<Location> ret = new ArrayList<Location>();
+		for (int i = 3; i < locations.size(); ++i)
+			ret.addAll(locations.get(i));
+		return ret;
 	}
 	
 	// return location with given index

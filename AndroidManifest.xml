@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:uiOptions="splitActionBarWhenNarrow"
         android:icon="@drawable/launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
@@ -27,7 +28,7 @@
         </activity>
         <activity
             android:name=".activities.ViewByLocation"
-            android:label="@string/title_activity_viewbylocation">
+            android:label="@string/title_activity_viewbylocation" >
         </activity>
         <activity
             android:name=".activities.ReorderLocations"
@@ -47,10 +48,17 @@
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/meal_search" />
         </activity>
-        <activity android:name=".activities.WidgetConfigurator">
+        <activity android:name=".activities.WidgetConfigurator"
+            android:label="@string/title_activity_widgetconfigurator" >
 		    <intent-filter>
 		        <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
 		    </intent-filter>
+		</activity>
+        <activity android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@android:style/Theme.Holo"
+            android:launchMode="singleTask"
+            android:exported="false" >
 		</activity>
 
         <provider

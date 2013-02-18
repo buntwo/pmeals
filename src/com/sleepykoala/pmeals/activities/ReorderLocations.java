@@ -80,7 +80,7 @@ public class ReorderLocations extends Activity {
     public void done(View v) {
     	PreferenceManager.storeLocIds(locIDs);
     	
-    	setResult(RESULT_OK);
+    	ViewByMeal.locOrderChanged = true;
     	finish();
     }
     

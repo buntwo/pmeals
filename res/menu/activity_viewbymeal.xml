@@ -15,6 +15,11 @@
         android:actionViewClass="android.widget.SearchView" />
     
     <item
+        android:id="@+id/selectOthers"
+        android:title="View other locations"
+        android:showAsAction="never" />
+    
+    <item
         android:id="@+id/legend"
         android:title="Show legend"
         android:icon="@drawable/ic_help"
@@ -25,14 +30,9 @@
         android:title="Jump to meal"
         android:showAsAction="never" />
     
-    <item android:id="@+id/reorder"
-        android:title="@string/title_activity_reorderlocations"
-        android:showAsAction="never" />
-    
     <item
-        android:id="@+id/about"
-        android:title="About"
+        android:id="@+id/settings"
+        android:title="Settings"
         android:showAsAction="never" />
     
-
 </menu>
