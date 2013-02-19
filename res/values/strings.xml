@@ -39,6 +39,8 @@
     <string name="cancel">Cancel</string>
     <string name="feedback">Contact developer</string>
     <string name="feedbackSummary">Feedback, bugs, comments, or anything else!</string>
+    <string name="giveRatingTitle">Rate this app!</string>
+    <string name="giveRatingSummary">Go to Android Marketplace</string>
     
     <!-- First time dialog strings -->
     <string name="firsttime1">Thanks for downloading PMeals! Here are some tips to help you use the app.</string>

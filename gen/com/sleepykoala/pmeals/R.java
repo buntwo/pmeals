@@ -176,15 +176,17 @@ public final class R {
         public static final int feedbackSummary=0x7f0a0021;
         /**  First time dialog strings 
          */
-        public static final int firsttime1=0x7f0a0022;
-        public static final int firsttime2=0x7f0a0023;
-        public static final int firsttime3=0x7f0a0024;
-        public static final int firsttime4=0x7f0a0025;
-        public static final int firsttime5=0x7f0a002a;
-        public static final int legend1=0x7f0a0026;
-        public static final int legend2=0x7f0a0027;
-        public static final int legend3=0x7f0a0028;
-        public static final int legend4=0x7f0a0029;
+        public static final int firsttime1=0x7f0a0024;
+        public static final int firsttime2=0x7f0a0025;
+        public static final int firsttime3=0x7f0a0026;
+        public static final int firsttime4=0x7f0a0027;
+        public static final int firsttime5=0x7f0a002c;
+        public static final int giveRatingSummary=0x7f0a0023;
+        public static final int giveRatingTitle=0x7f0a0022;
+        public static final int legend1=0x7f0a0028;
+        public static final int legend2=0x7f0a0029;
+        public static final int legend3=0x7f0a002a;
+        public static final int legend4=0x7f0a002b;
         public static final int loading=0x7f0a0010;
         public static final int menu_settings=0x7f0a0002;
         public static final int pref_reorderLocsSummary=0x7f0a0015;

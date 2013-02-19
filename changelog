@@ -59,3 +59,7 @@ Annoying "sauteed" bug fixed
 1.2.0
 Added non dining hall locations
 Internally all times stored as longs (millis since epoch)
+Added settings
+May have fixed multiple fragment refresh item bug
+Split action bar
+Contact developer, rate app

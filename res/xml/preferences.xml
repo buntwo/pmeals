@@ -15,6 +15,12 @@
     
     <com.sleepykoala.pmeals.fragments.DeleteSearchHistoryPreference
         android:title="@string/deleteSearchHistoryTitle" />
+    
+    <Preference android:title="@string/giveRatingTitle"
+        android:summary="@string/giveRatingSummary">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="market://details?id=com.sleepykoala.pmeals" />
+    </Preference>
         
     <Preference android:title="@string/feedback"
         android:summary="@string/feedbackSummary" >
