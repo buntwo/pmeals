@@ -27,8 +27,7 @@
         </activity>
         <activity
             android:name=".activities.ViewByMeal"
-            android:label="@string/title_activity_viewbymeal"
-            android:launchMode="singleTask" >
+            android:label="@string/title_activity_viewbymeal" >
         </activity>
         <activity
             android:name=".activities.ViewByLocation"

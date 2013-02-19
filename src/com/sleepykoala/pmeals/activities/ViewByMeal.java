@@ -452,6 +452,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	public void onClick(DialogInterface dialog, int which) {
     		dialog.dismiss();
     		Intent intent = new Intent(ViewByMeal.this, ViewByLocation.class);
+    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     		intent.putExtra(EXTRA_LOCATIONID,  ids[which]);
     		intent.putExtra(EXTRA_DATE, mealDisplayed.date.toString());
     		startActivity(intent);

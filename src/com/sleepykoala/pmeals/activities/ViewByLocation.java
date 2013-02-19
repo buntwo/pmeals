@@ -461,6 +461,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		return true;
     	case R.id.selectDiningHalls:
     		Intent vbm = new Intent(this, ViewByMeal.class);
+    		vbm.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     		startActivity(vbm);
     		return true;
     	case R.id.jumptodate:
