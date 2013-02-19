@@ -71,7 +71,8 @@ public final class C {
 	
 	// infobar colors
     public static final int MEAL_PASSED_COLOR = 0x222222;
-    public static final int NO_ALERT_COLOR = 0x218211;
+    public static final int IN_MEAL_COLOR = 0x218211;
+    public static final int BEFORE_MEAL_COLOR = 0x868686;
     public static final int START_ALERT_COLOR = 0xffbd00;
     public static final int END_ALERT_COLOR = 0xc60000;
     // listview non-main location colors

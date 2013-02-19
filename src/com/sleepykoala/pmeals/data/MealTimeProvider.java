@@ -128,7 +128,9 @@ public class MealTimeProvider {
 		return getMealBeforeTime(type, tm);
 	}
 	
-	// returns -1 if before a meal, 0 if after a meal, 1 if in a meal
+	// returns -1 if before a meal
+	//		    0 if after a meal
+	//   		1 if in a meal
 	public static int currentMealStatus(DatedMealTime meal) {
 		Time tm = getCurTime();
 		if (tm.toMillis(false) >= meal.endTime)

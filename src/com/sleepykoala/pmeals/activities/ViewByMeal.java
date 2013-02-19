@@ -3,16 +3,17 @@ package com.sleepykoala.pmeals.activities;
 import static com.sleepykoala.pmeals.data.C.ALERT_FADEIN_TIME;
 import static com.sleepykoala.pmeals.data.C.ALPHA_DISABLED;
 import static com.sleepykoala.pmeals.data.C.ALPHA_ENABLED;
+import static com.sleepykoala.pmeals.data.C.BEFORE_MEAL_COLOR;
 import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
+import static com.sleepykoala.pmeals.data.C.IN_MEAL_COLOR;
 import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 import static com.sleepykoala.pmeals.data.C.MEAL_PASSED_COLOR;
 import static com.sleepykoala.pmeals.data.C.MINUTES_END_ALERT;
 import static com.sleepykoala.pmeals.data.C.MINUTES_START_ALERT;
-import static com.sleepykoala.pmeals.data.C.NO_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
@@ -352,21 +353,20 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			}
 		}
 		mealInfo = newTitleText.toString();
-		
+
 		// get new color
-		if (mealStatus == 0) {
+		if (mealStatus == 0)
 			infoBarColor = MEAL_PASSED_COLOR;
-		} else {
-			if (timeTo[0] == 0) {
-				if (inMeal && timeTo[1] <= MINUTES_END_ALERT)
-					infoBarColor = END_ALERT_COLOR;
-				else if (!inMeal && timeTo[1] <= MINUTES_START_ALERT)
-					infoBarColor = START_ALERT_COLOR;
-				else
-					infoBarColor = NO_ALERT_COLOR;
-			} else 
-				infoBarColor = NO_ALERT_COLOR;
-		}
+		else if (mealStatus == 1)
+			if (timeTo[0] == 0 && timeTo[1] <= MINUTES_END_ALERT)
+				infoBarColor = END_ALERT_COLOR;
+			else
+				infoBarColor = IN_MEAL_COLOR;
+		else
+			if (timeTo[0] == 0 && timeTo[1] <= MINUTES_START_ALERT)
+				infoBarColor = START_ALERT_COLOR;
+			else
+				infoBarColor = BEFORE_MEAL_COLOR;
 
 		if (newMeal && !isInfoBarMoving) {
 			// fancy dropdown animation
