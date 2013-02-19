@@ -17,15 +17,5 @@
 	    android:textColor="@android:color/white"
 	    android:textSize="15sp"
 	    />
-	
-	<ImageView
-	    android:id="@+id/reorder_selector"
-	    android:layout_width="18sp"
-	    android:layout_height="18sp"
-	    android:src="@drawable/updown"
-	    android:visibility="visible"
-	    android:layout_gravity="center_vertical"
-	    />
-    
 
 </LinearLayout>

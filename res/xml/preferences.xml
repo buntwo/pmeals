@@ -12,6 +12,9 @@
             android:targetPackage="com.sleepykoala.pmeals"
             android:targetClass="com.sleepykoala.pmeals.activities.ReorderLocations" />
     </Preference>
+    
+    <com.sleepykoala.pmeals.fragments.DeleteSearchHistoryPreference
+        android:title="@string/deleteSearchHistoryTitle" />
         
     <Preference android:title="@string/feedback"
         android:summary="@string/feedbackSummary" >

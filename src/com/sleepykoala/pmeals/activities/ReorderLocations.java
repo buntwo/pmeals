@@ -3,7 +3,6 @@ package com.sleepykoala.pmeals.activities;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +30,7 @@ public class ReorderLocations extends Activity {
 	private ArrayList<TextView> views;
 	// light gray color
 	private int LIGHT_GRAY;
+	private int WHITE;
 	
 	private int numLocs;
 
@@ -42,6 +41,7 @@ public class ReorderLocations extends Activity {
         setContentView(R.layout.activity_reorderlocations);
         
         LIGHT_GRAY = getResources().getColor(R.color.light_gray);
+        WHITE = 0xffffffff;
         locIDs = PMealsPreferenceManager.getLocIds();
         
         locNames = new ArrayList<String>();
@@ -61,14 +61,11 @@ public class ReorderLocations extends Activity {
         for (int i = 0; i < numLocs; ++i) {
         	LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.reorder_name, null);
         	TextView tv = (TextView) ll.findViewById(R.id.reorder_name);
-        	ImageView iv = (ImageView) ll.findViewById(R.id.reorder_selector);
         	container.addView(ll);
         	views.add(tv);
         	tv.setText(locNames.get(i));
         	ll.setOnTouchListener(new ReorderTouchListener(i));
         	ll.setOnDragListener(new ReorderDragListener(i));
-        	tv.setTag(iv);
-        	
         }
         
     }
@@ -132,11 +129,8 @@ public class ReorderLocations extends Activity {
 			int dragging = (Integer) event.getLocalState();
 			switch (action) {
 			case DragEvent.ACTION_DRAG_STARTED:
-				if (dragging != num) { // not selected one
-					v.findViewById(R.id.reorder_selector).setVisibility(View.INVISIBLE);
+				if (dragging != num) // not selected one
 					tv.setTextColor(LIGHT_GRAY);
-				} else { // is selected one
-				}
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
 				// redraw data
@@ -148,8 +142,7 @@ public class ReorderLocations extends Activity {
 							++offset;
 						if (i == num) {
 							tv.setText(locNames.get(dragging));
-							tv.setTextColor(0xffffffff); // white
-							((View) tv.getTag()).setVisibility(View.VISIBLE);
+							tv.setTextColor(WHITE);
 							--offset;
 							continue;
 						} else {
@@ -162,8 +155,7 @@ public class ReorderLocations extends Activity {
 					for (int i = 0; i < numLocs; ++i) {
 						if (i == num) {
 							tv.setText(locNames.get(dragging));
-							tv.setTextColor(0xffffffff); // white
-							((View) tv.getTag()).setVisibility(View.VISIBLE);
+							tv.setTextColor(WHITE);
 							--offset;
 							continue;
 						} else {
@@ -177,11 +169,6 @@ public class ReorderLocations extends Activity {
 				}
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
-				/*
-				v.findViewById(R.id.reorder_selector).setVisibility(View.INVISIBLE);
-				tv.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-				tv.setTextColor(LIGHT_GRAY);
-				//*/
 				break;
 			case DragEvent.ACTION_DROP:
 				dragging = (Integer) event.getLocalState();
@@ -189,11 +176,7 @@ public class ReorderLocations extends Activity {
 				locIDs.add(num, locIDs.remove(dragging));
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
-				// clear icon
-				v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
-				// unbold
-				tv.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-				tv.setTextColor(0xffffffff); // white
+				tv.setTextColor(WHITE);
 				break;
 				
 			}
