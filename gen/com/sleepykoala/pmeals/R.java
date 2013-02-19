@@ -160,20 +160,20 @@ public final class R {
         public static final int menuitem_context=0x7f0b0004;
     }
     public static final class string {
-        public static final int about=0x7f0a001e;
-        public static final int aboutSummary=0x7f0a001f;
+        public static final int about=0x7f0a0018;
+        public static final int aboutSummary=0x7f0a0019;
         public static final int app_info=0x7f0a0009;
         public static final int app_name=0x7f0a0000;
-        public static final int cancel=0x7f0a000f;
-        public static final int context_search=0x7f0a0019;
-        public static final int copy=0x7f0a0018;
+        public static final int cancel=0x7f0a001f;
+        public static final int context_search=0x7f0a0013;
+        public static final int copy=0x7f0a0012;
         public static final int credits_authors=0x7f0a000b;
         public static final int credits_categories=0x7f0a000a;
-        public static final int deleteSearchHistoryText=0x7f0a0021;
-        public static final int deleteSearchHistoryTitle=0x7f0a0020;
-        public static final int done=0x7f0a000d;
-        public static final int feedback=0x7f0a0015;
-        public static final int feedbackSummary=0x7f0a0016;
+        public static final int deleteSearchHistoryText=0x7f0a001b;
+        public static final int deleteSearchHistoryTitle=0x7f0a001a;
+        public static final int done=0x7f0a001d;
+        public static final int feedback=0x7f0a0020;
+        public static final int feedbackSummary=0x7f0a0021;
         /**  First time dialog strings 
          */
         public static final int firsttime1=0x7f0a0022;
@@ -185,22 +185,22 @@ public final class R {
         public static final int legend2=0x7f0a0027;
         public static final int legend3=0x7f0a0028;
         public static final int legend4=0x7f0a0029;
-        public static final int loading=0x7f0a0014;
+        public static final int loading=0x7f0a0010;
         public static final int menu_settings=0x7f0a0002;
-        public static final int pref_reorderLocsSummary=0x7f0a001b;
+        public static final int pref_reorderLocsSummary=0x7f0a0015;
         /**  Preference strings 
          */
-        public static final int pref_reorderLocsTitle=0x7f0a001a;
-        public static final int pref_startupShowKey=0x7f0a001c;
-        public static final int pref_startupShowTitle=0x7f0a001d;
-        public static final int reorder_instr=0x7f0a000c;
-        public static final int reset=0x7f0a000e;
-        public static final int search=0x7f0a0010;
-        public static final int searchHint=0x7f0a0011;
-        public static final int searching=0x7f0a0012;
+        public static final int pref_reorderLocsTitle=0x7f0a0014;
+        public static final int pref_startupShowKey=0x7f0a0016;
+        public static final int pref_startupShowTitle=0x7f0a0017;
+        public static final int reorder_instr=0x7f0a001c;
+        public static final int reset=0x7f0a001e;
+        public static final int search=0x7f0a000c;
+        public static final int searchHint=0x7f0a000d;
+        public static final int searching=0x7f0a000e;
         /**  Context menu 
          */
-        public static final int share=0x7f0a0017;
+        public static final int share=0x7f0a0011;
         public static final int title_activity_meal_searcher=0x7f0a0005;
         public static final int title_activity_reorderlocations=0x7f0a0006;
         public static final int title_activity_settings=0x7f0a0008;
@@ -208,7 +208,7 @@ public final class R {
         public static final int title_activity_viewbymeal=0x7f0a0003;
         public static final int title_activity_widgetconfigurator=0x7f0a0007;
         public static final int version=0x7f0a0001;
-        public static final int widgetconfig_instr=0x7f0a0013;
+        public static final int widgetconfig_instr=0x7f0a000f;
     }
     public static final class style {
         public static final int AppTheme=0x7f080001;

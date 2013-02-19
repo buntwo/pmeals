@@ -3,7 +3,6 @@ package com.sleepykoala.pmeals.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.sleepykoala.pmeals.R;
