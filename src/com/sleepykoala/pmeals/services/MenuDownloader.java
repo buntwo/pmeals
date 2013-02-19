@@ -83,6 +83,7 @@ public class MenuDownloader implements Runnable {
 	private static final String TAG_PORK = "pork";
 	private static final String TAG_NUTS = "nuts";
 	private static final String TAG_EFRIENDLY = "earth_friendly";
+	private static final String ATTRIBUTE_TYPE = "type";
 
 	private final WeakReference<Context> mContext;
 	
@@ -192,7 +193,7 @@ public class MenuDownloader implements Runnable {
 		// get this day's MealTime
 		for (int i = 0; i < size; ++i) { // populate with download failed's
 			ArrayList<FoodItem> menu = new ArrayList<FoodItem>(1);
-			menu.add(new FoodItem(STRING_DOWNLOADFAILED, true, new boolean[5]));
+			menu.add(new FoodItem(STRING_DOWNLOADFAILED, true, "", new boolean[5]));
 			daysMenus.add(menu);
 		}
 
@@ -213,7 +214,7 @@ public class MenuDownloader implements Runnable {
 		for (int i = 0; i < size; ++i) {
 			String mealName = aMealNames.get(i);
 			if (!mealItems1.containsKey(mealName)) {
-				daysMenus.get(i).set(0, new FoodItem(STRING_NODATA, true, new boolean[5]));
+				daysMenus.get(i).set(0, new FoodItem(STRING_NODATA, true, "", new boolean[5]));
 				continue;
 			}
 			
@@ -221,7 +222,7 @@ public class MenuDownloader implements Runnable {
 			
 			// if it's empty, then add nodata entry
 			if (meal.isEmpty())
-				meal.add(new FoodItem(STRING_NODATA, true, new boolean[5]));
+				meal.add(new FoodItem(STRING_NODATA, true, "", new boolean[5]));
 			
 			// add the menu
 			daysMenus.set(i, meal);
@@ -316,6 +317,16 @@ public class MenuDownloader implements Runnable {
 		// params is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
 		boolean[] params = new boolean[5];
 		
+		String type;
+		// get entree type attribute
+		try {
+			if (p.getAttributeName(0).equals(ATTRIBUTE_TYPE))
+				type = p.getAttributeValue(0);
+			else
+				type = "";
+		} catch (IndexOutOfBoundsException e) {
+			type = "";
+		}
 		int eventType = p.next();
 		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(TAG_ENTREE))) {
 			if (eventType == XmlPullParser.START_TAG) {
@@ -335,7 +346,7 @@ public class MenuDownloader implements Runnable {
 			eventType = p.next();
 		}
 		
-		return new FoodItem(name, false, params);
+		return new FoodItem(name, false, type, params);
 	}
 
 	// gets html data from an url

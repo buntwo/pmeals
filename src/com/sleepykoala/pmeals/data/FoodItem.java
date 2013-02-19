@@ -5,11 +5,13 @@ public class FoodItem {
 	public final String itemName;
 	public final boolean error;
 	public final boolean[] foodInfo;
+	public final String type;
 	
 	// params is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
-	public FoodItem(String s, boolean err, boolean[] params) {
+	public FoodItem(String s, boolean err, String type, boolean[] params) {
 		itemName = s;
 		error = err;
+		this.type = type;
 		foodInfo = new boolean[5];
 		for (int i = 0; i < 5; ++i)
 			foodInfo[i] = params[i];

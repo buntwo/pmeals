@@ -9,7 +9,7 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 	
 	// V1 had _ID, locationid, date, mealname, itemname, itemerror
 	// V2 had food info
-	private static final int DB_VERSION = 4;
+	private static final int DB_VERSION = 5;
 	private static final String DB_NAME = "pmeals";
 	
 	// table names
@@ -21,6 +21,7 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 	public static final String MEALNAME = "meal_name";
 	public static final String ITEMNAME = "item_name"; // corresponds to itemName field
 	public static final String ITEMERROR = "item_error"; // corresponds to error field
+	public static final String ITEMTYPE = "item_type"; // entree type (XML attribute)
 	// food info
 	public static final String ITEMVEGAN = "item_vegan"; // is the item vegan?
 	public static final String ITEMVEGETARIAN = "item_vegetarian"; // is the item vegetarian?
@@ -82,6 +83,9 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 		}
 		if (oldVersion < 4 && newVersion >= 4) {
 			db.execSQL("update " + TABLE_MEALS + " set " + ITEMNAME + " = 'Closed today' where " + ITEMNAME + " like 'No meals today'");
+		}
+		if (oldVersion < 5 && newVersion >= 5) {
+			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMTYPE + " text not null default ''");
 		}
 	}
 
