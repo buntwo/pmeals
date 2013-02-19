@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
-    <ListPreference android:key="@string/pref_defaultShowKey"
-        android:title="@string/pref_defaultShowTitle"
-        android:summary="@string/pref_defaultShowSummary"
-        android:entries="@array/pref_defaultShowEntries"
-        android:entryValues="@array/pref_defaultShowValues"
+    <ListPreference android:key="@string/pref_startupShowKey"
+        android:title="@string/pref_startupShowTitle"
+        android:entries="@array/pref_startupShowEntries"
+        android:entryValues="@array/pref_startupShowValues"
         android:defaultValue="-1" />
     
     <Preference android:title="@string/pref_reorderLocsTitle" >
@@ -21,6 +20,7 @@
     </Preference>
 
     <com.sleepykoala.pmeals.fragments.AboutPreference
-        android:title="@string/about" />
+        android:title="@string/about"
+        android:summary="@string/aboutSummary" />
 
 </PreferenceScreen>

@@ -9,14 +9,18 @@
         android:layout_height="wrap_content"
         android:text="@string/reorder_instr"
         android:gravity="left"
-	    android:background="@android:color/black"
-        android:textStyle="bold"
-        android:textColor="@color/sectiontitle"
-        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         />
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:src="@drawable/hr" />
     
     <LinearLayout
         android:id="@+id/reorder_container"

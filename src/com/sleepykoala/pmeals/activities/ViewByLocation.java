@@ -60,6 +60,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
+import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.data.RgbEvaluator;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.DatePickerDialogFragment.OnDateSelectedListener;
@@ -190,10 +191,12 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		mealInfoView1 = (TextView) findViewById(R.id.infobar_mealinfo1);
 		infoBar = (FrameLayout) findViewById(R.id.infobar);
 		
-		// set today
+		// set dates
 		today = new Date();
-		
 		dateDisplayed = currentCenter = new Date(intent.getStringExtra(EXTRA_DATE));
+		
+		// initial preference manager
+		PMealsPreferenceManager.initialize(this);
 		
         // setup action bar
         ActionBar aB = getActionBar();

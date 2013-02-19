@@ -3,9 +3,9 @@ package com.sleepykoala.pmeals.activities;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
-import static com.sleepykoala.pmeals.data.C.PREF_DEFAULTLOC;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
+import static com.sleepykoala.pmeals.data.C.PREF_STARTUPLOC;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,7 +51,7 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
 		// launch correct activity
 		Intent intent;
-		int defaultLoc = Integer.parseInt(prefs.getString(PREF_DEFAULTLOC, "-1"));
+		int defaultLoc = Integer.parseInt(prefs.getString(PREF_STARTUPLOC, "-1"));
 		if (defaultLoc == -1) {
 			intent = new Intent(this, ViewByMeal.class);
 		} else {

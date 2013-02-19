@@ -30,6 +30,8 @@ public class ReorderLocations extends Activity {
 	private ArrayList<String> origLocNames;
 	// views
 	private ArrayList<TextView> views;
+	// light gray color
+	private int LIGHT_GRAY;
 	
 	private int numLocs;
 
@@ -39,38 +41,34 @@ public class ReorderLocations extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reorderlocations);
         
+        LIGHT_GRAY = getResources().getColor(R.color.light_gray);
         locIDs = PMealsPreferenceManager.getLocIds();
         
         locNames = new ArrayList<String>();
         numLocs = locIDs.size();
         LocationProvider lP = LocationProviderFactory.newLocationProvider();
 		for (int id : locIDs)
-			locNames.add(lP.getById(id).locName);
+			locNames.add(lP.getById(id).nickname);
 		// save originals for resetting
 		origLocIDs = (ArrayList<Integer>) locIDs.clone();
 		origLocNames = (ArrayList<String>) locNames.clone();
         
         LinearLayout container = (LinearLayout) findViewById(R.id.reorder_container);
-        container.setShowDividers(LinearLayout.SHOW_DIVIDER_BEGINNING |
-        		LinearLayout.SHOW_DIVIDER_MIDDLE |
-        		LinearLayout.SHOW_DIVIDER_END);
         
 		// build TextViews
         views = new ArrayList<TextView>();
-        for (int i = 0; i < numLocs; ++i)
-        	locNames.add("Number " + (i + 1));
         LayoutInflater inflater = getLayoutInflater();
         for (int i = 0; i < numLocs; ++i) {
         	LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.reorder_name, null);
         	TextView tv = (TextView) ll.findViewById(R.id.reorder_name);
         	ImageView iv = (ImageView) ll.findViewById(R.id.reorder_selector);
+        	container.addView(ll);
+        	views.add(tv);
         	tv.setText(locNames.get(i));
         	ll.setOnTouchListener(new ReorderTouchListener(i));
         	ll.setOnDragListener(new ReorderDragListener(i));
         	tv.setTag(iv);
         	
-        	container.addView(ll);
-        	views.add(tv);
         }
         
     }
@@ -121,21 +119,24 @@ public class ReorderLocations extends Activity {
     }
     
     private class ReorderDragListener implements OnDragListener {
-    	int num;
+    	private final int num;
+    	private final TextView tv;
     	
     	public ReorderDragListener(int num) {
     		this.num = num;
+    		tv = views.get(num);
     	}
 
 		public boolean onDrag(View v, DragEvent event) {
 			int action = event.getAction();
-			int dragging = (Integer)event.getLocalState();
+			int dragging = (Integer) event.getLocalState();
 			switch (action) {
 			case DragEvent.ACTION_DRAG_STARTED:
-				if (dragging != num) // clear icon
+				if (dragging != num) { // not selected one
 					v.findViewById(R.id.reorder_selector).setVisibility(View.INVISIBLE);
-				else // bold text
-					views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+					tv.setTextColor(LIGHT_GRAY);
+				} else { // is selected one
+				}
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
 				// redraw data
@@ -146,32 +147,41 @@ public class ReorderLocations extends Activity {
 						if (dragging == i)
 							++offset;
 						if (i == num) {
-							views.get(num).setText(locNames.get(dragging));
-							views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-							v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
+							tv.setText(locNames.get(dragging));
+							tv.setTextColor(0xffffffff); // white
+							((View) tv.getTag()).setVisibility(View.VISIBLE);
 							--offset;
 							continue;
+						} else {
+							TextView text = views.get(i);
+							text.setText(locNames.get(i + offset));
+							text.setTextColor(LIGHT_GRAY);
 						}
-						views.get(i).setText(locNames.get(i + offset));
 					}
 				} else {
 					for (int i = 0; i < numLocs; ++i) {
 						if (i == num) {
-							views.get(num).setText(locNames.get(dragging));
-							views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-							v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
+							tv.setText(locNames.get(dragging));
+							tv.setTextColor(0xffffffff); // white
+							((View) tv.getTag()).setVisibility(View.VISIBLE);
 							--offset;
 							continue;
+						} else {
+							TextView text = views.get(i);
+							text.setText(locNames.get(i + offset));
+							text.setTextColor(LIGHT_GRAY);
+							if (dragging == i)
+								++offset;
 						}
-						views.get(i).setText(locNames.get(i + offset));
-						if (dragging == i)
-							++offset;
 					}
 				}
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
+				/*
 				v.findViewById(R.id.reorder_selector).setVisibility(View.INVISIBLE);
-				views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+				tv.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+				tv.setTextColor(LIGHT_GRAY);
+				//*/
 				break;
 			case DragEvent.ACTION_DROP:
 				dragging = (Integer) event.getLocalState();
@@ -182,7 +192,8 @@ public class ReorderLocations extends Activity {
 				// clear icon
 				v.findViewById(R.id.reorder_selector).setVisibility(View.VISIBLE);
 				// unbold
-				views.get(num).setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+				tv.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+				tv.setTextColor(0xffffffff); // white
 				break;
 				
 			}
