@@ -2,24 +2,18 @@ package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
+import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
-import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
-import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
 import static com.sleepykoala.pmeals.data.C.PREF_STARTUPLOC;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
-import com.sleepykoala.pmeals.fragments.FirstTimeFragment;
 import com.sleepykoala.pmeals.fragments.FirstTimeFragment.OnFirstTimeDismissListener;
-import com.sleepykoala.pmeals.services.DailyDownloadService;
 
 public class Launcher extends Activity implements OnFirstTimeDismissListener {
 
@@ -28,10 +22,17 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
 		
+        // set 24 hour status
+        IS24HOURFORMAT = DateFormat.is24HourFormat(this);
+
+		startActivity(new Intent(this, ManageAlertsActivity.class));
+		finish();
+		
+		/*
 		// set daily update alarm
 		Intent dailyDownload = new Intent(this, DailyDownloadService.class);
 		PendingIntent pI = PendingIntent.getService(this, 0, dailyDownload, PendingIntent.FLAG_CANCEL_CURRENT);
-		((AlarmManager) getSystemService(Context.ALARM_SERVICE)).setInexactRepeating(
+		((AlarmManager) getSystemService(Context.ALARM_SERVICE)).setRepeating(
 				AlarmManager.RTC, (new Date()).toMillis(false) + 2000, AlarmManager.INTERVAL_DAY, pI);
 		
         // upgrade code
@@ -54,6 +55,7 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
         } else {
         	launch();
         }
+        //*/
 	}
 
 	public void launch() {

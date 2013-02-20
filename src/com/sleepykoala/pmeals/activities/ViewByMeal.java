@@ -146,9 +146,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewbymeal);
         
-        // set 24 hour status
-        IS24HOURFORMAT = DateFormat.is24HourFormat(this);
-
         // get meal time provider
 		try {
 			MealTimeProviderFactory.initialize(getAssets().open(MEALTIMESXML));

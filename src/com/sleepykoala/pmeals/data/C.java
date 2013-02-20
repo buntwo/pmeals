@@ -4,7 +4,7 @@ package com.sleepykoala.pmeals.data;
 public final class C {
 	
 	// cannot be instantiated
-	private C() {}
+	private C() { }
 	
 	// menu provider handler codes
 	public static final int CODE_REQUEST = 0;
@@ -64,6 +64,13 @@ public final class C {
 	public static final String EXTRA_MEALNAME = "com.sleepykoala.pmeals.MEALNAME";
 	public static final String EXTRA_ISCURRENTMEAL = "com.sleepykoala.pmeals.ISCURRENTMEAL";
 	public static final String EXTRA_MEALEXISTS = "com.sleepykoala.pmeals.MEALEXISTS";
+	// alert extras
+	public static final String EXTRA_ALERTNUM = "com.sleepykoala.pmeals.ALERTNUM";
+	public static final String EXTRA_ALERTSTATUS = "com.sleepykoala.pmeals.ALERTSTATUS";
+	public static final String EXTRA_ALERTQUERY = "com.sleepykoala.pmeals.ALERTQUERY";
+	public static final String EXTRA_REPEATINGDAYS = "com.sleepykoala.pmeals.REPEATINGDAYS";
+	public static final String EXTRA_ALERTHOUR = "com.sleepykoala.pmeals.ALERTHOUR";
+	public static final String EXTRA_ALERTMINUTE = "com.sleepykoala.pmeals.ALERTMINUTE";
     
 	// icon alpha constants
 	public static final int ALPHA_ENABLED = 255;
@@ -110,6 +117,11 @@ public final class C {
     public static final String PREF_WIDGET_LOCNAME = "widget_locname";
     public static final String PREF_WIDGET_TYPE = "widget_type";
     public static final String PREF_STARTUPLOC = "startupShowId";
+    public static final String PREF_NUMALERTS = "num_alerts";
+    public static final String PREF_ALERTQUERY = "alert_query";
+    public static final String PREF_ALERTREPEAT = "alert_repeat";
+    public static final String PREF_ALERTHOUR = "alert_hour";
+    public static final String PREF_ALERTMINUTE = "alert_minute";
     
     // feedback email
     public static final String FEEDBACK_EMAIL = "sleepykoala03@gmail.com";

@@ -67,6 +67,18 @@
             android:launchMode="singleTask"
             android:exported="false" >
 		</activity>
+        <activity
+            android:name=".activities.ManageAlertsActivity"
+            android:label="@string/title_activity_managealerts"
+            android:theme="@android:style/Theme.Holo"
+            android:exported="false" >
+        </activity>
+        <activity
+            android:name=".activities.SetupNewAlert"
+            android:label="@string/title_activity_setupnewalert"
+            android:theme="@android:style/Theme.Holo"
+            android:exported="false" >
+        </activity>
 
         <!-- content providers -->
         <provider

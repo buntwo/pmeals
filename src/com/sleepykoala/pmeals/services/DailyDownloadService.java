@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
@@ -24,7 +23,7 @@ import com.sleepykoala.pmeals.data.PMealsDatabase;
 
 public class DailyDownloadService extends IntentService {
 	
-	private static final String TAG = "DailyDownloadService";
+	//private static final String TAG = "DailyDownloadService";
 
 	private MealTimeProvider mTP;
 	private ArrayList<Location> locs;
@@ -62,8 +61,6 @@ public class DailyDownloadService extends IntentService {
 	 */
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.d(TAG, "downloading stuffs");
-		
 		ContentResolver cr = getContentResolver();
 		SparseArray<DatedMealTime> meals = new SparseArray<DatedMealTime>();
 		String[] selectArgs = null;

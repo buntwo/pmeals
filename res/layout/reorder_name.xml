@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reorder_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:textColor="@android:color/white"
+    android:textSize="17sp"
     android:paddingTop="2dp"
     android:paddingBottom="2dp"
     android:paddingLeft="15dp"
     android:paddingRight="5dp"
-    >
-
-	<TextView
-	    android:id="@+id/reorder_name"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:textColor="@android:color/white"
-	    android:textSize="17sp"
-	    />
-
-</LinearLayout>
+    />

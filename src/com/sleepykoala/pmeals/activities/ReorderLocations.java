@@ -58,15 +58,18 @@ public class ReorderLocations extends Activity {
 		// build TextViews
         views = new ArrayList<TextView>();
         LayoutInflater inflater = getLayoutInflater();
+        ReorderTouchListener rTL = new ReorderTouchListener();
+        ReorderDragListener rDL = new ReorderDragListener();
         for (int i = 0; i < numLocs; ++i) {
-        	LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.reorder_name, null);
-        	TextView tv = (TextView) ll.findViewById(R.id.reorder_name);
-        	container.addView(ll);
+        	TextView tv = (TextView) inflater.inflate(R.layout.reorder_name, null);
+        	container.addView(tv);
         	views.add(tv);
+        	tv.setTag(i);
         	tv.setText(locNames.get(i));
-        	ll.setOnTouchListener(new ReorderTouchListener(i));
-        	ll.setOnDragListener(new ReorderDragListener(i));
+        	tv.setOnTouchListener(rTL);
+        	tv.setOnDragListener(rDL);
         }
+        ((LinearLayout) findViewById(R.id.buttons)).setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         
     }
     
@@ -94,19 +97,14 @@ public class ReorderLocations extends Activity {
     //-------------------------------------------------DRAG/TOUCH LISTENERS-------------------------------------------
     
     private class ReorderTouchListener implements OnTouchListener {
-    	int num;
     	
-    	public ReorderTouchListener(int num) {
-    		this.num = num;
-    	}
-
 		public boolean onTouch(View v, MotionEvent event) {
 			int action = event.getAction();
 			
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
 				DragShadowBuilder builder = new View.DragShadowBuilder();
-				v.startDrag(null, builder, num, 0);
+				v.startDrag(null, builder, v.getTag(), 0);
 				return true;
 				
 			default:
@@ -116,52 +114,46 @@ public class ReorderLocations extends Activity {
     }
     
     private class ReorderDragListener implements OnDragListener {
-    	private final int num;
-    	private final TextView tv;
-    	
-    	public ReorderDragListener(int num) {
-    		this.num = num;
-    		tv = views.get(num);
-    	}
 
 		public boolean onDrag(View v, DragEvent event) {
 			int action = event.getAction();
+			int num = (Integer) v.getTag(); // the number we are dragging
 			int dragging = (Integer) event.getLocalState();
 			switch (action) {
 			case DragEvent.ACTION_DRAG_STARTED:
-				if (dragging != num) // not selected one
-					tv.setTextColor(LIGHT_GRAY);
+				for (int i = 0; i < numLocs; ++i)
+					if (dragging != i)
+						views.get(i).setTextColor(LIGHT_GRAY);
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
 				// redraw data
-				dragging = (Integer)event.getLocalState();
 				int offset = 0;
 				if (dragging <= num) {
 					for (int i = 0; i < numLocs; ++i) {
 						if (dragging == i)
 							++offset;
+						TextView tv = views.get(i);
 						if (i == num) {
 							tv.setText(locNames.get(dragging));
 							tv.setTextColor(WHITE);
 							--offset;
 							continue;
 						} else {
-							TextView text = views.get(i);
-							text.setText(locNames.get(i + offset));
-							text.setTextColor(LIGHT_GRAY);
+							tv.setText(locNames.get(i + offset));
+							tv.setTextColor(LIGHT_GRAY);
 						}
 					}
 				} else {
 					for (int i = 0; i < numLocs; ++i) {
+						TextView tv = views.get(i);
 						if (i == num) {
 							tv.setText(locNames.get(dragging));
 							tv.setTextColor(WHITE);
 							--offset;
 							continue;
 						} else {
-							TextView text = views.get(i);
-							text.setText(locNames.get(i + offset));
-							text.setTextColor(LIGHT_GRAY);
+							tv.setText(locNames.get(i + offset));
+							tv.setTextColor(LIGHT_GRAY);
 							if (dragging == i)
 								++offset;
 						}
@@ -176,9 +168,9 @@ public class ReorderLocations extends Activity {
 				locIDs.add(num, locIDs.remove(dragging));
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
-				tv.setTextColor(WHITE);
+				for (int i = 0; i < numLocs; ++i)
+					views.get(i).setTextColor(WHITE);
 				break;
-				
 			}
 			return true;
 		}

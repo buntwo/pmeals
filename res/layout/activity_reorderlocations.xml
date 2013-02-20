@@ -33,34 +33,54 @@
         
     </LinearLayout>
     
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@drawable/hr" />
     <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:divider="@color/light_gray"
         >
         
-        <Button
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/done"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
             android:onClick="done"
+            android:clickable="true"
             />
         
-        <Button
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/reset"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
             android:onClick="reset"
+            android:clickable="true"
             />
         
-        <Button
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/cancel"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
             android:onClick="cancel"
+            android:clickable="true"
             />
         
     </LinearLayout>

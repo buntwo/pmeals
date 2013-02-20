@@ -11,6 +11,8 @@
     <string name="title_activity_reorderlocations">Set dining hall display order</string>
     <string name="title_activity_widgetconfigurator">Configure widget</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_managealerts">Manage alerts</string>
+    <string name="title_activity_setupnewalert">Setup new alert</string>
     <string name="app_info">An app for downloading, storing, and nicely displaying dining menus at Princeton University.</string>
     <string name="credits_categories">App Design\nStrategy Consultant\nCoding\nIcon</string>
     <string name="credits_authors">Brian Tu\nSophia Xing\nBrian Tu\nDavid Zhao</string>
@@ -20,6 +22,22 @@
     <string name="widgetconfig_instr">Select the location you would like to display</string>
     <string name="loading">Loading&#8230;</string>
     
+    <!-- Alerts manager -->
+    <string name="addalert">Add alert</string>
+    <string name="no_alerts">No alerts</string>
+    <string name="alertquery_hint">Keyword</string>
+    <string name="alertquery_prompt">Alert query</string>
+    <string name="alerttime_prompt">Alert time</string>
+    <string name="alertdow_prompt">Days of week to alert</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="ok">OK</string>
+    
     <!-- Context menu -->
     <string name="share">Share</string>
     <string name="copy">Copy</string>
@@ -27,9 +45,9 @@
     
     <!-- Preference strings -->
     <string name="pref_reorderLocsTitle">Dining hall display order</string>
-    <string name="pref_reorderLocsSummary"></string>
     <string name="pref_startupShowKey">startupShowId</string>
     <string name="pref_startupShowTitle">Startup location</string>
+    <string name="pref_managealertsTitle">@string/title_activity_managealerts</string>
     <string name="about">About</string>
     <string name="aboutSummary">@string/version</string>
     <string name="deleteSearchHistoryTitle">Delete search history</string>
