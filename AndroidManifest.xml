@@ -21,7 +21,8 @@
         <!-- activities -->
         <activity
             android:name=".activities.Launcher"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Holo" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

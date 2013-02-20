@@ -8,11 +8,12 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTREPEAT;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
@@ -21,7 +22,8 @@ import com.sleepykoala.pmeals.data.ScrollableTimePicker;
 
 public class SetupNewAlert extends Activity {
 
-	 private static final String TAG = "SetupNewAlert";
+	//private static final String TAG = "SetupNewAlert";
+	
 	private int alertNum;
 
 	@Override
@@ -30,19 +32,33 @@ public class SetupNewAlert extends Activity {
 		setContentView(R.layout.activity_setupnewalert);
 
 		PMealsPreferenceManager.initialize(this);
-		
+
 		Intent intent = getIntent();
 		alertNum = intent.getIntExtra(EXTRA_ALERTNUM, -1);
-		// setup the views
-		((CheckBox) findViewById(R.id.sunday)).setChecked(false);
-		((CheckBox) findViewById(R.id.monday)).setChecked(false);
-		((CheckBox) findViewById(R.id.tuesday)).setChecked(false);
-		((CheckBox) findViewById(R.id.wednesday)).setChecked(false);
-		((CheckBox) findViewById(R.id.thursday)).setChecked(false);
-		((CheckBox) findViewById(R.id.friday)).setChecked(false);
-		((CheckBox) findViewById(R.id.saturday)).setChecked(false);
+		boolean[] checked = new boolean[7];
+		if (alertNum != -1) {
+			String query = intent.getStringExtra(EXTRA_ALERTQUERY);
+			((EditText) findViewById(R.id.alertquery)).setText(query);
+			int repeat = intent.getIntExtra(EXTRA_ALERTREPEAT, 0);
+			for (int i = 0; i < 7; ++i)
+				checked[i] = (((repeat >> i) & 1) == 1);
+			int hour = intent.getIntExtra(EXTRA_ALERTHOUR, 0);
+			int minute = intent.getIntExtra(EXTRA_ALERTMINUTE, 0);
+			TimePicker tP = (TimePicker) findViewById(R.id.alerttime);
+			tP.setCurrentHour(hour);
+			tP.setCurrentMinute(minute);
+		}
+		((CheckBox) findViewById(R.id.sunday)).setChecked(checked[0]);
+		((CheckBox) findViewById(R.id.monday)).setChecked(checked[1]);
+		((CheckBox) findViewById(R.id.tuesday)).setChecked(checked[2]);
+		((CheckBox) findViewById(R.id.wednesday)).setChecked(checked[3]);
+		((CheckBox) findViewById(R.id.thursday)).setChecked(checked[4]);
+		((CheckBox) findViewById(R.id.friday)).setChecked(checked[5]);
+		((CheckBox) findViewById(R.id.saturday)).setChecked(checked[6]);
+
+		// show dividers
 		((LinearLayout) findViewById(R.id.buttons))
-				.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+		.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 	}
 
 	public void create(View v) {
@@ -74,8 +90,8 @@ public class SetupNewAlert extends Activity {
 		int min = tP.getCurrentMinute();
 		result.putExtra(EXTRA_ALERTHOUR, hour);
 		result.putExtra(EXTRA_ALERTMINUTE, min);
+		result.putExtra(EXTRA_ALERTNUM, alertNum);
 
-		Log.d(TAG, "stored " + query + " " + repeat + " " + hour + ":" + min);
 		// store alert
 		PMealsPreferenceManager.storeAlert(alertNum, query, repeat, hour, min);
 
