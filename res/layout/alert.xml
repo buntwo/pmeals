@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp" >
-    
-    <ToggleButton
+    android:orientation="horizontal"
+    android:paddingLeft="7dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+     >
+
+    <ImageView
         android:id="@+id/alertstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:textOn=""
-        android:textOff="" />
-    
-    <TextView
-        android:id="@+id/alertquery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:layout_toRightOf="@id/alertstatus"
-        android:layout_alignParentTop="true"
-        android:textSize="16sp"
-        android:textColor="@android:color/white" />
-    
-    <TextView
-        android:id="@+id/alertinfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:layout_below="@id/alertquery"
-        android:layout_toRightOf="@id/alertstatus"
-        android:textSize="13sp"
-        android:textColor="@color/light_gray" />
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_alarm" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/alertquery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/alertinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/light_gray"
+            android:textSize="13sp" />
+        
+    </LinearLayout>
+
+</LinearLayout>

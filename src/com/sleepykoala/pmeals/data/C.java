@@ -68,7 +68,7 @@ public final class C {
 	public static final String EXTRA_ALERTNUM = "com.sleepykoala.pmeals.ALERTNUM";
 	public static final String EXTRA_ALERTSTATUS = "com.sleepykoala.pmeals.ALERTSTATUS";
 	public static final String EXTRA_ALERTQUERY = "com.sleepykoala.pmeals.ALERTQUERY";
-	public static final String EXTRA_REPEATINGDAYS = "com.sleepykoala.pmeals.REPEATINGDAYS";
+	public static final String EXTRA_ALERTREPEAT = "com.sleepykoala.pmeals.ALERTREPEAT";
 	public static final String EXTRA_ALERTHOUR = "com.sleepykoala.pmeals.ALERTHOUR";
 	public static final String EXTRA_ALERTMINUTE = "com.sleepykoala.pmeals.ALERTMINUTE";
     
@@ -119,6 +119,7 @@ public final class C {
     public static final String PREF_STARTUPLOC = "startupShowId";
     public static final String PREF_NUMALERTS = "num_alerts";
     public static final String PREF_ALERTQUERY = "alert_query";
+    public static final String PREF_ALERTON = "alert_on";
     public static final String PREF_ALERTREPEAT = "alert_repeat";
     public static final String PREF_ALERTHOUR = "alert_hour";
     public static final String PREF_ALERTMINUTE = "alert_minute";

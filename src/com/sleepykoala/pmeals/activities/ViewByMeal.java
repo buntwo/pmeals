@@ -8,7 +8,6 @@ import static com.sleepykoala.pmeals.data.C.END_ALERT_COLOR;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.IN_MEAL_COLOR;
-import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 import static com.sleepykoala.pmeals.data.C.MEAL_PASSED_COLOR;

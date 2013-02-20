@@ -4,6 +4,7 @@ import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTHOUR;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTMINUTE;
+import static com.sleepykoala.pmeals.data.C.PREF_ALERTON;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTREPEAT;
 import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
@@ -159,6 +160,32 @@ public class PMealsPreferenceManager {
 		
 		return prefs.getInt(num + PREF_ALERTMINUTE, 0);
 	}
+	
+	/**
+	 * Gets the status of the alert.
+	 * 
+	 * @param num Alert number
+	 * @return True if it's on, false if it's off
+	 */
+	public static boolean getAlertOn(int num) {
+		assertInitialized();
+		
+		return prefs.getBoolean(num + PREF_ALERTON, false);
+	}
+	
+	/**
+	 * Set status of alert.
+	 * 
+	 * @param num Alert number
+	 * @param isOn Status to store
+	 */
+	public static void setAlertOn(int num, boolean isOn) {
+		assertInitialized();
+		
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(num + PREF_ALERTON, isOn);
+		editor.commit();
+	}
 
 	/**
 	 * Stores a new alert, incrementing PREF_NUMALERTS if necessary.
@@ -183,6 +210,7 @@ public class PMealsPreferenceManager {
 		editor.putInt(num + PREF_ALERTREPEAT, repeat);
 		editor.putInt(num + PREF_ALERTHOUR, hour);
 		editor.putInt(num + PREF_ALERTMINUTE, min);
+		editor.putBoolean(num + PREF_ALERTON, true);
 		editor.commit();
 	}
 
@@ -194,15 +222,25 @@ public class PMealsPreferenceManager {
 	 */
 	public static void deleteAlert(int num) {
 		assertInitialized();
-
+		
 		SharedPreferences.Editor editor = prefs.edit();
-		// err....this is wrong
-		if (num >= prefs.getInt(PREF_NUMALERTS, 0))
-			editor.putInt(PREF_NUMALERTS, num - 1);
-		editor.remove(num + PREF_ALERTQUERY);
-		editor.remove(num + PREF_ALERTREPEAT);
-		editor.remove(num + PREF_ALERTHOUR);
-		editor.remove(num + PREF_ALERTMINUTE);
+		int numAlerts = prefs.getInt(PREF_NUMALERTS, 0);
+		// shift alerts down
+		for (int i = num + 1; i <= numAlerts; ++i) {
+			editor.putString((i-1) + PREF_ALERTQUERY, prefs.getString(i + PREF_ALERTQUERY, "invalid alert number"));
+			editor.putInt((i-1) + PREF_ALERTREPEAT, prefs.getInt(i + PREF_ALERTREPEAT, 0));
+			editor.putInt((i-1) + PREF_ALERTHOUR, prefs.getInt(i + PREF_ALERTHOUR, 0));
+			editor.putInt((i-1) + PREF_ALERTMINUTE, prefs.getInt(i + PREF_ALERTMINUTE, 0));
+			editor.putBoolean((i-1) + PREF_ALERTON, prefs.getBoolean(i + PREF_ALERTON, false));
+		}
+		// delete last one 
+		editor.remove(numAlerts + PREF_ALERTQUERY);
+		editor.remove(numAlerts + PREF_ALERTREPEAT);
+		editor.remove(numAlerts + PREF_ALERTHOUR);
+		editor.remove(numAlerts + PREF_ALERTMINUTE);
+		editor.remove(numAlerts + PREF_ALERTON);
+		// reduce number
+		editor.putInt(PREF_NUMALERTS, numAlerts - 1);
 		editor.commit();
 	}
 

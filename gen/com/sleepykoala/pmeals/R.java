@@ -21,24 +21,26 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int PrincetonOrange=0x7f070006;
-        public static final int efriendly=0x7f07000e;
-        public static final int infobar_neutral_bg=0x7f070004;
+        public static final int PrincetonOrange=0x7f070007;
+        public static final int efriendly=0x7f07000f;
+        public static final int infobar_neutral_bg=0x7f070005;
         public static final int light_gray=0x7f070000;
-        public static final int menuitem=0x7f070010;
-        public static final int menuitem_bg=0x7f070003;
-        public static final int menuitem_selectedbg=0x7f070002;
-        public static final int nuts=0x7f07000d;
-        public static final int outline_gray=0x7f070001;
-        public static final int pageindicators=0x7f070009;
-        public static final int pork=0x7f07000c;
-        public static final int refresh_background=0x7f070008;
-        public static final int sectiontitle=0x7f070011;
-        public static final int selectedPrincetonOrange=0x7f070007;
-        public static final int text_lightgray=0x7f070005;
-        public static final int vegan=0x7f07000a;
-        public static final int vegetarian=0x7f07000b;
-        public static final int widget_bg=0x7f07000f;
+        public static final int lighter_gray=0x7f070001;
+        public static final int menuitem=0x7f070011;
+        public static final int menuitem_bg=0x7f070004;
+        public static final int menuitem_selectedbg=0x7f070003;
+        public static final int nuts=0x7f07000e;
+        public static final int outline_gray=0x7f070002;
+        public static final int pageindicators=0x7f07000a;
+        public static final int pork=0x7f07000d;
+        public static final int refresh_background=0x7f070009;
+        public static final int sectiontitle=0x7f070012;
+        public static final int selectedPrincetonOrange=0x7f070008;
+        public static final int text_lightgray=0x7f070006;
+        public static final int vegan=0x7f07000b;
+        public static final int vegetarian=0x7f07000c;
+        public static final int white_button=0x7f070013;
+        public static final int widget_bg=0x7f070010;
     }
     public static final class dimen {
         public static final int foodinfo_height=0x7f090000;
@@ -52,20 +54,21 @@ public final class R {
         public static final int hr=0x7f020002;
         public static final int ic_action_search=0x7f020003;
         public static final int ic_addalarm=0x7f020004;
-        public static final int ic_alert=0x7f020005;
-        public static final int ic_gotocurrent=0x7f020006;
-        public static final int ic_help=0x7f020007;
-        public static final int ic_refresh=0x7f020008;
-        public static final int launcher=0x7f020009;
-        public static final int next=0x7f02000a;
-        public static final int nuts=0x7f02000b;
-        public static final int pageindicator_notselected=0x7f02000c;
-        public static final int pageindicator_selected=0x7f02000d;
-        public static final int pork=0x7f02000e;
-        public static final int prev=0x7f02000f;
-        public static final int refresh_background=0x7f020010;
-        public static final int vegan=0x7f020011;
-        public static final int vegetarian=0x7f020012;
+        public static final int ic_alarm=0x7f020005;
+        public static final int ic_alert=0x7f020006;
+        public static final int ic_gotocurrent=0x7f020007;
+        public static final int ic_help=0x7f020008;
+        public static final int ic_refresh=0x7f020009;
+        public static final int launcher=0x7f02000a;
+        public static final int next=0x7f02000b;
+        public static final int nuts=0x7f02000c;
+        public static final int pageindicator_notselected=0x7f02000d;
+        public static final int pageindicator_selected=0x7f02000e;
+        public static final int pork=0x7f02000f;
+        public static final int prev=0x7f020010;
+        public static final int refresh_background=0x7f020011;
+        public static final int vegan=0x7f020012;
+        public static final int vegetarian=0x7f020013;
     }
     public static final class id {
         public static final int action_viewbylocation_spinnertext=0x7f0c0007;
@@ -80,6 +83,7 @@ public final class R {
         public static final int copy=0x7f0c0043;
         public static final int credits_authors=0x7f0c0006;
         public static final int credits_categories=0x7f0c0005;
+        public static final int deletealert=0x7f0c0041;
         public static final int firsttime_nuts=0x7f0c0020;
         public static final int firsttime_pork=0x7f0c001f;
         public static final int firsttime_vegan=0x7f0c001d;
@@ -102,7 +106,7 @@ public final class R {
         public static final int nuts=0x7f0c0026;
         public static final int pageindicators=0x7f0c0019;
         public static final int pork=0x7f0c0025;
-        public static final int refresh=0x7f0c0041;
+        public static final int refresh=0x7f0c0044;
         public static final int refreshicon=0x7f0c0021;
         public static final int reorder_container=0x7f0c000a;
         public static final int reorder_name=0x7f0c0029;
@@ -174,12 +178,13 @@ public final class R {
         public static final int activity_meal_searcher=0x7f0b0000;
         public static final int activity_viewbylocation=0x7f0b0001;
         public static final int activity_viewbymeal=0x7f0b0002;
-        public static final int fragment_menu=0x7f0b0003;
-        public static final int menuitem_context=0x7f0b0004;
+        public static final int context_alertmanager=0x7f0b0003;
+        public static final int context_menuitem=0x7f0b0004;
+        public static final int fragment_menu=0x7f0b0005;
     }
     public static final class string {
-        public static final int about=0x7f0a0028;
-        public static final int aboutSummary=0x7f0a0029;
+        public static final int about=0x7f0a0029;
+        public static final int aboutSummary=0x7f0a002a;
         /**  Alerts manager 
          */
         public static final int addalert=0x7f0a0013;
@@ -189,50 +194,51 @@ public final class R {
         public static final int alerttime_prompt=0x7f0a0017;
         public static final int app_info=0x7f0a000b;
         public static final int app_name=0x7f0a0000;
-        public static final int cancel=0x7f0a002f;
-        public static final int context_search=0x7f0a0023;
-        public static final int copy=0x7f0a0022;
+        public static final int cancel=0x7f0a0030;
+        public static final int context_search=0x7f0a0024;
+        public static final int copy=0x7f0a0023;
         public static final int credits_authors=0x7f0a000d;
         public static final int credits_categories=0x7f0a000c;
-        public static final int deleteSearchHistoryText=0x7f0a002b;
-        public static final int deleteSearchHistoryTitle=0x7f0a002a;
-        public static final int done=0x7f0a002d;
-        public static final int feedback=0x7f0a0030;
-        public static final int feedbackSummary=0x7f0a0031;
+        public static final int deleteSearchHistoryText=0x7f0a002c;
+        public static final int deleteSearchHistoryTitle=0x7f0a002b;
+        public static final int deletealert=0x7f0a0021;
+        public static final int done=0x7f0a002e;
+        public static final int feedback=0x7f0a0031;
+        public static final int feedbackSummary=0x7f0a0032;
         /**  First time dialog strings 
          */
-        public static final int firsttime1=0x7f0a0034;
-        public static final int firsttime2=0x7f0a0035;
-        public static final int firsttime3=0x7f0a0036;
-        public static final int firsttime4=0x7f0a0037;
-        public static final int firsttime5=0x7f0a003c;
+        public static final int firsttime1=0x7f0a0035;
+        public static final int firsttime2=0x7f0a0036;
+        public static final int firsttime3=0x7f0a0037;
+        public static final int firsttime4=0x7f0a0038;
+        public static final int firsttime5=0x7f0a003d;
         public static final int friday=0x7f0a001e;
-        public static final int giveRatingSummary=0x7f0a0033;
-        public static final int giveRatingTitle=0x7f0a0032;
-        public static final int legend1=0x7f0a0038;
-        public static final int legend2=0x7f0a0039;
-        public static final int legend3=0x7f0a003a;
-        public static final int legend4=0x7f0a003b;
+        public static final int giveRatingSummary=0x7f0a0034;
+        public static final int giveRatingTitle=0x7f0a0033;
+        public static final int legend1=0x7f0a0039;
+        public static final int legend2=0x7f0a003a;
+        public static final int legend3=0x7f0a003b;
+        public static final int legend4=0x7f0a003c;
         public static final int loading=0x7f0a0012;
         public static final int menu_settings=0x7f0a0002;
         public static final int monday=0x7f0a001a;
         public static final int no_alerts=0x7f0a0014;
         public static final int ok=0x7f0a0020;
-        public static final int pref_managealertsTitle=0x7f0a0027;
+        public static final int pref_managealertsTitle=0x7f0a0028;
         /**  Preference strings 
          */
-        public static final int pref_reorderLocsTitle=0x7f0a0024;
-        public static final int pref_startupShowKey=0x7f0a0025;
-        public static final int pref_startupShowTitle=0x7f0a0026;
-        public static final int reorder_instr=0x7f0a002c;
-        public static final int reset=0x7f0a002e;
+        public static final int pref_reorderLocsTitle=0x7f0a0025;
+        public static final int pref_startupShowKey=0x7f0a0026;
+        public static final int pref_startupShowTitle=0x7f0a0027;
+        public static final int reorder_instr=0x7f0a002d;
+        public static final int reset=0x7f0a002f;
         public static final int saturday=0x7f0a001f;
         public static final int search=0x7f0a000e;
         public static final int searchHint=0x7f0a000f;
         public static final int searching=0x7f0a0010;
         /**  Context menu 
          */
-        public static final int share=0x7f0a0021;
+        public static final int share=0x7f0a0022;
         public static final int sunday=0x7f0a0019;
         public static final int thursday=0x7f0a001d;
         public static final int title_activity_managealerts=0x7f0a0009;

@@ -282,9 +282,10 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
     	super.onCreateContextMenu(menu, v, info);
+    	
     	if (((AdapterContextMenuInfo) info).id == -2) {
     		MenuInflater inflater = getActivity().getMenuInflater();
-    		inflater.inflate(R.menu.menuitem_context, menu);
+    		inflater.inflate(R.menu.context_menuitem, menu);
     	}
     }
 

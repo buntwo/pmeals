@@ -246,7 +246,7 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
     	super.onCreateContextMenu(menu, v, info);
     	if (((AdapterContextMenuInfo) info).id == -2) {
     		MenuInflater inflater = getActivity().getMenuInflater();
-    		inflater.inflate(R.menu.menuitem_context, menu);
+    		inflater.inflate(R.menu.context_menuitem, menu);
     	}
     }
 

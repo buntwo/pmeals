@@ -54,7 +54,7 @@
             android:gravity="center_horizontal"
             android:text="@string/done"
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white_button"
             android:onClick="done"
             android:clickable="true"
             />
@@ -66,7 +66,7 @@
             android:gravity="center_horizontal"
             android:text="@string/reset"
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white_button"
             android:onClick="reset"
             android:clickable="true"
             />
@@ -78,7 +78,7 @@
             android:gravity="center_horizontal"
             android:text="@string/cancel"
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white_button"
             android:onClick="cancel"
             android:clickable="true"
             />

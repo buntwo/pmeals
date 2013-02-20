@@ -4,16 +4,24 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
+import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
+import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
 import static com.sleepykoala.pmeals.data.C.PREF_STARTUPLOC;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
+import com.sleepykoala.pmeals.fragments.FirstTimeFragment;
 import com.sleepykoala.pmeals.fragments.FirstTimeFragment.OnFirstTimeDismissListener;
+import com.sleepykoala.pmeals.services.DailyDownloadService;
 
 public class Launcher extends Activity implements OnFirstTimeDismissListener {
 
