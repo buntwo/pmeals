@@ -9,6 +9,7 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:uiOptions="splitActionBarWhenNarrow"
@@ -16,6 +17,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:allowBackup="true" >
+        
+        <!-- activities -->
         <activity
             android:name=".activities.Launcher"
             android:launchMode="singleTask" >
@@ -65,6 +68,7 @@
             android:exported="false" >
 		</activity>
 
+        <!-- content providers -->
         <provider
             android:name=".contentproviders.MenuProvider"
             android:authorities="com.sleepykoala.pmeals.contentproviders.MenuProvider"
@@ -76,6 +80,7 @@
             android:exported="false" >
         </provider>
 
+        <!-- services -->
         <service
             android:name=".services.MenuDownloaderService"
             android:exported="false" >
@@ -88,14 +93,25 @@
             android:name=".services.WidgetSwitcherService"
 		    android:exported="false" >
         </service>
+        <service
+            android:name=".services.DailyDownloadService" >
+        </service>
         
+        <!-- broadcast receivers -->
         <receiver android:name=".receivers.MenuWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 	   android:resource="@xml/menuwidget_info" />
-        </receiver>"
+        </receiver>
+        <receiver android:name=".receivers.StartupReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

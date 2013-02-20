@@ -15,6 +15,7 @@ import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMERROR;
 import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMNAME;
 import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMNUTS;
 import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMPORK;
+import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMTYPE;
 import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMVEGAN;
 import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMVEGETARIAN;
 import static com.sleepykoala.pmeals.data.PMealsDatabase.LOCATIONID;
@@ -133,6 +134,7 @@ public class MenuDownloader implements Runnable {
 						data.put(DATE, mDate);
 						data.put(MEALNAME, mealName);
 						data.put(ITEMNAME, f.itemName);
+						data.put(ITEMTYPE, f.type);
 						data.put(ITEMERROR, f.error); // converted to 1 = true, 0 = false, in db
 						data.put(ITEMVEGAN, f.foodInfo[0]);
 						data.put(ITEMVEGETARIAN, f.foodInfo[1]);
@@ -168,6 +170,7 @@ public class MenuDownloader implements Runnable {
 					data.put(DATE, mDate);
 					data.put(MEALNAME, mealName);
 					data.put(ITEMNAME, f.itemName);
+					data.put(ITEMTYPE, f.type);
 					data.put(ITEMERROR, f.error); // converted to 1=true, 0=false
 					data.put(ITEMVEGAN, f.foodInfo[0]);
 					data.put(ITEMVEGETARIAN, f.foodInfo[1]);

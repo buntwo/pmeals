@@ -65,19 +65,19 @@ public class MenuWidgetProvider extends AppWidgetProvider {
 		locNameClick.setAction(Intent.ACTION_MAIN);
 		locNameClick.putExtra(EXTRA_LOCATIONID, locId);
 		locNameClick.putExtra(EXTRA_DATE, dmt.date.toString());
-		PendingIntent pIClick = PendingIntent.getActivity(context, 0, locNameClick, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent pIClick = PendingIntent.getActivity(context, 0, locNameClick, 0);
 		views.setOnClickPendingIntent(R.id.widget_locname, pIClick);
 		
 		// switcher buttons
 		Intent switcherF = new Intent(context, WidgetSwitcherService.class);
 		switcherF.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 		switcherF.setAction(ACTION_WIDGET_FORWARD);
-		PendingIntent pIF = PendingIntent.getService(context, 0, switcherF, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent pIF = PendingIntent.getService(context, 0, switcherF, 0);
 		views.setOnClickPendingIntent(R.id.widget_next, pIF);
 		Intent switcherB = new Intent(context, WidgetSwitcherService.class);
 		switcherB.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 		switcherB.setAction(ACTION_WIDGET_BACKWARD);
-		PendingIntent pIB = PendingIntent.getService(context, 0, switcherB, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent pIB = PendingIntent.getService(context, 0, switcherB, 0);
 		views.setOnClickPendingIntent(R.id.widget_prev, pIB);
 
 		// adapter

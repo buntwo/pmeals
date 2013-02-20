@@ -37,6 +37,7 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 			DATE + " text, " +
 			MEALNAME + " text, " +
 			ITEMNAME + " text not null, " +
+			ITEMTYPE + " text not null default '', " +
 			ITEMERROR + " integer, " + 
 			ITEMVEGAN + " integer default 0, " +
 			ITEMVEGETARIAN + " integer default 0, " +

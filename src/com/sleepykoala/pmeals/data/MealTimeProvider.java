@@ -15,13 +15,23 @@ public class MealTimeProvider {
     
 	private ArrayList<ArrayList<MealTime>[]> mealTimes;
 	
+	/**
+	 * Return a new MealTimeProvider.
+	 * 
+	 * @param aMealTimes ArrayList of ArrayList of MealTimes. First index
+	 * is type, second is weekday, where 0 is Sunday
+	 */
 	public MealTimeProvider(ArrayList<ArrayList<MealTime>[]> aMealTimes) {
 		mealTimes = aMealTimes;
 	}
 	
-	// get meal of the same name, but different type
-	// null if such meal does not exist
-	// matches by meal name
+	/**
+	 * Given a DatedMealTime, return another one of the same but different type.
+	 * 
+	 * @param m DatedMealTime to convert
+	 * @param type Type to convert to
+	 * @return A new DatedMealTime with the given type, or null if it does not exist
+	 */
 	public DatedMealTime swapType(DatedMealTime m, int type) {
 		// loop through the day's meals in the requested type
 		for (MealTime mt : mealTimes.get(type)[m.date.weekDay]) {
@@ -31,20 +41,35 @@ public class MealTimeProvider {
 		return null;
 	}
 	
-	// is the given meal the next meal for that type?
+	/**
+	 * Checks if the given DatedMealTime is the current meal for the given type.
+	 * 
+	 * @param dmt Meal to check
+	 * @param type Type to check against
+	 * @return If the given meal is the current meal of the given type
+	 */
 	public boolean isCurrentMeal(DatedMealTime dmt, int type) {
 		return getCurrentMeal(type).equals(dmt);
 	}
 	
-	// return meal at current time
+	/**
+	 * Returns the current meal of the given type.
+	 * 
+	 * @param type Meal type to return
+	 * @return A DatedMealTime of the current meal
+	 */
 	public DatedMealTime getCurrentMeal(int type) {
 		Time tm = getCurTime();
 		return getMealAtTime(type, tm);
 	}
 	
-	// return the meal that is after or during given Time
-	// type is the type of location's meal times to use
-	// it is specified in mealTimes.xml file
+	/**
+	 * Return the meal that is after or during the given Time.
+	 * 
+	 * @param type Meal type to return
+	 * @param tm The time to start searching for the next meal
+	 * @return A DatedMealTime of the next meal
+	 */
 	private DatedMealTime getMealAtTime(int type, Time tm) {
 		int wkDay = tm.weekDay;
 		// check the last meal of the day before us first
@@ -82,9 +107,13 @@ public class MealTimeProvider {
 		return new DatedMealTime(meal, tm_);
 	}
 	
-	// return the meal that is before given Time
-	// type is the type of location's meal times to use
-	// it is specified in mealTimes.xml file
+	/**
+	 * Return the meal that is before the given Time.
+	 * 
+	 * @param type Meal type to return
+	 * @param tm The time to start searching for the previous meal
+	 * @return A DatedMealTime of the previous meal
+	 */
 	private DatedMealTime getMealBeforeTime(int type, Time tm) {
 		int wkDay = tm.weekDay;
 		ArrayList<MealTime> daysMeals = mealTimes.get(type)[wkDay];
@@ -114,23 +143,40 @@ public class MealTimeProvider {
 		return new DatedMealTime(meal, tm_);
 	}
 	
-	// given a meal, find the next one
+	/**
+	 * Find the next meal.
+	 * 
+	 * @param type Meal type to search for
+	 * @param meal Starting meal
+	 * @return The meal following the given one
+	 */
 	public DatedMealTime getNextMeal(int type, DatedMealTime meal) {
 		Time tm = new Time();
 		tm.set(meal.endTime);
 		return getMealAtTime(type, tm);
 	}
 	
-	// given a meal, find the previous one
+	/**
+	 * Find the previous meal.
+	 * 
+	 * @param type Meal type to search for
+	 * @param meal Starting meal
+	 * @return The meal preceding the given one
+	 */
 	public DatedMealTime getPreviousMeal(int type, DatedMealTime meal) {
 		Time tm = new Time();
 		tm.set(meal.startTime);
 		return getMealBeforeTime(type, tm);
 	}
 	
-	// returns -1 if before a meal
-	//		    0 if after a meal
-	//   		1 if in a meal
+	/**
+	 * Check to see what the current time is relative to the given meal.
+	 * 
+	 * @param meal Meal to check against
+	 * @return 1 if we are in the given meal<br>
+	 * 0 if we are after the meal<br>
+	 * -1 if we are before the meal
+	 */
 	public static int currentMealStatus(DatedMealTime meal) {
 		Time tm = getCurTime();
 		if (tm.toMillis(false) >= meal.endTime)
@@ -141,8 +187,13 @@ public class MealTimeProvider {
 			return 1;
 	}
 	
-	// return a list of that day's meals
-	// empty list of there are none
+	/**
+	 * Return a list of the day's meals.
+	 * 
+	 * @param type Meal type
+	 * @param date Which day's meals to return
+	 * @return An ArrayList of the day's DatedMealTimes, which could be empty
+	 */
 	public ArrayList<DatedMealTime> getDaysMeals(int type, Date date) {
 		ArrayList<DatedMealTime> daysMeals = new ArrayList<DatedMealTime>();
 		for (MealTime m : mealTimes.get(type)[date.weekDay])
@@ -150,9 +201,14 @@ public class MealTimeProvider {
 		return daysMeals;
 	}
 	
-	// given type and day of week, return that day's meal names
-	// intended to be more efficient than calling getDaysMeals, and extracting
-	// meal names afterward
+	/**
+	 * Return a list of the day's meal names. It is intended to be more efficient
+	 * than calling {@link getDaysMeals} and extracting the meal names manually.
+	 * 
+	 * @param type Meal type
+	 * @param dow Day of week's list to return (0 = Sunday)
+	 * @return An ArrayList of the day's meal names, which could be empty
+	 */
 	public ArrayList<String> getDaysMealNames(int type, int dow) {
 		ArrayList<String> daysMealNames = new ArrayList<String>();
 		for (MealTime  m : mealTimes.get(type)[dow])
@@ -160,6 +216,15 @@ public class MealTimeProvider {
 		return daysMealNames;
 	}
 	
+	/**
+	 * Given a meal name, a date, and a type, return the unique DatedMealTime
+	 * that has those properties, or null.
+	 * 
+	 * @param mealName Meal name
+	 * @param date Date
+	 * @param type Meal type
+	 * @return The unique DatedMealTime that has the given properties, or null
+	 */
 	// given a mealname, a date string, and a type, get a DatedMealTime
 	// if not found, return null
 	public DatedMealTime constructMeal(String mealName, String date, int type) {

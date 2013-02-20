@@ -63,3 +63,9 @@ Added settings
 May have fixed multiple fragment refresh item bug
 Split action bar
 Contact developer, rate app
+
+1.3.0
+Status bar gray if before meal
+Alerts
+Auto download on each day
+Added boot complete permission to set alarm on boot
