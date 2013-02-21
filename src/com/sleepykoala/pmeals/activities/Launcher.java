@@ -1,12 +1,15 @@
 package com.sleepykoala.pmeals.activities;
 
-import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.*;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
 import static com.sleepykoala.pmeals.data.C.PREF_STARTUPLOC;
+
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -21,6 +24,7 @@ import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.fragments.FirstTimeFragment;
 import com.sleepykoala.pmeals.fragments.FirstTimeFragment.OnFirstTimeDismissListener;
+import com.sleepykoala.pmeals.services.AlertService;
 import com.sleepykoala.pmeals.services.DailyDownloadService;
 
 public class Launcher extends Activity implements OnFirstTimeDismissListener {
@@ -33,12 +37,22 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
         // set 24 hour status
         IS24HOURFORMAT = DateFormat.is24HourFormat(this);
 
-        //*
+        /*
 		startActivity(new Intent(this, ManageAlertsActivity.class));
 		finish();
 		//*/
+        /*
+		Intent alert = new Intent(this, AlertService.class);
+		ArrayList<Integer> nextNums = new ArrayList<Integer>();
+		nextNums.add(2);
+		alert.putExtra(EXTRA_ALERTNUMS, nextNums);
+		startService(alert);
+		launch();
+		//*/
 		
-		/*
+		//*
+        // set alert
+        AlertService.setNextAlert(this);
 		// set daily update alarm
 		Intent dailyDownload = new Intent(this, DailyDownloadService.class);
 		PendingIntent pI = PendingIntent.getService(this, 0, dailyDownload, PendingIntent.FLAG_CANCEL_CURRENT);

@@ -7,11 +7,14 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTREPEAT;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
+import com.sleepykoala.pmeals.services.AlertService;
 
 public class ManageAlertsActivity extends Activity {
 	
@@ -31,6 +35,8 @@ public class ManageAlertsActivity extends Activity {
 	
 	private LinearLayout container;
 	private LayoutInflater mInflater;
+	
+	private boolean inDeleteMode;
 	
 	private static final String[] dayAbbrevs = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 	private static final int EVERY_DAY = 127;
@@ -48,6 +54,7 @@ public class ManageAlertsActivity extends Activity {
         setContentView(R.layout.activity_managealerts);
         
         PMealsPreferenceManager.initialize(this);
+        inDeleteMode = false;
         
         container = (LinearLayout) findViewById(R.id.alertcontainer);
         mInflater = getLayoutInflater();
@@ -64,14 +71,11 @@ public class ManageAlertsActivity extends Activity {
         				PMealsPreferenceManager.getAlertHour(i),
         				PMealsPreferenceManager.getAlertMinute(i));
         }
+        
+        ActionBar aB = getActionBar();
+        aB.setDisplayHomeAsUpEnabled(true);
 	}
 
-	public void addAlert(View v) {
-		Intent add = new Intent(this, SetupNewAlert.class);
-		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
-		startActivityForResult(add, REQ_NEW);
-	}
-	
 	public void onActivityResult(int reqCode, int resCode, Intent data) {
 		if (resCode != RESULT_OK)
 			return;
@@ -83,6 +87,7 @@ public class ManageAlertsActivity extends Activity {
 					data.getIntExtra(EXTRA_ALERTREPEAT, 0),
 					data.getIntExtra(EXTRA_ALERTHOUR, 0),
 					data.getIntExtra(EXTRA_ALERTMINUTE, 0));
+			AlertService.setNextAlert(this);
 		} else if (reqCode == REQ_EDIT) {
 			int num = data.getIntExtra(EXTRA_ALERTNUM, 0);
 			LinearLayout alert = (LinearLayout) container.getChildAt(num - 1);
@@ -90,6 +95,7 @@ public class ManageAlertsActivity extends Activity {
 					data.getIntExtra(EXTRA_ALERTREPEAT, 0),
 					data.getIntExtra(EXTRA_ALERTHOUR, 0),
 					data.getIntExtra(EXTRA_ALERTMINUTE, 0));
+			AlertService.setNextAlert(this);
 		}
 	}
 	
@@ -105,7 +111,7 @@ public class ManageAlertsActivity extends Activity {
     	PMealsPreferenceManager.deleteAlert(num);
     	if (numAlerts == 1) {
     		mInflater.inflate(R.layout.no_alert, container);
-    		exitDeleteMode(null);
+    		exitDeleteMode();
     	}
     }
     
@@ -165,7 +171,10 @@ public class ManageAlertsActivity extends Activity {
     	((TextView) alert.findViewById(R.id.alerttime)).setText(info);
     }
     
-    public void exitDeleteMode(View v) {
+    /**
+     * Exit delete mode, restore colors, change menu item icon back
+     */
+    public void exitDeleteMode() {
     	int numAlerts = PMealsPreferenceManager.getNumAlerts();
     	for (int i = 0; i < numAlerts; ++i) {
     		View alert = container.getChildAt(i);
@@ -173,14 +182,78 @@ public class ManageAlertsActivity extends Activity {
     		((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_ACTIVE);
     		((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_SUBACTIVE);
     	}
-    	findViewById(R.id.addalert).setVisibility(View.VISIBLE);
-    	findViewById(R.id.donedeleting).setVisibility(View.GONE);
+    	inDeleteMode = false;
+    	invalidateOptionsMenu();
     }
     
+    /**
+     * Delete the given alert, click callback
+     * 
+     * @param v View that fired the delete command
+     */
 	public void delete(View v) {
 		deleteAlert((Integer) v.getTag());
 	}
 	
+	/**
+	 * Activates/deactivates the given alert, and sets the next alert
+	 * 
+	 * @param num Alert number
+	 * @param on true to turn it on, false to turn it off
+	 */
+	private void activateAlert(int num, boolean on) {
+		((ImageView) container.getChildAt(num - 1).findViewById(R.id.alertstatus))
+			.setAlpha(on ? ALPHA_ENABLED : ALPHA_DISABLED);
+		PMealsPreferenceManager.setAlertOn(num, on);
+		
+		// set alarm
+		AlertService.setNextAlert(this);
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem na = menu.findItem(R.id.newalert);
+		MenuItem dd = menu.findItem(R.id.donedeleting);
+		if (!inDeleteMode) {
+			na.setVisible(true);
+			na.setEnabled(true);
+			dd.setVisible(false);
+			dd.setEnabled(false);
+		} else {
+			na.setVisible(false);
+			na.setEnabled(false);
+			dd.setVisible(true);
+			dd.setEnabled(true);
+		}
+		
+		return true;
+	}
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_managealerts, menu);
+        
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case R.id.newalert:
+    		Intent add = new Intent(this, SetupNewAlert.class);
+    		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
+    		startActivityForResult(add, REQ_NEW);
+    		return true;
+    	case R.id.donedeleting:
+    		exitDeleteMode();
+    	case android.R.id.home:
+    		finish();
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+
     //-----------------------------------------LISTENERS-----------------------------------
 
     private class AlertStatusTouchListener implements OnTouchListener {
@@ -193,8 +266,7 @@ public class ManageAlertsActivity extends Activity {
 				int num = (Integer) v.getTag();
 				boolean isOn = PMealsPreferenceManager.getAlertOn(num);
 				isOn ^= true;
-				((ImageView) v).setAlpha( isOn ? ALPHA_ENABLED : ALPHA_DISABLED);
-				PMealsPreferenceManager.setAlertOn(num, isOn);
+				activateAlert(num, isOn);
 				return true;
 			default:
 				return false;
@@ -215,8 +287,8 @@ public class ManageAlertsActivity extends Activity {
 				((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_DIM);
 				((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_DIM);
 			}
-			findViewById(R.id.addalert).setVisibility(View.GONE);
-			findViewById(R.id.donedeleting).setVisibility(View.VISIBLE);
+			inDeleteMode = true;
+			invalidateOptionsMenu();
 			return true;
 		}
     	

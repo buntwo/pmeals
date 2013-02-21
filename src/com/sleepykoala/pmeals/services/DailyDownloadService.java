@@ -70,11 +70,10 @@ public class DailyDownloadService extends IntentService {
 			DatedMealTime dmt = meals.get(type);
 			if (dmt == null) {
 				dmt = mTP.getCurrentMeal(type);
-				while (dmt.date.toMillis(false) < today) {
+				while (dmt.date.toMillis(false) < today)
 					dmt = mTP.getNextMeal(type, dmt);
-				}
 				meals.put(type, dmt);
-				selectArgs =  new String[]{ "", dmt.date.toString(), dmt.mealName };
+				selectArgs = new String[]{ "", dmt.date.toString(), dmt.mealName };
 			}
 			selectArgs[0] = String.valueOf(l.ID);
 			cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);

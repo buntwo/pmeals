@@ -15,7 +15,7 @@
     <string name="title_activity_setupnewalert">Setup new alert</string>
     <string name="app_info">An app for downloading, storing, and nicely displaying dining menus at Princeton University.</string>
     <string name="credits_categories">App Design\nStrategy Consultant\nCoding\nIcon</string>
-    <string name="credits_authors">Brian Tu\nSophia Xing\nBrian Tu\nDavid Zhao</string>
+    <string name="credits_authors">Brian Tu, David Zhao\nSophia Xing\nBrian Tu\nDavid Zhao</string>
     <string name="search">Search meals</string>
     <string name="searchHint">Search meals</string>
     <string name="searching">Searching</string>

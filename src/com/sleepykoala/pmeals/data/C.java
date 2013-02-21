@@ -66,11 +66,13 @@ public final class C {
 	public static final String EXTRA_MEALEXISTS = "com.sleepykoala.pmeals.MEALEXISTS";
 	// alert extras
 	public static final String EXTRA_ALERTNUM = "com.sleepykoala.pmeals.ALERTNUM";
+	public static final String EXTRA_ALERTNUMS = "com.sleepykoala.pmeals.ALERTNUMS";
 	public static final String EXTRA_ALERTSTATUS = "com.sleepykoala.pmeals.ALERTSTATUS";
 	public static final String EXTRA_ALERTQUERY = "com.sleepykoala.pmeals.ALERTQUERY";
 	public static final String EXTRA_ALERTREPEAT = "com.sleepykoala.pmeals.ALERTREPEAT";
 	public static final String EXTRA_ALERTHOUR = "com.sleepykoala.pmeals.ALERTHOUR";
 	public static final String EXTRA_ALERTMINUTE = "com.sleepykoala.pmeals.ALERTMINUTE";
+	public static final String EXTRA_ALERTTIME = "com.sleepykoala.pmeals.ALERTTIME";
     
 	// icon alpha constants
 	public static final int ALPHA_ENABLED = 255;

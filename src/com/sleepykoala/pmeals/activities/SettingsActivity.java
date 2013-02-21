@@ -1,11 +1,13 @@
 package com.sleepykoala.pmeals.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.sleepykoala.pmeals.data.C;
@@ -39,8 +41,22 @@ public class SettingsActivity extends Activity {
 		getFragmentManager().beginTransaction()
 		.replace(android.R.id.content, new SettingsFragment())
 		.commit();
+        
+        ActionBar aB = getActionBar();
+        aB.setDisplayHomeAsUpEnabled(true);
 	}
-
+	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case android.R.id.home:
+    		finish();
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+    
     @Override
     public void onPause() {
     	super.onPause();

@@ -11,8 +11,8 @@
         android:gravity="left"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         />
@@ -47,38 +47,32 @@
         android:divider="@color/light_gray"
         >
         
-        <TextView
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/done"
-            android:textSize="18sp"
-            android:textColor="@color/white_button"
+            android:src="@drawable/ic_accept"
             android:onClick="done"
             android:clickable="true"
             />
         
-        <TextView
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/reset"
-            android:textSize="18sp"
-            android:textColor="@color/white_button"
+            android:src="@drawable/ic_replay"
             android:onClick="reset"
             android:clickable="true"
             />
         
-        <TextView
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/cancel"
-            android:textSize="18sp"
-            android:textColor="@color/white_button"
+            android:src="@drawable/ic_cancel"
             android:onClick="cancel"
             android:clickable="true"
             />

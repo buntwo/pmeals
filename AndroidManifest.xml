@@ -10,6 +10,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:uiOptions="splitActionBarWhenNarrow"
@@ -108,6 +109,9 @@
         </service>
         <service
             android:name=".services.DailyDownloadService" >
+        </service>
+        <service
+            android:name=".services.AlertService" >
         </service>
         
         <!-- broadcast receivers -->

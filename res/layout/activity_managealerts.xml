@@ -24,39 +24,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:src="@drawable/hr" />
-
-        <TextView
-            android:id="@+id/addalert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:drawableLeft="@drawable/ic_addalarm"
-            android:drawablePadding="8dp"
-            android:onClick="addAlert"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:text="@string/addalert"
-            android:textColor="@color/white_button"
-            android:textSize="18sp" />
         
-        <TextView
-            android:id="@+id/donedeleting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:onClick="exitDeleteMode"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:text="@string/donedeleting"
-            android:textColor="@color/white_button"
-            android:visibility="gone"
-            android:textSize="18sp" />
     </LinearLayout>
 
 </ScrollView>

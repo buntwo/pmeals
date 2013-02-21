@@ -2,10 +2,12 @@ package com.sleepykoala.pmeals.activities;
 
 import java.util.ArrayList;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -71,8 +73,20 @@ public class ReorderLocations extends Activity {
         }
         ((LinearLayout) findViewById(R.id.buttons)).setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         
+        ActionBar aB = getActionBar();
+        aB.setDisplayHomeAsUpEnabled(true);
     }
-    
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case android.R.id.home:
+    		finish();
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
     //-------------------------------------------------BUTTON CALLBACKS-----------------------------------------------
     
     public void done(View v) {

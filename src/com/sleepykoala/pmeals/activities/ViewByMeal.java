@@ -374,6 +374,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     
     private void updateInfoBar() {
     	mealInfoView0.setText(mealInfo);
+    	mealInfoView1.setText(mealInfo);
     	changeInfoBarColor();
     }
     

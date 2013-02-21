@@ -134,27 +134,23 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp" >
 
-            <TextView
+            <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center_horizontal"
-                android:onClick="create"
-                android:text="@string/ok"
-                android:textColor="@color/white_button"
-                android:textSize="18sp" />
+                android:src="@drawable/ic_accept"
+                android:onClick="create" />
 
-            <TextView
+            <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center_horizontal"
-                android:onClick="cancel"
-                android:text="@string/cancel"
-                android:textColor="@color/white_button"
-                android:textSize="18sp" />
+                android:src="@drawable/ic_cancel"
+                android:onClick="cancel" />
         </LinearLayout>
     </LinearLayout>
 
