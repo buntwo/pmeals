@@ -5,9 +5,11 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTREPEAT;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -33,11 +35,15 @@ public class SetupNewAlert extends Activity {
 
 		PMealsPreferenceManager.initialize(this);
 
+        ActionBar aB = getActionBar();
+        aB.setDisplayHomeAsUpEnabled(true);
+        
 		Intent intent = getIntent();
 		alertNum = intent.getIntExtra(EXTRA_ALERTNUM, -1);
 		boolean[] checked = new boolean[7];
-		if (alertNum != -1) {
+		if (alertNum <= PMealsPreferenceManager.getNumAlerts()) {
 			String query = intent.getStringExtra(EXTRA_ALERTQUERY);
+			aB.setTitle("Edit alert: " + query);
 			((EditText) findViewById(R.id.alertquery)).setText(query);
 			int repeat = intent.getIntExtra(EXTRA_ALERTREPEAT, 0);
 			for (int i = 0; i < 7; ++i)
@@ -47,15 +53,15 @@ public class SetupNewAlert extends Activity {
 			TimePicker tP = (TimePicker) findViewById(R.id.alerttime);
 			tP.setCurrentHour(hour);
 			tP.setCurrentMinute(minute);
+			((CheckBox) findViewById(R.id.sunday)).setChecked(checked[0]);
+			((CheckBox) findViewById(R.id.monday)).setChecked(checked[1]);
+			((CheckBox) findViewById(R.id.tuesday)).setChecked(checked[2]);
+			((CheckBox) findViewById(R.id.wednesday)).setChecked(checked[3]);
+			((CheckBox) findViewById(R.id.thursday)).setChecked(checked[4]);
+			((CheckBox) findViewById(R.id.friday)).setChecked(checked[5]);
+			((CheckBox) findViewById(R.id.saturday)).setChecked(checked[6]);
 		}
-		((CheckBox) findViewById(R.id.sunday)).setChecked(checked[0]);
-		((CheckBox) findViewById(R.id.monday)).setChecked(checked[1]);
-		((CheckBox) findViewById(R.id.tuesday)).setChecked(checked[2]);
-		((CheckBox) findViewById(R.id.wednesday)).setChecked(checked[3]);
-		((CheckBox) findViewById(R.id.thursday)).setChecked(checked[4]);
-		((CheckBox) findViewById(R.id.friday)).setChecked(checked[5]);
-		((CheckBox) findViewById(R.id.saturday)).setChecked(checked[6]);
-
+		
 		// show dividers
 		((LinearLayout) findViewById(R.id.buttons))
 		.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
@@ -104,4 +110,14 @@ public class SetupNewAlert extends Activity {
 		finish();
 	}
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case android.R.id.home:
+    		cancel(null);
+    		return true;
+    	default:
+    		return false;
+    	}
+    }
 }

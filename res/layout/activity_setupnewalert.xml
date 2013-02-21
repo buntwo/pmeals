@@ -120,10 +120,11 @@
                 android:text="@string/saturday" />
         </LinearLayout>
 
-	    <ImageView
-	        android:layout_width="match_parent"
-	        android:layout_height="1dp"
-	        android:src="@drawable/hr" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="@drawable/hr" />
+
         <LinearLayout
             android:id="@+id/buttons"
             android:layout_width="match_parent"
@@ -155,7 +156,6 @@
                 android:textColor="@color/white_button"
                 android:textSize="18sp" />
         </LinearLayout>
-        
     </LinearLayout>
 
 </ScrollView>

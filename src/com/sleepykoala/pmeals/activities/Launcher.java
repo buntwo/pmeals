@@ -33,8 +33,10 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
         // set 24 hour status
         IS24HOURFORMAT = DateFormat.is24HourFormat(this);
 
+        //*
 		startActivity(new Intent(this, ManageAlertsActivity.class));
 		finish();
+		//*/
 		
 		/*
 		// set daily update alarm

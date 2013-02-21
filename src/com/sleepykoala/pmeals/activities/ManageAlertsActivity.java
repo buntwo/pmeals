@@ -37,6 +37,7 @@ public class ManageAlertsActivity extends Activity {
 	private static final int WEEKDAYS = 62;
 	private static final int WEEKENDS = 65;
 	private static final int COLOR_DIM = 0xff8a8a8a;
+	private static final int COLOR_SUBACTIVE = 0xffb9b9b9;
 	private static final int COLOR_ACTIVE = 0xffffffff;
 	private static final int REQ_NEW = 0;
 	private static final int REQ_EDIT = 1;
@@ -170,6 +171,7 @@ public class ManageAlertsActivity extends Activity {
     		View alert = container.getChildAt(i);
     		alert.findViewById(R.id.deletealert).setVisibility(View.GONE);
     		((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_ACTIVE);
+    		((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_SUBACTIVE);
     	}
     	findViewById(R.id.addalert).setVisibility(View.VISIBLE);
     	findViewById(R.id.donedeleting).setVisibility(View.GONE);
@@ -211,6 +213,7 @@ public class ManageAlertsActivity extends Activity {
 				View alert = container.getChildAt(i);
 				alert.findViewById(R.id.deletealert).setVisibility(View.VISIBLE);
 				((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_DIM);
+				((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_DIM);
 			}
 			findViewById(R.id.addalert).setVisibility(View.GONE);
 			findViewById(R.id.donedeleting).setVisibility(View.VISIBLE);
