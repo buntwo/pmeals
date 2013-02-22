@@ -57,6 +57,8 @@ public final class C {
 	public static final String EXTRA_DATE = "com.sleepykoala.pmeals.DATE";
 	public static final String EXTRA_ISREFRESH = "com.sleepykoala.pmeals.ISREFRESH";
 	public static final String EXTRA_TYPE = "com.sleepykoala.pmeals.TYPE";
+	public static final String EXTRA_ITEMSPERLOC = "com.sleepykoala.pmeals.ITEMSPERLOC";
+	public static final String EXTRA_ITEMNAMES = "com.sleepykoala.pmeals.ITEMNAMES";
 	// NOTE: this is for an arraylist of ID's
 	// the similarly named one above is for a single ID
 	public static final String EXTRA_LOCATIONIDS = "com.sleepykoala.pmeals.LOCATIONIDS";
@@ -73,6 +75,7 @@ public final class C {
 	public static final String EXTRA_ALERTHOUR = "com.sleepykoala.pmeals.ALERTHOUR";
 	public static final String EXTRA_ALERTMINUTE = "com.sleepykoala.pmeals.ALERTMINUTE";
 	public static final String EXTRA_ALERTTIME = "com.sleepykoala.pmeals.ALERTTIME";
+	public static final String EXTRA_ALERTLOCS = "com.sleepykoala.pmeals.ALERTLOCS";
     
 	// icon alpha constants
 	public static final int ALPHA_ENABLED = 255;
@@ -125,6 +128,7 @@ public final class C {
     public static final String PREF_ALERTREPEAT = "alert_repeat";
     public static final String PREF_ALERTHOUR = "alert_hour";
     public static final String PREF_ALERTMINUTE = "alert_minute";
+    public static final String PREF_ALERTLOCS = "alert_locs";
     
     // feedback email
     public static final String FEEDBACK_EMAIL = "sleepykoala03@gmail.com";

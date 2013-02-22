@@ -7,13 +7,17 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTREPEAT;
+import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
+
+import java.io.IOException;
+import java.util.Set;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.data.Location;
+import com.sleepykoala.pmeals.data.LocationProvider;
+import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.services.AlertService;
@@ -35,8 +42,12 @@ public class ManageAlertsActivity extends Activity {
 	
 	private LinearLayout container;
 	private LayoutInflater mInflater;
+	private LocationProvider lP;
 	
-	private boolean inDeleteMode;
+	// buttons
+	private ImageView addAlert;
+	private ImageView delete;
+	private ImageView doneDeleting;
 	
 	private static final String[] dayAbbrevs = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 	private static final int EVERY_DAY = 127;
@@ -54,8 +65,24 @@ public class ManageAlertsActivity extends Activity {
         setContentView(R.layout.activity_managealerts);
         
         PMealsPreferenceManager.initialize(this);
-        inDeleteMode = false;
         
+		PMealsPreferenceManager.initialize(this);
+        // get location provider
+        try {
+        	LocationProviderFactory.initialize(getAssets().open(LOCATIONSXML));
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot find asset " + LOCATIONSXML + "!!");
+		}
+        lP = LocationProviderFactory.newLocationProvider();
+        
+        // cache buttons
+        addAlert = (ImageView) findViewById(R.id.addalert);
+        delete = (ImageView) findViewById(R.id.delete);
+        doneDeleting = (ImageView) findViewById(R.id.donedeleting);
+        // set dividers
+        ((LinearLayout) findViewById(R.id.buttons)).setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        
+        // fill container with stored alerts
         container = (LinearLayout) findViewById(R.id.alertcontainer);
         mInflater = getLayoutInflater();
         int numAlerts = PMealsPreferenceManager.getNumAlerts();
@@ -64,12 +91,7 @@ public class ManageAlertsActivity extends Activity {
         	container.addView(tv);
         } else {
         	for (int i = 1; i <= numAlerts; ++i)
-        		newAlertView(
-        				PMealsPreferenceManager.getAlertQuery(i),
-        				PMealsPreferenceManager.getAlertOn(i),
-        				PMealsPreferenceManager.getAlertRepeat(i),
-        				PMealsPreferenceManager.getAlertHour(i),
-        				PMealsPreferenceManager.getAlertMinute(i));
+        		newAlertView(i);
         }
         
         ActionBar aB = getActionBar();
@@ -81,21 +103,11 @@ public class ManageAlertsActivity extends Activity {
 			return;
 		
 		if (reqCode == REQ_NEW) {
-			newAlertView(
-					data.getStringExtra(EXTRA_ALERTQUERY),
-					true,
-					data.getIntExtra(EXTRA_ALERTREPEAT, 0),
-					data.getIntExtra(EXTRA_ALERTHOUR, 0),
-					data.getIntExtra(EXTRA_ALERTMINUTE, 0));
-			AlertService.setNextAlert(this);
+			newAlertView(data.getIntExtra(EXTRA_ALERTNUM, 0));
 		} else if (reqCode == REQ_EDIT) {
 			int num = data.getIntExtra(EXTRA_ALERTNUM, 0);
 			LinearLayout alert = (LinearLayout) container.getChildAt(num - 1);
-			updateAlertView(alert, data.getStringExtra(EXTRA_ALERTQUERY),
-					data.getIntExtra(EXTRA_ALERTREPEAT, 0),
-					data.getIntExtra(EXTRA_ALERTHOUR, 0),
-					data.getIntExtra(EXTRA_ALERTMINUTE, 0));
-			AlertService.setNextAlert(this);
+			updateAlertView(alert, num);
 		}
 	}
 	
@@ -111,15 +123,18 @@ public class ManageAlertsActivity extends Activity {
     	PMealsPreferenceManager.deleteAlert(num);
     	if (numAlerts == 1) {
     		mInflater.inflate(R.layout.no_alert, container);
-    		exitDeleteMode();
+    		exitDeleteMode(null);
     	}
     }
     
-    private void newAlertView(String query, boolean isOn, int repeat,
-    		int hour, int min) {
+    /**
+     * Puts in a new alert view in the container. Call this after you store the new alert
+     * 
+     * @param num Alert number
+     */
+    private void newAlertView(int num) {
     	if (PMealsPreferenceManager.getNumAlerts() == 1)
     		container.removeAllViews();
-    	int num = container.getChildCount() + 1;
     	
     	LinearLayout alert = (LinearLayout) mInflater.inflate(R.layout.alert, null);
     	
@@ -136,28 +151,38 @@ public class ManageAlertsActivity extends Activity {
     	deleteButton.setTag(num);
     	// set status indicator
     	ImageView iv = (ImageView) alert.findViewById(R.id.alertstatus);
-    	iv.setAlpha(isOn ? ALPHA_ENABLED : ALPHA_DISABLED);
+    	iv.setAlpha(PMealsPreferenceManager.getAlertOn(num) ? ALPHA_ENABLED : ALPHA_DISABLED);
     	iv.setTag(num);
     	iv.setOnTouchListener(new AlertStatusTouchListener());
 
     	container.addView(alert);
     	
-    	updateAlertView(alert, query, repeat, hour, min);
+    	updateAlertView(alert, num);
     }
     
-    private void updateAlertView(LinearLayout alert, String query,
-    		int repeat, int hour, int min) {
+    /**
+     * Updates the given alert LinerLayout with the appropriate info
+     * 
+     * @param alert Alert view
+     * @param num Alert num
+     */
+    private void updateAlertView(LinearLayout alert, int num) {
     	// build text
+    	String query = PMealsPreferenceManager.getAlertQuery(num);
+    	int repeat = PMealsPreferenceManager.getAlertRepeat(num);
+    	int hour = PMealsPreferenceManager.getAlertHour(num);
+    	int min = PMealsPreferenceManager.getAlertMinute(num);
+    	// set query
     	((TextView) alert.findViewById(R.id.alertquery)).setText(query);
-    	StringBuilder info;
+    	// set info
+    	StringBuilder info = new StringBuilder();;
     	if (repeat == EVERY_DAY)
-    		info = new StringBuilder("Every day");
+    		info.append("Every day");
     	else if (repeat == WEEKDAYS)
-    		info = new StringBuilder("Weekdays");
+    		info.append("Weekdays");
     	else if (repeat == WEEKENDS)
-    		info = new StringBuilder("Weekends");
+    		info.append("Weekends");
     	else {
-    		info = new StringBuilder();
     		for (int j = 0; j < 7; ++j)
     			if (((repeat >> j) & 1) == 1)
     				info.append(dayAbbrevs[j]).append(", ");
@@ -169,23 +194,85 @@ public class ManageAlertsActivity extends Activity {
     	tm.minute = min;
     	info.append(MealTimeProvider.getFormattedTime(tm.toMillis(false)));
     	((TextView) alert.findViewById(R.id.alerttime)).setText(info);
+    	// set locations
+    	info = new StringBuilder();
+    	Set<String> locs = PMealsPreferenceManager.getAlertLocations(num);
+    	int diningHallCount = 0;
+    	int count = 0;
+    	int size = locs.size();
+    	String locName = null;
+    	String diningHallName = null;
+    	for (String s : locs) {
+    		++count;
+    		Location l = lP.getById(Integer.parseInt(s));
+    		if (count == 1)
+    			locName = l.nickname;
+    		if (l.type == 0 || l.type == 1) { // dining hall or CJL
+    			if (diningHallCount == 0)
+    				diningHallName = l.nickname;
+    			++diningHallCount;
+    		}
+    	}
+    	if (diningHallCount != 0) {
+    		if (diningHallCount == 1)
+    			info.append(diningHallName);
+    		else
+    			info.append(diningHallCount).append(" dining halls");
+    		if (diningHallCount != size)
+    			info.append(" and ").append(size - diningHallCount).append(" more");
+    	} else {
+    		info.append(locName);
+    		if (size > 1)
+    			info.append(" and ").append(locs.size() - 1).append(" more");
+    	}
+    	((TextView) alert.findViewById(R.id.alertlocs)).setText(info);
+    }
+    
+    //--------------------------------------BUTTON CALLBACKS-------------------------------
+    
+    public void addAlert(View v) {
+    	Intent add = new Intent(this, SetupNewAlert.class);
+    	add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
+    	add.putExtra(EXTRA_ALERTQUERY, "");
+    	startActivityForResult(add, REQ_NEW);
     }
     
     /**
+     * Enter delete mode, dim colors, turn on trash cans
+     */
+    public void enterDeleteMode(View v) {
+    	int numAlerts = PMealsPreferenceManager.getNumAlerts();
+    	if (numAlerts == 0)
+    			return;
+    	for (int i = 0; i < numAlerts; ++i) {
+    		View alert = container.getChildAt(i);
+    		alert.findViewById(R.id.deletealert).setVisibility(View.VISIBLE);
+    		((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_DIM);
+    		((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_DIM);
+    		((TextView) alert.findViewById(R.id.alertlocs)).setTextColor(COLOR_DIM);
+    	}
+    	addAlert.setVisibility(View.GONE);
+    	delete.setVisibility(View.GONE);
+    	doneDeleting.setVisibility(View.VISIBLE);
+    }
+
+    /**
      * Exit delete mode, restore colors, change menu item icon back
      */
-    public void exitDeleteMode() {
+    public void exitDeleteMode(View v) {
     	int numAlerts = PMealsPreferenceManager.getNumAlerts();
     	for (int i = 0; i < numAlerts; ++i) {
     		View alert = container.getChildAt(i);
     		alert.findViewById(R.id.deletealert).setVisibility(View.GONE);
     		((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_ACTIVE);
     		((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_SUBACTIVE);
+    		((TextView) alert.findViewById(R.id.alertlocs)).setTextColor(COLOR_SUBACTIVE);
     	}
-    	inDeleteMode = false;
-    	invalidateOptionsMenu();
+    	addAlert.setVisibility(View.VISIBLE);
+    	delete.setVisibility(View.VISIBLE);
+    	doneDeleting.setVisibility(View.GONE);
     }
-    
+	
     /**
      * Delete the given alert, click callback
      * 
@@ -195,6 +282,8 @@ public class ManageAlertsActivity extends Activity {
 		deleteAlert((Integer) v.getTag());
 	}
 	
+	//--------------------------------------------------------------------------------------------
+    
 	/**
 	 * Activates/deactivates the given alert, and sets the next alert
 	 * 
@@ -210,42 +299,9 @@ public class ManageAlertsActivity extends Activity {
 		AlertService.setNextAlert(this);
 	}
 	
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem na = menu.findItem(R.id.newalert);
-		MenuItem dd = menu.findItem(R.id.donedeleting);
-		if (!inDeleteMode) {
-			na.setVisible(true);
-			na.setEnabled(true);
-			dd.setVisible(false);
-			dd.setEnabled(false);
-		} else {
-			na.setVisible(false);
-			na.setEnabled(false);
-			dd.setVisible(true);
-			dd.setEnabled(true);
-		}
-		
-		return true;
-	}
-	
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_managealerts, menu);
-        
-        return true;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
-    	case R.id.newalert:
-    		Intent add = new Intent(this, SetupNewAlert.class);
-    		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
-    		startActivityForResult(add, REQ_NEW);
-    		return true;
-    	case R.id.donedeleting:
-    		exitDeleteMode();
     	case android.R.id.home:
     		finish();
     		return true;
@@ -277,18 +333,9 @@ public class ManageAlertsActivity extends Activity {
     
     private class DeleteListener implements OnLongClickListener {
 
-    	// enter delete mode
-    	// dim title, make trash cans visible
 		public boolean onLongClick(View v) {
-			int numAlerts = PMealsPreferenceManager.getNumAlerts();
-			for (int i = 0; i < numAlerts; ++i) {
-				View alert = container.getChildAt(i);
-				alert.findViewById(R.id.deletealert).setVisibility(View.VISIBLE);
-				((TextView) alert.findViewById(R.id.alertquery)).setTextColor(COLOR_DIM);
-				((TextView) alert.findViewById(R.id.alerttime)).setTextColor(COLOR_DIM);
-			}
-			inDeleteMode = true;
-			invalidateOptionsMenu();
+			enterDeleteMode(null);
+			
 			return true;
 		}
     	

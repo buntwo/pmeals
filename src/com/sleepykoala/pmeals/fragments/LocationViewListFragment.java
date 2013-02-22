@@ -1,5 +1,7 @@
 package com.sleepykoala.pmeals.fragments;
 
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ISREFRESH;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
@@ -43,6 +45,7 @@ import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.activities.MealSearcher;
+import com.sleepykoala.pmeals.activities.SetupNewAlert;
 import com.sleepykoala.pmeals.adapters.LocationViewListAdapter;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
@@ -55,6 +58,7 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
 public class LocationViewListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -93,9 +97,20 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 			}
 		}
 	};
-	
+
+	private static String[] projection = {
+		PMealsDatabase.ITEMNAME,
+		PMealsDatabase.ITEMTYPE,
+		PMealsDatabase.ITEMERROR,
+		PMealsDatabase.ITEMVEGAN,
+		PMealsDatabase.ITEMVEGETARIAN,
+		PMealsDatabase.ITEMPORK,
+		PMealsDatabase.ITEMNUTS,
+		PMealsDatabase.ITEMEFRIENDLY,
+	};
+
 	private LocationViewListAdapter mAdapter;
-	
+
 	private ArrayList<Bundle> loaderArgs;
 	private String mDate;
 	private Location mLoc;
@@ -285,6 +300,13 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
     		searchIntent.putExtra(SearchManager.QUERY, query);
     		startActivity(searchIntent);
     		return true;
+    	case R.id.makealert:
+    		Intent add = new Intent(getActivity(), SetupNewAlert.class);
+    		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
+    		add.putExtra(EXTRA_ALERTQUERY, ((FoodItem) getListAdapter().getItem(info.position)).itemName);
+
+    		startActivity(add);
+    		return true;
     	default:
     		return super.onContextItemSelected(item);
     	}
@@ -313,14 +335,6 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
     //---------------------------------------------------LOADER CALLBACKS---------------------------------------
     
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR,
-				PMealsDatabase.ITEMVEGAN,
-				PMealsDatabase.ITEMVEGETARIAN,
-				PMealsDatabase.ITEMPORK,
-				PMealsDatabase.ITEMNUTS,
-				PMealsDatabase.ITEMEFRIENDLY,
-		};
-
 		String select;
 		String[] selectArgs;
 		if (args.getBoolean(EXTRA_MEALEXISTS)) {

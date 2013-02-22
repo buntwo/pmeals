@@ -4,9 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:clickable="true"
-    android:paddingLeft="7dp"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp"
+    android:paddingLeft="5dp"
      >
 
     <ImageView
@@ -15,8 +13,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingLeft="10dp"
-        android:paddingRight="15dp"
         android:src="@drawable/ic_alarm" />
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="14dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:src="@drawable/vr" />
 
     <LinearLayout
         android:id="@+id/alertinfo"
@@ -39,12 +46,19 @@
             android:textColor="@color/lighter_gray"
             android:textSize="15sp" />
         
+        <TextView
+            android:id="@+id/alertlocs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/lighter_gray"
+            android:textSize="15sp" />
+        
     </LinearLayout>
     
     <ImageView
         android:id="@+id/deletealert"
         android:layout_width="wrap_content"
-        android:layout_height="27dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="right"
         android:src="@drawable/ic_delete"

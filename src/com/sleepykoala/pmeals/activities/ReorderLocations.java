@@ -56,6 +56,7 @@ public class ReorderLocations extends Activity {
 		origLocNames = (ArrayList<String>) locNames.clone();
         
         LinearLayout container = (LinearLayout) findViewById(R.id.reorder_container);
+        container.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_BEGINNING | LinearLayout.SHOW_DIVIDER_END);
         
 		// build TextViews
         views = new ArrayList<TextView>();

@@ -1,5 +1,7 @@
 package com.sleepykoala.pmeals.fragments;
 
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ISREFRESH;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
@@ -14,6 +16,7 @@ import static com.sleepykoala.pmeals.data.C.STRING_CLOSED;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -46,6 +49,7 @@ import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.activities.MealSearcher;
+import com.sleepykoala.pmeals.activities.SetupNewAlert;
 import com.sleepykoala.pmeals.activities.ViewByLocation;
 import com.sleepykoala.pmeals.adapters.MealViewListAdapter;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
@@ -59,6 +63,7 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
 import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
 public class MealViewListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -109,9 +114,20 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 			}
 		}
 	};
-	
+
+	private static String[] projection = {
+		PMealsDatabase.ITEMNAME,
+		PMealsDatabase.ITEMTYPE,
+		PMealsDatabase.ITEMERROR,
+		PMealsDatabase.ITEMVEGAN,
+		PMealsDatabase.ITEMVEGETARIAN,
+		PMealsDatabase.ITEMPORK,
+		PMealsDatabase.ITEMNUTS,
+		PMealsDatabase.ITEMEFRIENDLY,
+	};
+
 	private MealViewListAdapter mAdapter;
-	
+
 	private static final Object dlFailedLock = new Object();
 	private static HashMap<String, Boolean> failedToastDisplayed = new HashMap<String, Boolean>();
 	private ArrayList<Bundle> loaderArgs;
@@ -248,6 +264,14 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 		// unregister receiver
 		LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bCastReceiver);
 	}
+	
+	@Override
+	public void onActivityResult(int reqCode, int resCode, Intent data) {
+		if (resCode != Activity.RESULT_OK)
+			return;
+		
+		Toast.makeText(getActivity(), "Alert created", Toast.LENGTH_SHORT).show();
+	}
 
 	//-------------------------------------------------OPTIONS MENU STUFF-----------------------------------------
 	
@@ -323,6 +347,13 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     		searchIntent.putExtra(SearchManager.QUERY, query);
     		startActivity(searchIntent);
     		return true;
+    	case R.id.makealert:
+    		Intent add = new Intent(getActivity(), SetupNewAlert.class);
+    		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
+    		add.putExtra(EXTRA_ALERTQUERY, ((FoodItem) getListAdapter().getItem(info.position)).itemName);
+
+    		startActivityForResult(add, 0);
+    		return true;
     	default:
     		return super.onContextItemSelected(item);
     	}
@@ -365,14 +396,6 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     //---------------------------------------------LOADER CALLBACKS---------------------------------------------
     
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR,
-				PMealsDatabase.ITEMVEGAN,
-				PMealsDatabase.ITEMVEGETARIAN,
-				PMealsDatabase.ITEMPORK,
-				PMealsDatabase.ITEMNUTS,
-				PMealsDatabase.ITEMEFRIENDLY,
-		};
-
 		String select;
 		String[] selectArgs;
 		if (args.getBoolean(EXTRA_MEALEXISTS)) {

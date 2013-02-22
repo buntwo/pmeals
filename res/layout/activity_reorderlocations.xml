@@ -27,8 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:orientation="vertical"
-        android:divider="@color/menuitem_selectedbg"
+        android:divider="@color/light_gray"
         >
         
     </LinearLayout>

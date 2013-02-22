@@ -159,10 +159,14 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			throw new RuntimeException("Cannot find asset " + LOCATIONSXML + "!!");
 		}
         lP = LocationProviderFactory.newLocationProvider();
-        
+
         // cache animations
         dropdown0 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown0);
-        dropdown0.setAnimationListener(new ResetAnimationListener());
+        dropdown0.setAnimationListener(new AnimationListener() {
+        	public void onAnimationStart(Animation animation) {}
+        	public void onAnimationEnd(Animation animation) { isInfoBarMoving = false; }
+        	public void onAnimationRepeat(Animation animation) {}
+        });
         dropdown1 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown1);
         dropdown1.setAnimationListener(new AnimationListener() {
 			public void onAnimationRepeat(Animation animation) {}
@@ -365,6 +369,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 				infoBarColor = BEFORE_MEAL_COLOR;
 
 		if (newMeal && !isInfoBarMoving) {
+			isInfoBarMoving = true;
 			// fancy dropdown animation
 			mealInfoView0.startAnimation(dropdown0);
 			mealInfoView1.startAnimation(dropdown1);
@@ -373,8 +378,10 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     }
     
     private void updateInfoBar() {
-    	mealInfoView0.setText(mealInfo);
-    	mealInfoView1.setText(mealInfo);
+    	if (isInfoBarMoving)
+    		mealInfoView0.setText(mealInfo);
+    	else
+    		mealInfoView1.setText(mealInfo);
     	changeInfoBarColor();
     }
     
@@ -403,13 +410,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		int bgColor = (Integer) animation.getAnimatedValue();
     		infoBar.setBackgroundColor(bgColor);
     	}
-    }
-    
-    // title animating set to false at animation end
-    private class ResetAnimationListener implements AnimationListener {
-		public void onAnimationEnd(Animation animation) { isInfoBarMoving = false; }
-		public void onAnimationRepeat(Animation animation) {}
-		public void onAnimationStart(Animation animation) { isInfoBarMoving = true; }
     }
     
     private class TitleChangeListener extends SimpleOnPageChangeListener {

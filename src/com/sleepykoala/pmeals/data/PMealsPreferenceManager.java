@@ -3,6 +3,7 @@ package com.sleepykoala.pmeals.data;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTHOUR;
+import static com.sleepykoala.pmeals.data.C.PREF_ALERTLOCS;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTON;
 import static com.sleepykoala.pmeals.data.C.PREF_ALERTQUERY;
@@ -174,6 +175,19 @@ public class PMealsPreferenceManager {
 	}
 	
 	/**
+	 * Gets the set of location ids that this alert queries
+	 * 
+	 * @param num Alert number
+	 * @return The set of location ids that this alert queries, or null
+	 * if alert does not exist
+	 */
+	public static Set<String> getAlertLocations(int num) {
+		assertInitialized();
+		
+		return prefs.getStringSet(num + PREF_ALERTLOCS, null);
+	}
+	
+	/**
 	 * Set status of alert.
 	 * 
 	 * @param num Alert number
@@ -200,7 +214,7 @@ public class PMealsPreferenceManager {
 	 * @param min Repeat minute
 	 */
 	public static void storeAlert(int num, String query, int repeat, int hour,
-			int min) {
+			int min, Set<String> locsIds) {
 		assertInitialized();
 		
 		SharedPreferences.Editor editor = prefs.edit();
@@ -211,6 +225,7 @@ public class PMealsPreferenceManager {
 		editor.putInt(num + PREF_ALERTHOUR, hour);
 		editor.putInt(num + PREF_ALERTMINUTE, min);
 		editor.putBoolean(num + PREF_ALERTON, true);
+		editor.putStringSet(num + PREF_ALERTLOCS, locsIds);
 		editor.commit();
 	}
 
@@ -232,6 +247,7 @@ public class PMealsPreferenceManager {
 			editor.putInt((i-1) + PREF_ALERTHOUR, prefs.getInt(i + PREF_ALERTHOUR, 0));
 			editor.putInt((i-1) + PREF_ALERTMINUTE, prefs.getInt(i + PREF_ALERTMINUTE, 0));
 			editor.putBoolean((i-1) + PREF_ALERTON, prefs.getBoolean(i + PREF_ALERTON, false));
+			editor.putStringSet((i-1) + PREF_ALERTLOCS, prefs.getStringSet(i + PREF_ALERTLOCS, null));
 		}
 		// delete last one 
 		editor.remove(numAlerts + PREF_ALERTQUERY);
@@ -239,6 +255,7 @@ public class PMealsPreferenceManager {
 		editor.remove(numAlerts + PREF_ALERTHOUR);
 		editor.remove(numAlerts + PREF_ALERTMINUTE);
 		editor.remove(numAlerts + PREF_ALERTON);
+		editor.remove(numAlerts + PREF_ALERTLOCS);
 		// reduce number
 		editor.putInt(PREF_NUMALERTS, numAlerts - 1);
 		editor.commit();

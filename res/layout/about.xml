@@ -65,7 +65,7 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:text="@string/credits_categories"
         />
 
@@ -73,10 +73,12 @@
         android:id="@+id/credits_authors"
         android:layout_alignParentRight="true"
         android:layout_below="@id/hr2"
+        android:layout_toRightOf="@id/credits_categories"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:gravity="right"
 	    android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:text="@string/credits_authors"
         />
 

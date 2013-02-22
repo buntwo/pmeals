@@ -76,7 +76,7 @@ public class DailyDownloadService extends IntentService {
 				selectArgs = new String[]{ "", dmt.date.toString(), dmt.mealName };
 			}
 			selectArgs[0] = String.valueOf(l.ID);
-			cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
+			cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null).close();
 		}
 	}
 

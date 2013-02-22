@@ -2,6 +2,7 @@
 <resources>
 
     <color name="light_gray">#8a8a8a</color>
+    <color name="dark_gray">#3d3d3d</color>
     <color name="lighter_gray">#b9b9b9</color>
     <color name="outline_gray">#b0b0b0</color>
     <color name="menuitem_selectedbg">#bfbfbf</color>

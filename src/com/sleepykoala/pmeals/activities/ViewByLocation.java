@@ -104,6 +104,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     private Animation fadeoutAnim;
     private static int TOTAL_NUMLISTS = VBL_NUMLISTS_BEFORE + VBL_NUMLISTS_AFTER + 1;
     public static boolean isWeird;
+    private boolean isInfoBarMoving;
     
     private MealTimeProvider mTP;
     private LocationProvider lP;
@@ -147,6 +148,11 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
         
         // cache animations
         dropdown0 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown0);
+        dropdown0.setAnimationListener(new AnimationListener() {
+        	public void onAnimationStart(Animation animation) {}
+        	public void onAnimationEnd(Animation animation) { isInfoBarMoving = false; }
+        	public void onAnimationRepeat(Animation animation) {}
+        });
         dropdown1 = AnimationUtils.loadAnimation(this, R.anim.infobar_dropdown1);
         dropdown1.setAnimationListener(new AnimationListener() {
 			public void onAnimationRepeat(Animation animation) {}
@@ -311,6 +317,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 				infoBarColor = BEFORE_MEAL_COLOR;
 		
 		if (newMeal) {
+			isInfoBarMoving = true;
 			// fancy dropdown animation
 			mealInfoView0.startAnimation(dropdown0);
 			mealInfoView1.startAnimation(dropdown1);
@@ -319,7 +326,10 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     }
     
     private void updateInfoBar() {
-    	mealInfoView0.setText(mealInfo);
+    	if (isInfoBarMoving)
+    		mealInfoView0.setText(mealInfo);
+    	else
+    		mealInfoView1.setText(mealInfo);
     	changeInfoBarColor(infoBarColor);
     }
     

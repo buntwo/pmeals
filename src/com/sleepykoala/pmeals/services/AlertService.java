@@ -1,11 +1,15 @@
 package com.sleepykoala.pmeals.services;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUMS;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMNAMES;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMSPERLOC;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -16,8 +20,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Time;
 
@@ -38,7 +40,7 @@ public class AlertService extends IntentService {
 	//private static final String TAG = "AlertService";
 
 	private MealTimeProvider mTP;
-	private ArrayList<Location> locs;
+	private LocationProvider lP;
 	private static final String[] projection = { PMealsDatabase.ITEMNAME };
 	private static final String select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
 			+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?) and ("
@@ -65,9 +67,7 @@ public class AlertService extends IntentService {
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot find asset " + LOCATIONSXML + "!!");
 		}
-        LocationProvider lP = LocationProviderFactory.newLocationProvider();
-        // get all locs
-        locs = lP.getAllLocations();
+        lP = LocationProviderFactory.newLocationProvider();
         // initalize prefman
         PMealsPreferenceManager.initialize(this);
 	}
@@ -80,13 +80,18 @@ public class AlertService extends IntentService {
 		
 		for (int num : nums) {
 			// parallel-ish arrays of matched items (can have > 1 menu item per loc)
-			String locName = null;
+			String locName = null; // name of first matched loc
+			ArrayList<Integer> locIds = new ArrayList<Integer>(); // ids of all matched locs
+			ArrayList<Integer> itemsPerLoc = new ArrayList<Integer>(); // parallel to locIds, number of matched items per loc
+																	   // sum of numbers here must be equal to size of menuItems
 			ArrayList<String> menuItems = new ArrayList<String>();
 			String mealName = null;
 			
 			String query = PMealsPreferenceManager.getAlertQuery(num);
 			query = "%" + query + "%";
-			for (Location l : locs) {
+			Set<String> locs = PMealsPreferenceManager.getAlertLocations(num);
+			for (String s : locs) {
+				Location l = lP.getById(Integer.parseInt(s));
 				DatedMealTime dmt = mTP.getCurrentMeal(l.type);
 				// if it's not today or tomorrow, skip
 				if (!(dmt.date.equals(today) || dmt.date.isTomorrow(today)))
@@ -94,7 +99,8 @@ public class AlertService extends IntentService {
 				String[] selectArgs =  { String.valueOf(l.ID), dmt.date.toString(),
 						dmt.mealName, query };
 				Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
-				if (c.getCount() == 0)
+				int numMatched = c.getCount();
+				if (numMatched == 0)
 					continue;
 				// yay matched, add to arrays
 				if (locName == null) {
@@ -102,6 +108,8 @@ public class AlertService extends IntentService {
 					if (LocationProvider.isDiningHall(l))
 						mealName = dmt.mealName;
 				}
+				locIds.add(l.ID);
+				itemsPerLoc.add(numMatched);
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
 					menuItems.add(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)));
@@ -114,8 +122,6 @@ public class AlertService extends IntentService {
 			
 			// build notification
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-			//Bitmap large = BitmapFactory.decodeResource(getResources(), R.drawable.launcher);
-			//builder.setLargeIcon(large);
 			builder.setSmallIcon(R.drawable.notif_small);
 			builder.setContentTitle(menuItems.get(0));
 			// set detail text
@@ -132,13 +138,28 @@ public class AlertService extends IntentService {
 				ticker.append(s).append(", ");
 			}
 			ticker.setLength(ticker.length() - 2);
-			ticker.append(" at " ).append(locName);
+			ticker.append(" at " );
+			int size = locIds.size();
+			ticker.append(locName);
+			if (size > 1)
+				ticker.append(" and ").append(size - 1).append(" more locations");
 			if (mealName != null)
-				ticker.append(" for ").append(mealName);
+				ticker.append(" for ").append(mealName.toLowerCase());
 			builder.setTicker(ticker);
-			// set other properties
+			// set number of matched items
 			builder.setContentInfo(String.valueOf(menuItems.size()));
+			// set alert type
 			builder.setDefaults(Notification.DEFAULT_ALL);
+			
+			// build action intent
+			/*
+			Intent action = new Intent();
+			action.putExtra(EXTRA_LOCATIONIDS, locIds);
+			action.putExtra(EXTRA_ITEMSPERLOC, itemsPerLoc);
+			action.putExtra(EXTRA_ITEMNAMES, itemsPerLoc);
+			PendingIntent pI = PendingIntent.getActivity(this, 0, action, 0);
+			builder.setContentIntent(pI);
+			*/
 			// send notification!
 			NotificationManager notifMan =
 				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
