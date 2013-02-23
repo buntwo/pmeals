@@ -11,7 +11,7 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONNUMBER;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALEXISTS;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAMES;
-import static com.sleepykoala.pmeals.data.C.STRING_NOMEALSTODAY;
+import static com.sleepykoala.pmeals.data.C.STRING_CLOSED;
 
 import java.util.ArrayList;
 
@@ -350,7 +350,7 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 			select = "((" + PMealsDatabase.ITEMNAME + "=?) and (" + 
 					PMealsDatabase.ITEMERROR + "=?))";
 			// need the second string for locking purposes in the content provider
-			selectArgs = new String[] { STRING_NOMEALSTODAY, "1" };
+			selectArgs = new String[] { STRING_CLOSED, "1" };
 		}
 		
 		return new CursorLoader(getActivity(), MenuProvider.CONTENT_URI,

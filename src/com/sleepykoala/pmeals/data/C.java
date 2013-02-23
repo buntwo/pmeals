@@ -26,7 +26,6 @@ public final class C {
 	public static final String STRING_DOWNLOADFAILED = "Download failed";
 	public static final String STRING_CLOSED = "Closed";
 	public static final String STRING_NODATA = "No data";
-	public static final String STRING_NOMEALSTODAY = "Closed today";
 	
 	// loading item strings (in ListView)
 	public static final String STRING_LOADINGDATA = "Loading menu data";
@@ -44,10 +43,12 @@ public final class C {
     												// infobar will show "about one hour"
     
 	// number of lists in ViewPagers
-	public static final int VBM_NUMLISTS_BEFORE = 2;
-	public static final int VBM_NUMLISTS_AFTER = 2;
+	public static final int VBM_NUMLISTS_BEFORE = 3;
+	public static final int VBM_NUMLISTS_AFTER = 3;
 	public static final int VBL_NUMLISTS_BEFORE = 2;
 	public static final int VBL_NUMLISTS_AFTER = 2;
+	public static final int TOTAL_PAGES = 101; // must be an odd number
+	public static final int PAGES_TO_LOAD = 2; // number to load ahead & behind
 	
 	// extra flags
 	public static final String EXTRA_LOCATIONID = "com.sleepykoala.pmeals.LOCATIONID";

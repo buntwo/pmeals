@@ -17,8 +17,6 @@ import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_LOCATIONORDER;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
-import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_AFTER;
-import static com.sleepykoala.pmeals.data.C.VBM_NUMLISTS_BEFORE;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,8 +50,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -124,13 +120,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     private Animation dropdown0;
     private Animation dropdown1;
 					
-    private LinearLayout pageIndicatorsLayout;
-    private ImageView[] pageIndicators;
-    private Drawable indic_notSelected;
-    private Drawable indic_selected;
-    private Animation fadeoutAnim;
-    private static int TOTAL_NUMLISTS = VBM_NUMLISTS_BEFORE + VBM_NUMLISTS_AFTER + 1;
-    
     private boolean isInfoBarMoving;
     
 	// food indicator drawables
@@ -179,22 +168,9 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 			}
         });
         
-        // set up page indicators
-        pageIndicatorsLayout = (LinearLayout) findViewById(R.id.pageindicators);
-        pageIndicators = new ImageView[TOTAL_NUMLISTS];
-        for (int i = 0; i < TOTAL_NUMLISTS; ++i) {
-        	ImageView iv =  (ImageView) getLayoutInflater().inflate(R.layout.pageindicator, null, false);
-        	pageIndicatorsLayout.addView(iv);
-        	pageIndicators[i] = iv;
-        }
         // cache some drawables
         Resources res = getResources();
-        indic_notSelected = res.getDrawable(R.drawable.pageindicator_notselected);
-        indic_selected = res.getDrawable(R.drawable.pageindicator_selected);
-        // load fadeout animation
-        fadeoutAnim = AnimationUtils.loadAnimation(ViewByMeal.this, R.anim.pageindicator_fadeout);
-        
-        // cache food indicator drawables
+        // food indicators
 		vegan = res.getDrawable(R.drawable.vegan);
 		vegetarian = res.getDrawable(R.drawable.vegetarian);
 		pork = res.getDrawable(R.drawable.pork);
@@ -253,7 +229,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		mPager.setAdapter(mAdapter);
     		mPager.setOnPageChangeListener(new TitleChangeListener());
     		mPager.setCurrentItem(mAdapter.getMiddleIndex());
-    		startPageIndicatorFadeout();
     	}
     		
     }
@@ -397,12 +372,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	}
     }
     
-    // start fadeout animation
-    private void startPageIndicatorFadeout() {
-    	pageIndicatorsLayout.clearAnimation();
-    	pageIndicatorsLayout.startAnimation(fadeoutAnim);
-    }
-    
     //--------------------------------------------------LISTENERS-----------------------------------------------
     
     private class BackgroundColorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
@@ -413,14 +382,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     }
     
     private class TitleChangeListener extends SimpleOnPageChangeListener {
-    	public void onPageScrollStateChanged(int state) {
-    		if (state == ViewPager.SCROLL_STATE_IDLE) {
-    			// start fadeout animation
-    			pageIndicatorsLayout.startAnimation(fadeoutAnim);
-    		} else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-    			pageIndicatorsLayout.clearAnimation();
-    		}
-    	}
+    	public void onPageScrollStateChanged(int state) { }
 
     	public void onPageSelected(int pos) {
     		boolean oldAreMealsEqual = mealDisplayed.equals(currentMeal);
@@ -429,14 +391,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     		// whether or not to disable/enable the goto current meal button
     		if (oldAreMealsEqual != mealDisplayed.equals(currentMeal))
     			invalidateOptionsMenu();
-    		// refresh page indicators
-    		for (int i = 0; i < TOTAL_NUMLISTS; ++i) {
-    			ImageView iv = pageIndicators[i];
-    			if (i == pos)
-    				iv.setImageDrawable(indic_selected);
-    			else
-    				iv.setImageDrawable(indic_notSelected);
-    		}
     	}
     }
     
@@ -474,7 +428,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	mPager.setAdapter(mAdapter);
     	mPager.setOnPageChangeListener(new TitleChangeListener());
 		mPager.setCurrentItem(mAdapter.getMiddleIndex());
-    	startPageIndicatorFadeout();
     }
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -571,7 +524,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
     	super.onResume();
     	// register receiver
         registerReceiver(timeChangedReceiver, sIntentFilter);
-        startPageIndicatorFadeout();
         onTimeChanged();
     }
     

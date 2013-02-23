@@ -8,20 +8,19 @@
         android:id="@+id/infobar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/infobar_neutral_bg"
-        >
+        android:background="@color/infobar_neutral_bg" >
 
         <TextView
             android:id="@+id/infobar_mealinfo0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-       		android:layout_gravity="right"
-            android:gravity="right"
-            android:paddingRight="10dp"
-        	android:paddingBottom="2dp"
-        	android:paddingTop="2dp"
-            android:textColor="@android:color/white"
+            android:layout_gravity="right"
             android:background="@android:color/transparent"
+            android:gravity="right"
+            android:paddingBottom="2dp"
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"
+            android:textColor="@android:color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -29,38 +28,20 @@
             android:id="@+id/infobar_mealinfo1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-        	android:layout_gravity="right"
-            android:gravity="right"
-            android:paddingRight="10dp"
-        	android:paddingBottom="2dp"
-        	android:paddingTop="2dp"
-            android:textColor="@android:color/white"
+            android:layout_gravity="right"
             android:background="@android:color/transparent"
+            android:gravity="right"
+            android:paddingBottom="2dp"
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"
+            android:textColor="@android:color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
-        
     </FrameLayout>
 
-    <FrameLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/listview_pager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        >
-        <android.support.v4.view.ViewPager
-            android:id="@+id/listview_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+        android:layout_height="match_parent" />
 
-        <LinearLayout
-            android:id="@+id/pageindicators"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@android:color/transparent"
-            android:layout_gravity="bottom"
-            />
-    </FrameLayout>
-    
 </LinearLayout>

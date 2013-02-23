@@ -224,7 +224,7 @@ public class PMealsPreferenceManager {
 		editor.putInt(num + PREF_ALERTREPEAT, repeat);
 		editor.putInt(num + PREF_ALERTHOUR, hour);
 		editor.putInt(num + PREF_ALERTMINUTE, min);
-		editor.putBoolean(num + PREF_ALERTON, true);
+		editor.putBoolean(num + PREF_ALERTON, prefs.getBoolean(num + PREF_ALERTON, true));
 		editor.putStringSet(num + PREF_ALERTLOCS, locsIds);
 		editor.commit();
 	}

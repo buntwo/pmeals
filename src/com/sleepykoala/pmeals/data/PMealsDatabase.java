@@ -9,7 +9,7 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 	
 	// V1 had _ID, locationid, date, mealname, itemname, itemerror
 	// V2 had food info
-	private static final int DB_VERSION = 5;
+	private static final int DB_VERSION = 7;
 	private static final String DB_NAME = "pmeals";
 	
 	// table names
@@ -62,11 +62,6 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 		closed.put(ITEMNAME, C.STRING_CLOSED);
 		closed.put(ITEMERROR, true);
 		db.insert(TABLE_MEALS, null, closed);
-		// insert no meals today
-		ContentValues nmt = new ContentValues();
-		nmt.put(ITEMNAME, C.STRING_NOMEALSTODAY);
-		nmt.put(ITEMERROR, true);
-		db.insert(TABLE_MEALS, null, nmt);
 	}
 
 	@Override
@@ -87,6 +82,16 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 		}
 		if (oldVersion < 5 && newVersion >= 5) {
 			db.execSQL("alter table " + TABLE_MEALS + " add column " + ITEMTYPE + " text not null default ''");
+		}
+		if (oldVersion < 6 && newVersion >= 6) {
+			db.execSQL("update " + TABLE_MEALS + " set " + ITEMNAME + " = 'Closed' where " + ITEMNAME + " like 'Closed today'");
+		}
+		if (oldVersion < 7 && newVersion >= 7) {
+			db.delete(TABLE_MEALS, ITEMNAME + "=?", new String[]{ "Closed" });
+			ContentValues closed = new ContentValues();
+			closed.put(ITEMNAME, C.STRING_CLOSED);
+			closed.put(ITEMERROR, true);
+			db.insert(TABLE_MEALS, null, closed);
 		}
 	}
 

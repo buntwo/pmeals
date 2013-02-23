@@ -109,7 +109,7 @@ public class SetupNewAlert extends Activity implements
 		alertNum = intent.getIntExtra(EXTRA_ALERTNUM, -1);
 		// set query
 		String query = intent.getStringExtra(EXTRA_ALERTQUERY);
-		if (query == null)
+		if (query.equals(""))
 			aB.setTitle("New alert");
 		else
 			aB.setTitle("Edit alert: " + query);

@@ -3,6 +3,7 @@ package com.sleepykoala.pmeals.activities;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.SearchManager;
@@ -15,6 +16,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -48,6 +50,8 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 			// do the search
 			performSearch(query);
 		}
+        ActionBar aB = getActionBar();
+        aB.setDisplayHomeAsUpEnabled(true);
 	}
 	
 	private void performSearch(String query) {
@@ -75,6 +79,17 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
         return true;
 	}
 	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case android.R.id.home:
+    		finish();
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if (mAdapter.getItemViewType(position) == 1) {

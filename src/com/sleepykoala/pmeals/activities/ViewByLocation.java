@@ -16,7 +16,6 @@ import static com.sleepykoala.pmeals.data.C.MINUTES_END_ALERT;
 import static com.sleepykoala.pmeals.data.C.MINUTES_START_ALERT;
 import static com.sleepykoala.pmeals.data.C.ONEHOUR_RADIUS;
 import static com.sleepykoala.pmeals.data.C.START_ALERT_COLOR;
-import static com.sleepykoala.pmeals.data.C.VBL_NUMLISTS_AFTER;
 import static com.sleepykoala.pmeals.data.C.VBL_NUMLISTS_BEFORE;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -46,8 +44,6 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -97,12 +93,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     private Animation dropdown0;
     private Animation dropdown1;
 					
-    private LinearLayout pageIndicatorsLayout;
-    private ImageView[] pageIndicators;
-    private Drawable indic_notSelected;
-    private Drawable indic_selected;
-    private Animation fadeoutAnim;
-    private static int TOTAL_NUMLISTS = VBL_NUMLISTS_BEFORE + VBL_NUMLISTS_AFTER + 1;
     public static boolean isWeird;
     private boolean isInfoBarMoving;
     
@@ -165,20 +155,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 			}
         });
         
-        // set up page indicators
-        pageIndicatorsLayout = (LinearLayout) findViewById(R.id.pageindicators);
-        pageIndicators = new ImageView[TOTAL_NUMLISTS];
-        for (int i = 0; i < TOTAL_NUMLISTS; ++i) {
-        	ImageView iv =  (ImageView) getLayoutInflater().inflate(R.layout.pageindicator, null, false);
-        	pageIndicatorsLayout.addView(iv);
-        	pageIndicators[i] = iv;
-        }
         Resources res = getResources();
-        indic_notSelected = res.getDrawable(R.drawable.pageindicator_notselected);
-        indic_selected = res.getDrawable(R.drawable.pageindicator_selected);
-        // load fadeout animation
-        fadeoutAnim = AnimationUtils.loadAnimation(ViewByLocation.this, R.anim.pageindicator_fadeout);
-
         // cache food indicator drawables if not already cached by VBM
         // (e.g., entry from widget)
         if (ViewByMeal.vegan == null) {
@@ -346,12 +323,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	}
     }
     
-    // start fadeout animation
-    private void startPageIndicatorFadeout() {
-    	pageIndicatorsLayout.clearAnimation();
-    	pageIndicatorsLayout.startAnimation(fadeoutAnim);
-    }
-    
     //--------------------------------------------------LISTENERS-----------------------------------------------
     
     private class BackgroundColorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
@@ -362,14 +333,7 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     }
     
     private class TitleChangeListener extends SimpleOnPageChangeListener {
-    	public void onPageScrollStateChanged(int state) {
-    		if (state == ViewPager.SCROLL_STATE_IDLE) {
-    			// start fadeout animation
-    			pageIndicatorsLayout.startAnimation(fadeoutAnim);
-    		} else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-    			pageIndicatorsLayout.clearAnimation();
-    		}
-    	}
+    	public void onPageScrollStateChanged(int state) { }
 
     	public void onPageSelected(int pos) {
     		boolean oldAreDatesEqual = dateDisplayed.equals(currentMeal.date);
@@ -377,14 +341,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     		// whether or not to disable/enable the goto today button
     		if (oldAreDatesEqual != dateDisplayed.equals(currentMeal.date))
     			invalidateOptionsMenu();
-    		// refresh page indicators
-    		for (int i = 0; i < TOTAL_NUMLISTS; ++i) {
-    			ImageView iv = pageIndicators[i];
-    			if (i == pos)
-    				iv.setImageDrawable(indic_selected);
-    			else
-    				iv.setImageDrawable(indic_notSelected);
-    		}
     	}
     }
 
@@ -395,7 +351,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		mPager.setAdapter(mAdapter);
 		mPager.setOnPageChangeListener(new TitleChangeListener());
 		mPager.setCurrentItem(mAdapter.getMiddleIndex());
-		startPageIndicatorFadeout();
 		refreshTitle(false);
     }
 
@@ -421,7 +376,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
 		mPager.setAdapter(mAdapter);
 		mPager.setOnPageChangeListener(new TitleChangeListener());
 		mPager.setCurrentItem(oldPosition);
-		startPageIndicatorFadeout();
 		refreshTitle(!(displayedLoc.type == oldType));
 		return true;
 	}
@@ -505,7 +459,6 @@ public class ViewByLocation extends FragmentActivity implements OnNavigationList
     	super.onResume();
     	// register receiver
         registerReceiver(timeChangedReceiver, sIntentFilter);
-		startPageIndicatorFadeout();
 		onTimeChanged();
     }
 

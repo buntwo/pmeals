@@ -1,5 +1,11 @@
 package com.sleepykoala.pmeals.services;
 
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ISREFRESH;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONNAME;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONNUMBER;
+import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAMES;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 
@@ -9,6 +15,7 @@ import java.util.ArrayList;
 import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.SparseArray;
 
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
@@ -27,7 +34,7 @@ public class DailyDownloadService extends IntentService {
 
 	private MealTimeProvider mTP;
 	private ArrayList<Location> locs;
-	private static final String[] projection = { PMealsDatabase.ITEMNAME };
+	private static final String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR };
 	private static final String select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
 			+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?))";
 
@@ -76,7 +83,24 @@ public class DailyDownloadService extends IntentService {
 				selectArgs = new String[]{ "", dmt.date.toString(), dmt.mealName };
 			}
 			selectArgs[0] = String.valueOf(l.ID);
-			cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null).close();
+			Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
+			if (c.getCount() != 0) {
+				c.moveToFirst();
+				if (c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1) { // refresh on error
+					Date date = new Date();
+					MenuProvider.startRefresh(String.valueOf(l.ID), date.toString());
+					Intent dlService = new Intent(this, MenuDownloaderService.class);
+					dlService.putExtra(EXTRA_LOCATIONID, String.valueOf(l.ID));
+					dlService.putExtra(EXTRA_LOCATIONNAME, l.locName);
+					dlService.putExtra(EXTRA_LOCATIONNUMBER, l.locNum);
+					dlService.putExtra(EXTRA_DATE, date.toString());
+					dlService.putExtra(EXTRA_ISREFRESH, true);
+					dlService.putExtra(EXTRA_MEALNAMES, mTP.getDaysMealNames(l.type, dmt.date.weekDay));
+
+					startService(dlService);
+				}
+			}
+			c.close();
 		}
 	}
 

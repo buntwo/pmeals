@@ -382,7 +382,7 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     		DatedMealTime meal = mMealArr.get(l.type);
     		if (meal != null) {
     			MenuProvider.startRefresh(String.valueOf(l.ID), mDate);
-    			Intent dlService = new Intent();
+    			Intent dlService = new Intent(getActivity(), MenuDownloaderService.class);
     			dlService.putExtra(EXTRA_LOCATIONID, String.valueOf(l.ID));
     			dlService.putExtra(EXTRA_LOCATIONNAME, l.locName);
     			dlService.putExtra(EXTRA_LOCATIONNUMBER, l.locNum);
@@ -390,7 +390,6 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     			dlService.putExtra(EXTRA_ISREFRESH, true);
     			dlService.putExtra(EXTRA_MEALNAMES, mTP.getDaysMealNames(l.type, meal.date.weekDay));
     			
-    			dlService.setClass(getActivity(), MenuDownloaderService.class);
     			getActivity().startService(dlService);
     		}
     	}
