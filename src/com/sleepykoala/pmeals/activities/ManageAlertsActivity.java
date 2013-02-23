@@ -202,28 +202,37 @@ public class ManageAlertsActivity extends Activity {
     	int size = locs.size();
     	String locName = null;
     	String diningHallName = null;
-    	for (String s : locs) {
-    		++count;
-    		Location l = lP.getById(Integer.parseInt(s));
-    		if (count == 1)
-    			locName = l.nickname;
-    		if (l.type == 0 || l.type == 1) { // dining hall or CJL
-    			if (diningHallCount == 0)
-    				diningHallName = l.nickname;
-    			++diningHallCount;
-    		}
-    	}
-    	if (diningHallCount != 0) {
-    		if (diningHallCount == 1)
-    			info.append(diningHallName);
-    		else
-    			info.append(diningHallCount).append(" dining halls");
-    		if (diningHallCount != size)
-    			info.append(" and ").append(size - diningHallCount).append(" more");
+    	if (size == lP.getCount()) {
+    		info.append("All locations");
     	} else {
-    		info.append(locName);
-    		if (size > 1)
-    			info.append(" and ").append(locs.size() - 1).append(" more");
+    		for (String s : locs) {
+    			++count;
+    			Location l = lP.getById(Integer.parseInt(s));
+    			if (count == 1)
+    				locName = l.nickname;
+    			if (l.type == 0 || l.type == 1) { // dining hall or CJL
+    				if (diningHallCount == 0)
+    					diningHallName = l.nickname;
+    				++diningHallCount;
+    			}
+    		}
+    		if (diningHallCount != 0) {
+    			if (diningHallCount == 1)
+    				info.append(diningHallName);
+    			else {
+    				if (diningHallCount == lP.getCountByType(0) + lP.getCountByType(1))
+    					info.append("All");
+    				else
+    					info.append(diningHallCount);
+    				info.append(" dining halls");
+    			}
+    			if (diningHallCount != size)
+    				info.append(" and ").append(size - diningHallCount).append(" more");
+    		} else {
+    			info.append(locName);
+    			if (size > 1)
+    				info.append(" and ").append(locs.size() - 1).append(" more");
+    		}
     	}
     	((TextView) alert.findViewById(R.id.alertlocs)).setText(info);
     }

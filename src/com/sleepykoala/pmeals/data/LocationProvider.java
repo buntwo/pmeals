@@ -97,6 +97,29 @@ public class LocationProvider {
 		return null;
 	}
 	
+	/**
+	 * Return total number of locations
+	 * 
+	 * @return Total number of locations
+	 */
+	public int getCount() {
+		int count = 0;
+		for (ArrayList<Location> a : locations)
+			count += a.size();
+		
+		return count;
+	}
+	
+	/**
+	 * Return number of locations of given type
+	 * 
+	 * @param type Location type
+	 * @return Total number of locations
+	 */
+	public int getCountByType(int type) {
+		return locations.get(type).size();
+	}
+	
 	// return index of location
 	// -1 if not found
 	public int getIndex(Location loc) {

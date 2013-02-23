@@ -66,9 +66,15 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:text="@string/alertdow_prompt"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="@drawable/hr" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,7 +84,8 @@
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="3dp" >
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" >
 
             <TextView
                 android:id="@+id/sunday"
@@ -137,6 +144,11 @@
                 android:textColor="@color/dark_gray" />
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="@drawable/hr" />
+
         <!-- locations container -->
 
         <TextView
@@ -144,9 +156,15 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
+            android:paddingBottom="6dp"
             android:text="@string/alertlocs_prompt"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="@drawable/hr" />
 
         <LinearLayout
             android:id="@+id/alertlocs_buttons"
@@ -189,6 +207,11 @@
                 android:text="@string/selectnone"
                 android:textSize="18sp" />
         </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:src="@drawable/hr" />
 
         <LinearLayout
             android:id="@+id/alertlocs_container"

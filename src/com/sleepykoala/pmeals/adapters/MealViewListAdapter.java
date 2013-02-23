@@ -279,7 +279,9 @@ public class MealViewListAdapter extends BaseAdapter {
 				convertView.setTag(holder);
 			}
 			// hard coded location info!! (nickname);
+			// set location name
 			holder.name.setText(loc.nickname);
+			// set extra info (time)
 			if (loc.type != mainType) {
 				DatedMealTime meal = mealsToShow.get(loc.type);
 				if (meal != null) {

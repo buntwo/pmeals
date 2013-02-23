@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="pref_startupShowEntries" >
-        <item>Dining Halls</item>
+        <item>Dining halls</item>
         <item>Frist Gallery</item>
         <item>Whitherspoon\'s</item>
         <item>Cafe Vivian</item>

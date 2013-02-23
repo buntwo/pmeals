@@ -1,5 +1,6 @@
 package com.sleepykoala.pmeals.fragments;
 
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTLOC;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
@@ -351,6 +352,8 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     		Intent add = new Intent(getActivity(), SetupNewAlert.class);
     		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
     		add.putExtra(EXTRA_ALERTQUERY, ((FoodItem) getListAdapter().getItem(info.position)).itemName);
+    		add.putExtra(EXTRA_ALERTLOC, ((MealViewListAdapter)
+    				getListAdapter()).getLocation(info.position).ID);
 
     		startActivityForResult(add, 0);
     		return true;

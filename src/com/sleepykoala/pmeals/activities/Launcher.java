@@ -41,7 +41,7 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		startActivity(new Intent(this, ManageAlertsActivity.class));
 		finish();
 		//*/
-        //*
+        /*
 		Intent alert = new Intent(this, AlertService.class);
 		ArrayList<Integer> alertNums = new ArrayList<Integer>();
 		alertNums.add(2);

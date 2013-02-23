@@ -17,17 +17,12 @@
         android:paddingRight="10dp"
         />
     
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:src="@drawable/hr" />
-    
     <LinearLayout
         android:id="@+id/reorder_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="8dp"
+        android:paddingTop="2dp"
         android:paddingBottom="8dp"
         android:orientation="vertical"
         android:divider="@color/light_gray"

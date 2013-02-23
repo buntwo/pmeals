@@ -1,6 +1,7 @@
 package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTHOUR;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTLOC;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
@@ -147,7 +148,12 @@ public class SetupNewAlert extends Activity implements
 				checkedLocs.set(i, true);
 				((CheckBox) locsContainer.getChildAt(i)).setChecked(true);
 			}
-
+		// check one location if given
+		int checkLoc = intent.getIntExtra(EXTRA_ALERTLOC, -1);
+		if (checkLoc != -1) {
+			checkedLocs.set(checkLoc, true);
+			((CheckBox) locsContainer.getChildAt(checkLoc)).setChecked(true);
+		}
 		// show dividers
 		((LinearLayout) findViewById(R.id.buttons))
 				.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);

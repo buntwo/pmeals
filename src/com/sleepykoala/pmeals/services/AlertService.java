@@ -1,9 +1,12 @@
 package com.sleepykoala.pmeals.services;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUMS;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMNAMES;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMSPERLOC;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
+import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 
@@ -20,10 +23,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Time;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.activities.AlertViewerActivity;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
@@ -38,7 +43,7 @@ import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 public class AlertService extends IntentService {
 	
 	//private static final String TAG = "AlertService";
-
+	
 	private MealTimeProvider mTP;
 	private LocationProvider lP;
 	private static final String[] projection = { PMealsDatabase.ITEMNAME };
@@ -88,7 +93,7 @@ public class AlertService extends IntentService {
 			String mealName = null;
 			
 			String query = PMealsPreferenceManager.getAlertQuery(num);
-			query = "%" + query + "%";
+			String query_ = "%" + query + "%";
 			Set<String> locs = PMealsPreferenceManager.getAlertLocations(num);
 			for (String s : locs) {
 				Location l = lP.getById(Integer.parseInt(s));
@@ -97,7 +102,7 @@ public class AlertService extends IntentService {
 				if (!(dmt.date.equals(today) || dmt.date.isTomorrow(today)))
 					continue;
 				String[] selectArgs =  { String.valueOf(l.ID), dmt.date.toString(),
-						dmt.mealName, query };
+						dmt.mealName, query_ };
 				Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
 				int numMatched = c.getCount();
 				if (numMatched == 0)
@@ -141,8 +146,11 @@ public class AlertService extends IntentService {
 			ticker.append(" at " );
 			int size = locIds.size();
 			ticker.append(locName);
-			if (size > 1)
-				ticker.append(" and ").append(size - 1).append(" more locations");
+			if (size > 1) {
+				ticker.append(" and ").append(size - 1).append(" more location");
+				if (size > 2)
+					ticker.append("s");
+			}
 			if (mealName != null)
 				ticker.append(" for ").append(mealName.toLowerCase());
 			builder.setTicker(ticker);
@@ -150,20 +158,25 @@ public class AlertService extends IntentService {
 			builder.setContentInfo(String.valueOf(menuItems.size()));
 			// set alert type
 			builder.setDefaults(Notification.DEFAULT_ALL);
+			builder.setAutoCancel(true);
 			
 			// build action intent
-			/*
-			Intent action = new Intent();
+			Intent action = new Intent(this, AlertViewerActivity.class);
+			action.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+			action.putExtra(EXTRA_ALERTQUERY, query);
+			if (mealName != null)
+				action.putExtra(EXTRA_MEALNAME, mealName);
+			action.putExtra(EXTRA_DATE, (new Date()).toString());
 			action.putExtra(EXTRA_LOCATIONIDS, locIds);
 			action.putExtra(EXTRA_ITEMSPERLOC, itemsPerLoc);
-			action.putExtra(EXTRA_ITEMNAMES, itemsPerLoc);
-			PendingIntent pI = PendingIntent.getActivity(this, 0, action, 0);
+			action.putExtra(EXTRA_ITEMNAMES, menuItems);
+			// set data to differentiate it
+			action.setData(Uri.fromParts("content", String.format("%s.%d", query,
+					System.currentTimeMillis()), null));
+			PendingIntent pI = PendingIntent.getActivity(this, 0, action, PendingIntent.FLAG_ONE_SHOT);
 			builder.setContentIntent(pI);
-			*/
 			// send notification!
-			NotificationManager notifMan =
-				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			notifMan.notify(num, builder.build());
+			((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(num, builder.build());
 		}
 	}
 

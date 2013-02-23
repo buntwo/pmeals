@@ -16,7 +16,7 @@
     <string name="credits_categories">App Design\nStrategy Consultant\nCoding\nIcons</string>
     <string name="credits_authors">Brian Tu, David Zhao\nSophia Xing\nBrian Tu\nDavid Zhao</string>
     <string name="search">Search meals</string>
-    <string name="make_alert">Make alert</string>
+    <string name="make_alert">Make into alert</string>
     <string name="searchHint">Search meals</string>
     <string name="searching">Searching</string>
     <string name="widgetconfig_instr">Select the location you would like to display</string>

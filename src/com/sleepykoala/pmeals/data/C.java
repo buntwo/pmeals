@@ -76,6 +76,9 @@ public final class C {
 	public static final String EXTRA_ALERTMINUTE = "com.sleepykoala.pmeals.ALERTMINUTE";
 	public static final String EXTRA_ALERTTIME = "com.sleepykoala.pmeals.ALERTTIME";
 	public static final String EXTRA_ALERTLOCS = "com.sleepykoala.pmeals.ALERTLOCS";
+	// for selecting one location to check when setting up new alert
+	// used when making an alert directly from menu
+	public static final String EXTRA_ALERTLOC = "com.sleepykoala.pmeals.ALERTLOC";
     
 	// icon alpha constants
 	public static final int ALPHA_ENABLED = 255;
