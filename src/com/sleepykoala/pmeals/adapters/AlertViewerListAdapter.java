@@ -116,7 +116,6 @@ public class AlertViewerListAdapter extends BaseAdapter {
 				holder = (ResultHolder) convertView.getTag();
 			else {
 				convertView = mInflater.inflate(R.layout.searchresult, parent, false);
-				((TextView) convertView.findViewById(R.id.text1)).setTypeface(Typeface.DEFAULT);
 				convertView.findViewById(R.id.text3).setVisibility(View.GONE);
 				holder = new ResultHolder();
 				holder.itemName = (TextView) convertView.findViewById(R.id.text1);

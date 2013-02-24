@@ -115,17 +115,19 @@ public final class R {
         public static final int legend=0x7f0c0042;
         public static final int listview_pager=0x7f0c001d;
         public static final int loading_text=0x7f0c000d;
-        public static final int makealert=0x7f0c0049;
+        public static final int makealert=0x7f0c004a;
         public static final int monday=0x7f0c0012;
         public static final int nuts=0x7f0c002c;
         public static final int pork=0x7f0c002b;
-        public static final int refresh=0x7f0c004a;
+        public static final int refresh=0x7f0c004c;
         public static final int refreshicon=0x7f0c0027;
         public static final int reorder_container=0x7f0c000e;
         public static final int reorder_name=0x7f0c002f;
         public static final int result_date=0x7f0c0033;
         public static final int saturday=0x7f0c0017;
         public static final int search=0x7f0c003f;
+        public static final int searchmeals=0x7f0c0049;
+        public static final int searchonline=0x7f0c004b;
         public static final int sectionextra=0x7f0c002e;
         public static final int sectiontitle=0x7f0c002d;
         public static final int selectDiningHalls=0x7f0c0041;
@@ -196,67 +198,68 @@ public final class R {
         public static final int fragment_menu=0x7f0b0004;
     }
     public static final class string {
-        public static final int about=0x7f0a002c;
-        public static final int aboutSummary=0x7f0a002d;
+        public static final int about=0x7f0a002d;
+        public static final int aboutSummary=0x7f0a002e;
         /**  Alerts manager 
          */
-        public static final int addalert=0x7f0a0014;
-        public static final int alertdow_prompt=0x7f0a0019;
-        public static final int alertlocs_prompt=0x7f0a0021;
-        public static final int alertquery_hint=0x7f0a0016;
-        public static final int alertquery_prompt=0x7f0a0017;
-        public static final int alerttime_prompt=0x7f0a0018;
+        public static final int addalert=0x7f0a0013;
+        public static final int alertdow_prompt=0x7f0a0018;
+        public static final int alertlocs_prompt=0x7f0a0020;
+        public static final int alertquery_hint=0x7f0a0015;
+        public static final int alertquery_prompt=0x7f0a0016;
+        public static final int alerttime_prompt=0x7f0a0017;
         public static final int app_info=0x7f0a000b;
         public static final int app_name=0x7f0a0000;
-        public static final int cancel=0x7f0a0033;
-        public static final int context_search=0x7f0a0027;
-        public static final int copy=0x7f0a0026;
+        public static final int cancel=0x7f0a0034;
+        public static final int copy=0x7f0a0025;
         public static final int credits_authors=0x7f0a000d;
         public static final int credits_categories=0x7f0a000c;
-        public static final int deleteSearchHistoryText=0x7f0a002f;
-        public static final int deleteSearchHistoryTitle=0x7f0a002e;
-        public static final int done=0x7f0a0031;
-        public static final int feedback=0x7f0a0034;
-        public static final int feedbackSummary=0x7f0a0035;
+        public static final int deleteSearchHistoryText=0x7f0a0030;
+        public static final int deleteSearchHistoryTitle=0x7f0a002f;
+        public static final int done=0x7f0a0032;
+        public static final int feedback=0x7f0a0035;
+        public static final int feedbackSummary=0x7f0a0036;
         /**  First time dialog strings 
          */
-        public static final int firsttime1=0x7f0a0038;
-        public static final int firsttime2=0x7f0a0039;
-        public static final int firsttime3=0x7f0a003a;
-        public static final int firsttime4=0x7f0a003b;
-        public static final int firsttime5=0x7f0a0040;
-        public static final int friday_abbrev=0x7f0a001f;
-        public static final int giveRatingSummary=0x7f0a0037;
-        public static final int giveRatingTitle=0x7f0a0036;
-        public static final int legend1=0x7f0a003c;
-        public static final int legend2=0x7f0a003d;
-        public static final int legend3=0x7f0a003e;
-        public static final int legend4=0x7f0a003f;
-        public static final int loading=0x7f0a0013;
-        public static final int make_alert=0x7f0a000f;
+        public static final int firsttime1=0x7f0a0039;
+        public static final int firsttime2=0x7f0a003a;
+        public static final int firsttime3=0x7f0a003b;
+        public static final int firsttime4=0x7f0a003c;
+        public static final int firsttime5=0x7f0a0041;
+        public static final int friday_abbrev=0x7f0a001e;
+        public static final int giveRatingSummary=0x7f0a0038;
+        public static final int giveRatingTitle=0x7f0a0037;
+        public static final int legend1=0x7f0a003d;
+        public static final int legend2=0x7f0a003e;
+        public static final int legend3=0x7f0a003f;
+        public static final int legend4=0x7f0a0040;
+        public static final int loading=0x7f0a0012;
+        public static final int make_alert=0x7f0a0027;
         public static final int menu_settings=0x7f0a0002;
-        public static final int monday_abbrev=0x7f0a001b;
-        public static final int no_alerts=0x7f0a0015;
-        public static final int pref_managealertsTitle=0x7f0a002b;
+        public static final int monday_abbrev=0x7f0a001a;
+        public static final int no_alerts=0x7f0a0014;
+        public static final int pref_managealertsTitle=0x7f0a002c;
         /**  Preference strings 
          */
-        public static final int pref_reorderLocsTitle=0x7f0a0028;
-        public static final int pref_startupShowKey=0x7f0a0029;
-        public static final int pref_startupShowTitle=0x7f0a002a;
-        public static final int reorder_instr=0x7f0a0030;
-        public static final int reset=0x7f0a0032;
-        public static final int saturday_abbrev=0x7f0a0020;
+        public static final int pref_reorderLocsTitle=0x7f0a0029;
+        public static final int pref_startupShowKey=0x7f0a002a;
+        public static final int pref_startupShowTitle=0x7f0a002b;
+        public static final int reorder_instr=0x7f0a0031;
+        public static final int reset=0x7f0a0033;
+        public static final int saturday_abbrev=0x7f0a001f;
         public static final int search=0x7f0a000e;
-        public static final int searchHint=0x7f0a0010;
-        public static final int searching=0x7f0a0011;
-        public static final int selectall=0x7f0a0023;
-        public static final int selectdininghalls=0x7f0a0022;
-        public static final int selectnone=0x7f0a0024;
+        public static final int searchHint=0x7f0a000f;
+        public static final int search_meals=0x7f0a0026;
+        public static final int search_online=0x7f0a0028;
+        public static final int searching=0x7f0a0010;
+        public static final int selectall=0x7f0a0022;
+        public static final int selectdininghalls=0x7f0a0021;
+        public static final int selectnone=0x7f0a0023;
         /**  Context menu 
          */
-        public static final int share=0x7f0a0025;
-        public static final int sunday_abbrev=0x7f0a001a;
-        public static final int thursday_abbrev=0x7f0a001e;
+        public static final int share=0x7f0a0024;
+        public static final int sunday_abbrev=0x7f0a0019;
+        public static final int thursday_abbrev=0x7f0a001d;
         public static final int title_activity_managealerts=0x7f0a0009;
         public static final int title_activity_meal_searcher=0x7f0a0005;
         public static final int title_activity_reorderlocations=0x7f0a0006;
@@ -265,10 +268,10 @@ public final class R {
         public static final int title_activity_viewbylocation=0x7f0a0004;
         public static final int title_activity_viewbymeal=0x7f0a0003;
         public static final int title_activity_widgetconfigurator=0x7f0a0007;
-        public static final int tuesday_abbrev=0x7f0a001c;
+        public static final int tuesday_abbrev=0x7f0a001b;
         public static final int version=0x7f0a0001;
-        public static final int wednesday_abbrev=0x7f0a001d;
-        public static final int widgetconfig_instr=0x7f0a0012;
+        public static final int wednesday_abbrev=0x7f0a001c;
+        public static final int widgetconfig_instr=0x7f0a0011;
     }
     public static final class style {
         public static final int AppTheme=0x7f080001;

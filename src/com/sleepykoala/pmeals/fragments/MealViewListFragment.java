@@ -317,11 +317,11 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     @Override
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-    	String query, itemName, locName;
+    	String locName;
+    	String itemName = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
     	switch (item.getItemId()) {
     	case R.id.share:
     		locName = ((MealViewListAdapter) getListAdapter()).getLocation(info.position).nickname;
-    		itemName = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
     		Intent share = new Intent(Intent.ACTION_SEND);
     		share.setType("text/plain");
     		share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -337,25 +337,30 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     		return true;
     	case R.id.copy:
     		ClipboardManager cbm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-    		itemName = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
     		cbm.setPrimaryClip(ClipData.newPlainText("pmeals item", itemName));
     		Toast.makeText(getActivity(), "Copied: " +itemName, Toast.LENGTH_SHORT).show();
     		return true;
-    	case R.id.search:
-    		query = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
+    	case R.id.searchmeals:
     		Intent searchIntent = new Intent(getActivity(), MealSearcher.class);
     		searchIntent.setAction(Intent.ACTION_SEARCH);
-    		searchIntent.putExtra(SearchManager.QUERY, query);
+    		searchIntent.putExtra(SearchManager.QUERY, itemName);
     		startActivity(searchIntent);
     		return true;
     	case R.id.makealert:
     		Intent add = new Intent(getActivity(), SetupNewAlert.class);
     		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
-    		add.putExtra(EXTRA_ALERTQUERY, ((FoodItem) getListAdapter().getItem(info.position)).itemName);
+    		add.putExtra(EXTRA_ALERTQUERY, itemName);
     		add.putExtra(EXTRA_ALERTLOC, ((MealViewListAdapter)
     				getListAdapter()).getLocation(info.position).ID);
 
     		startActivityForResult(add, 0);
+    		return true;
+    	case R.id.searchonline:
+    		Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
+    		search.putExtra(SearchManager.QUERY, itemName);
+    		search.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+    		
+    		startActivity(search);
     		return true;
     	default:
     		return super.onContextItemSelected(item);

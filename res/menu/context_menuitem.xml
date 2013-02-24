@@ -10,11 +10,15 @@
         android:title="@string/copy" />
     
     <item
-        android:id="@+id/search"
-        android:title="@string/context_search" />
+        android:id="@+id/searchmeals"
+        android:title="@string/search_meals" />
     
+    <item
+        android:id="@+id/searchonline"
+        android:title="@string/search_online" />
+
     <item
         android:id="@+id/makealert"
         android:title="@string/make_alert" />
-
+    
 </menu>
