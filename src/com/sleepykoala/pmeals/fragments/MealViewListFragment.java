@@ -346,21 +346,22 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     		searchIntent.putExtra(SearchManager.QUERY, itemName);
     		startActivity(searchIntent);
     		return true;
-    	case R.id.makealert:
-    		Intent add = new Intent(getActivity(), SetupNewAlert.class);
-    		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
-    		add.putExtra(EXTRA_ALERTQUERY, itemName);
-    		add.putExtra(EXTRA_ALERTLOC, ((MealViewListAdapter)
-    				getListAdapter()).getLocation(info.position).ID);
-
-    		startActivityForResult(add, 0);
-    		return true;
     	case R.id.searchonline:
     		Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
     		search.putExtra(SearchManager.QUERY, itemName);
     		search.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
     		
     		startActivity(search);
+    		return true;
+    	case R.id.makealert:
+    		Intent add = new Intent(getActivity(), SetupNewAlert.class);
+    		add.putExtra(EXTRA_ALERTNUM, PMealsPreferenceManager.getNumAlerts() + 1);
+    		add.putExtra(EXTRA_ALERTQUERY, itemName);
+    		add.putExtra(EXTRA_ALERTLOC, ((MealViewListAdapter)
+    				getListAdapter()).getLocation(info.position).ID);
+    		add.putExtra(EXTRA_MEALNAME, mealName);
+
+    		startActivityForResult(add, 0);
     		return true;
     	default:
     		return super.onContextItemSelected(item);

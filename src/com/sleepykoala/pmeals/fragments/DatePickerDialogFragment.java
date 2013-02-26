@@ -5,13 +5,15 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
 
-public class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerDialogFragment extends DialogFragment {
 	
 	private OnDateSelectedListener mListener;
 	
@@ -46,18 +48,24 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Date today = new Date(getArguments().getString(EXTRA_DATE));
 		DatePickerDialog dialog = new DatePickerDialog(getActivity(),
-				R.style.Theme_Dialog_NoFrame, this,
+				R.style.Theme_Dialog_NoFrame, null,
 				today.year, today.month, today.monthDay);
 		dialog.getDatePicker().setCalendarViewShown(true);
 		dialog.getDatePicker().setSpinnersShown(false);
+		final DatePicker picker = dialog.getDatePicker();
+		dialog.setCancelable(true);
+		dialog.setCanceledOnTouchOutside(true);
+		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Select", new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				picker.clearFocus();
+				mListener.dateSelected(new Date(picker.getMonth(), picker.getDayOfMonth(), picker.getYear()));
+			}
+		});
+		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (OnClickListener) null);
 		
 		dialog.setTitle("Pick a date");
 		return dialog;
 	}
 	
-	public void onDateSet(DatePicker view, int year, int month,
-			int dayOfMonth) {
-		mListener.dateSelected(new Date(month, dayOfMonth, year));
-	}
-
 }

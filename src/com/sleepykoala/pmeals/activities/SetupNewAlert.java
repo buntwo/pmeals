@@ -2,6 +2,8 @@ package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTLOC;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
+import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 
 import java.io.IOException;
@@ -79,6 +81,7 @@ public class SetupNewAlert extends Activity implements
 	private ArrayList<Location> locs;
 	private ArrayList<Boolean> checkedLocs;
 	private ArrayList<Integer> times;
+	private ArrayList<Boolean> timesFirstSelected; // parallel to times, is to prevent listener from tripping the first time
 	
 	private int alertNum;
 	private boolean[] checkedDays;
@@ -134,7 +137,7 @@ public class SetupNewAlert extends Activity implements
 		Intent intent = getIntent();
 		alertNum = intent.getIntExtra(EXTRA_ALERTNUM, -1);
 		// set query
-		String query = PMealsPreferenceManager.getAlertQuery(alertNum);
+		String query = intent.getStringExtra(EXTRA_ALERTQUERY);
 		if (query.equals(""))
 			aB.setTitle("New alert");
 		else
@@ -152,6 +155,7 @@ public class SetupNewAlert extends Activity implements
 		ArrayList<String> mealNames = new ArrayList<String>();
 		times = new ArrayList<Integer>();
 		PMealsPreferenceManager.getAlertMeal_Times(alertNum, mealNames, times);
+		timesFirstSelected = new ArrayList<Boolean>();
 		int numTimes = times.size();
 		if (numTimes == 0) {
 			RelativeLayout alertTime = (RelativeLayout) mInflater.inflate(R.layout.newalert_timepicker, null);
@@ -162,12 +166,24 @@ public class SetupNewAlert extends Activity implements
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.alert_meals, android.R.layout.simple_spinner_item);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			alertMeals.setAdapter(adapter);
-			alertMeals.setSelection(3);
-			alertMeals.setOnItemSelectedListener(this);
+			// menu may have sent us a meal name to select
+			String mealName = intent.getStringExtra(EXTRA_MEALNAME);
+			if (mealName == null)
+				alertMeals.setSelection(3);
+			else if (mealName.equals("Breakfast"))
+				alertMeals.setSelection(0);
+			else if (mealName.equals("Lunch"))
+				alertMeals.setSelection(1);
+			else if (mealName.equals("Dinner"))
+				alertMeals.setSelection(2);
+			else
+				alertMeals.setSelection(3);
 			Time tm = new Time();
 			tm.setToNow();
 			setAlertTitle(0, tm.hour, tm.minute);
 			times.add(tm.hour * 60 + tm.minute);
+			timesFirstSelected.add(false);
+			alertMeals.setOnItemSelectedListener(this);
 		} else {
 			for (int i = 0; i < numTimes; ++i) {
 				RelativeLayout alertTime = (RelativeLayout) mInflater.inflate(R.layout.newalert_timepicker, null);
@@ -176,6 +192,7 @@ public class SetupNewAlert extends Activity implements
 				alertTime.setTag(i);
 				timeContainer.addView(alertTime);
 				// set title
+				timesFirstSelected.add(false);
 				int time = times.get(i);
 				setAlertTitle(i, time / 60, time % 60);
 				// setup meal spinner
@@ -382,6 +399,7 @@ public class SetupNewAlert extends Activity implements
 		tm.setToNow();
 		setAlertTitle(numAlerts - 1, tm.hour, tm.minute);
 		times.add(tm.hour * 60 + tm.minute);
+		timesFirstSelected.add(true);
 		// enable previous one's delete button if this is the 2nd alert time
 		if (numAlerts == 2)
 			timeContainer.getChildAt(0).findViewById(R.id.deletealerttime).setVisibility(View.VISIBLE);
@@ -416,6 +434,10 @@ public class SetupNewAlert extends Activity implements
 	public void onItemSelected(AdapterView<?> av, View v, int pos,
 			long id) {
 		int num = (Integer) ((View) av.getParent()).getTag();
+		if (!timesFirstSelected.get(num)) {
+			timesFirstSelected.set(num, true);
+			return;
+		}
 		int newTime = 0;
 		switch (pos) {
 		case 0:
