@@ -2,11 +2,12 @@ package com.sleepykoala.pmeals.services;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUMS;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
-import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATES;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMNAMES;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMSPERLOC;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
+import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAMES;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
 
@@ -80,16 +81,21 @@ public class AlertService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		ArrayList<Integer> nums = intent.getIntegerArrayListExtra(EXTRA_ALERTNUMS);
+		ArrayList<String> meals = intent.getStringArrayListExtra(EXTRA_MEALNAMES);
 		ContentResolver cr = getContentResolver();
 		Date today = new Date();
 		
-		for (int num : nums) {
+		int numAlerts = nums.size();
+		for (int i = 0; i < numAlerts; ++i) {
+			int num  = nums.get(i);
+			String meal = meals.get(i);
 			// parallel-ish arrays of matched items (can have > 1 menu item per loc)
 			String locName = null; // name of first matched loc
 			ArrayList<Integer> locIds = new ArrayList<Integer>(); // ids of all matched locs
 			ArrayList<Integer> itemsPerLoc = new ArrayList<Integer>(); // parallel to locIds, number of matched items per loc
 																	   // sum of numbers here must be equal to size of menuItems
 			ArrayList<String> menuItems = new ArrayList<String>();
+			ArrayList<String> dates = new ArrayList<String>();
 			String mealName = null;
 			
 			String query = PMealsPreferenceManager.getAlertQuery(num);
@@ -97,9 +103,13 @@ public class AlertService extends IntentService {
 			Set<String> locs = PMealsPreferenceManager.getAlertLocations(num);
 			for (String s : locs) {
 				Location l = lP.getById(Integer.parseInt(s));
+				// get correct meal
 				DatedMealTime dmt = mTP.getCurrentMeal(l.type);
+				if (!meal.equals(""))
+					while (!dmt.mealName.equals(meal))
+						dmt = mTP.getNextMeal(l.type, dmt);
 				// if it's not today or tomorrow, skip
-				if (!(dmt.date.equals(today) || dmt.date.isTomorrow(today)))
+				if (!(dmt.date.equals(today) || dmt.date.isYesterday(today)))
 					continue;
 				String[] selectArgs =  { String.valueOf(l.ID), dmt.date.toString(),
 						dmt.mealName, query_ };
@@ -115,6 +125,7 @@ public class AlertService extends IntentService {
 				}
 				locIds.add(l.ID);
 				itemsPerLoc.add(numMatched);
+				dates.add(dmt.date.toString());
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
 					menuItems.add(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)));
@@ -166,10 +177,10 @@ public class AlertService extends IntentService {
 			action.putExtra(EXTRA_ALERTQUERY, query);
 			if (mealName != null)
 				action.putExtra(EXTRA_MEALNAME, mealName);
-			action.putExtra(EXTRA_DATE, (new Date()).toString());
 			action.putExtra(EXTRA_LOCATIONIDS, locIds);
 			action.putExtra(EXTRA_ITEMSPERLOC, itemsPerLoc);
 			action.putExtra(EXTRA_ITEMNAMES, menuItems);
+			action.putExtra(EXTRA_DATES, dates);
 			// set data to differentiate it
 			action.setData(Uri.fromParts("content", String.format("%s.%d", query,
 					System.currentTimeMillis()), null));
@@ -189,7 +200,8 @@ public class AlertService extends IntentService {
 		PMealsPreferenceManager.initialize(c);
 		
 		long nextTime = Long.MAX_VALUE;
-		ArrayList<Integer> nextNums = new ArrayList<Integer>();
+		ArrayList<Integer> nextNums = new ArrayList<Integer>(); // alert numbers
+		ArrayList<String> nextMeals = new ArrayList<String>(); // alert meal names
 		int numAlerts = PMealsPreferenceManager.getNumAlerts();
 		boolean isOn = false; // is at least one alert on
 		Time tm = new Time();
@@ -202,28 +214,37 @@ public class AlertService extends IntentService {
 
 			isOn = true;
 			int repeat = PMealsPreferenceManager.getAlertRepeat(num);
-			tm.setToNow();
-			tm.second = 0;
-			int currentDay = tm.monthDay;
-			tm.hour = PMealsPreferenceManager.getAlertHour(num);
-			tm.minute = PMealsPreferenceManager.getAlertMinute(num);
+			ArrayList<Integer> times = new ArrayList<Integer>();
+			ArrayList<String> meals = new ArrayList<String>();
+			PMealsPreferenceManager.getAlertMeal_Times(num, meals, times);
 			for (int j = 0; j < 7; ++j) {
 				if (((repeat >> j) & 1) == 0)
 					continue;
-				tm.monthDay = currentDay;
-				tm.monthDay += (j - tm.weekDay + 7) % 7;
-				long alertTime = tm.toMillis(true);
-				// add a week if it's before current time
-				if (now >= alertTime) {
-					tm.monthDay += 7;
-					alertTime = tm.toMillis(true);
+				int numTimes = times.size();
+				for (int i = 0; i < numTimes; ++i) {
+					tm.setToNow();
+					tm.second = 0;
+					tm.monthDay += (j - tm.weekDay + 7) % 7;
+					int time = times.get(i);
+					tm.hour = time / 60;
+					tm.minute = time % 60;
+					long alertTime = tm.toMillis(true);
+					// add a week if it's before current time
+					if (now >= alertTime) {
+						tm.monthDay += 7;
+						alertTime = tm.toMillis(true);
+					}
+					if (alertTime < nextTime) {
+						nextTime = alertTime;
+						nextNums.clear();
+						nextNums.add(num);
+						nextMeals.clear();
+						nextMeals.add(meals.get(i));
+					} else if (alertTime == nextTime) {
+						nextNums.add(num);
+						nextMeals.add(meals.get(i));
+					}
 				}
-				if (alertTime < nextTime) {
-					nextTime = alertTime;
-					nextNums.clear();
-					nextNums.add(num);
-				} else if (alertTime == nextTime)
-					nextNums.add(num);
 			}
 		}
 		if (!isOn) {
@@ -236,6 +257,7 @@ public class AlertService extends IntentService {
 		// set alarm
 		Intent alert = new Intent(c, AlertService.class);
 		alert.putExtra(EXTRA_ALERTNUMS, nextNums);
+		alert.putExtra(EXTRA_MEALNAMES, nextMeals);
 		PendingIntent pI = PendingIntent.getService(c, 0, alert, PendingIntent.FLAG_CANCEL_CURRENT);
 		((AlarmManager) c.getSystemService(Context.ALARM_SERVICE)).set(
 				AlarmManager.RTC_WAKEUP, nextTime, pI);

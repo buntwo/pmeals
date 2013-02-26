@@ -13,29 +13,29 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_managealerts">Manage alerts</string>
     <string name="title_activity_setupnewalert">Setup new alert</string>
-    
+
     <!-- about dialog -->
     <string name="app_info">An app for downloading, storing, and nicely displaying dining menus at Princeton University.</string>
     <string name="credits_categories">App Design\nStrategy Consultant\nCoding\nIcons</string>
     <string name="credits_authors">Brian Tu, David Zhao\nSophia Xing\nBrian Tu\nDavid Zhao</string>
-    
+
     <!-- search widget -->
     <string name="search">Search meals</string>
     <string name="searchHint">Search meals</string>
     <string name="searching">Searching</string>
-    
+
     <!-- widget -->
     <string name="widgetconfig_instr">Select the location you would like to display</string>
-    
+
     <!-- misc -->
     <string name="loading">Loading&#8230;</string>
 
     <!-- alert manager -->
     <string name="addalert">Add alert</string>
     <string name="no_alerts">No alerts</string>
-    <string name="alertquery_hint">Keyword</string>
     <string name="alertquery_prompt">Alert query</string>
-    <string name="alerttime_prompt">Alert time</string>
+    <string name="alertquery_hint">Phrase to match in menu item</string>
+    <string name="alerttime_prompt">Alert times</string>
     <string name="alertdow_prompt">Days to alert (tap to select)</string>
     <string name="sunday_abbrev">Sun</string>
     <string name="monday_abbrev">Mon</string>
@@ -44,10 +44,12 @@
     <string name="thursday_abbrev">Thu</string>
     <string name="friday_abbrev">Fri</string>
     <string name="saturday_abbrev">Sat</string>
-    <string name="alertlocs_prompt">Locations to query</string>
+    <string name="alertlocs_prompt">Locations to alert</string>
     <string name="selectdininghalls">Dining halls</string>
     <string name="selectall">All</string>
     <string name="selectnone">None</string>
+    <string name="addalerttime">+ Add alert time</string>
+    <string name="alerttime_mealprompt">Meal:</string>
 
     <!-- context menu -->
     <string name="share">Share</string>

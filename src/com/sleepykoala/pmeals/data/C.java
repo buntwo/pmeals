@@ -56,6 +56,7 @@ public final class C {
 	public static final String EXTRA_LOCATIONNAME = "com.sleepykoala.pmeals.LOCATIONNAME";
 	public static final String EXTRA_MEALNAMES = "com.sleepykoala.pmeals.MEALNAMES";
 	public static final String EXTRA_DATE = "com.sleepykoala.pmeals.DATE";
+	public static final String EXTRA_DATES = "com.sleepykoala.pmeals.DATES";
 	public static final String EXTRA_ISREFRESH = "com.sleepykoala.pmeals.ISREFRESH";
 	public static final String EXTRA_TYPE = "com.sleepykoala.pmeals.TYPE";
 	public static final String EXTRA_ITEMSPERLOC = "com.sleepykoala.pmeals.ITEMSPERLOC";
@@ -130,8 +131,7 @@ public final class C {
     public static final String PREF_ALERTQUERY = "alert_query";
     public static final String PREF_ALERTON = "alert_on";
     public static final String PREF_ALERTREPEAT = "alert_repeat";
-    public static final String PREF_ALERTHOUR = "alert_hour";
-    public static final String PREF_ALERTMINUTE = "alert_minute";
+    public static final String PREF_ALERTMEAL_TIMES = "alert_time_meals";
     public static final String PREF_ALERTLOCS = "alert_locs";
     
     // feedback email

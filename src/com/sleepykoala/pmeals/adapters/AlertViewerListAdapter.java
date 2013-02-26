@@ -3,7 +3,6 @@ package com.sleepykoala.pmeals.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.Location;
 import com.sleepykoala.pmeals.data.LocationProvider;
 
@@ -22,19 +22,26 @@ public class AlertViewerListAdapter extends BaseAdapter {
 	private final ArrayList<Location> locs;
 	private final ArrayList<Integer> itemsPerLoc;
 	private final String mealName;
+	private final ArrayList<String> dates;
 	private final int numLocs;
 	private final LayoutInflater mInflater;
+	private final int ptonOrange;
+	private final Date today;
 	//
 	private final ArrayList<String> itemNames;
 	
 	public AlertViewerListAdapter(Activity act, ArrayList<Location> aLocs,
-			ArrayList<Integer> aItemsPerLoc, ArrayList<String> aItemNames, String aMealName) {
+			ArrayList<Integer> aItemsPerLoc, ArrayList<String> aItemNames,
+			String aMealName, ArrayList<String> aDates) {
 		mInflater = act.getLayoutInflater();
 		locs = aLocs;
 		itemsPerLoc = aItemsPerLoc;
 		itemNames = aItemNames;
 		numLocs = locs.size();
 		mealName = aMealName;
+		dates = aDates;
+		ptonOrange = act.getResources().getColor(R.color.PrincetonOrange);
+		today = new Date();
 	}
 
 	public int getCount() {
@@ -82,15 +89,13 @@ public class AlertViewerListAdapter extends BaseAdapter {
 	public View getView(int pos, View convertView, ViewGroup parent) {
 		int type = -1;
 		int itemIndex = 0;
-		Location loc = null;
-		for (int i = 0; i < numLocs; ++i) {
-			int numItems = itemsPerLoc.get(i);
+		int locIndex;
+		for (locIndex = 0; locIndex < numLocs; ++locIndex) {
+			int numItems = itemsPerLoc.get(locIndex);
 			if (pos - numItems - 1 == -numItems - 1) {
-				loc = locs.get(i);
 				type = 0;
 				break;
 			} else if (pos - numItems - 1 < 0) {
-				loc = locs.get(i);
 				type = 1;
 				itemIndex += pos - 1;
 				break;
@@ -107,9 +112,12 @@ public class AlertViewerListAdapter extends BaseAdapter {
 				convertView = mInflater.inflate(R.layout.menu_sectiontitle, parent, false);
 				holder = new LocationNameHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.sectiontitle);
+				holder.date = (TextView) convertView.findViewById(R.id.sectionextra);
+				holder.date.setTextColor(ptonOrange);
 				convertView.setTag(holder);
 			}
-			holder.name.setText(loc.nickname);
+			holder.name.setText(locs.get(locIndex).nickname);
+			holder.date.setText(today.equals(new Date(dates.get(locIndex))) ? "Today" : "Tomorrow");
 		} else if (type == 1) { // alert result
 			ResultHolder holder;
 			if (convertView != null)
@@ -123,7 +131,7 @@ public class AlertViewerListAdapter extends BaseAdapter {
 				convertView.setTag(holder);
 			}
 			holder.itemName.setText(itemNames.get(itemIndex));
-			if (LocationProvider.isDiningHall(loc)) {
+			if (LocationProvider.isDiningHall(locs.get(locIndex))) {
 				holder.mealName.setText(mealName);
 				holder.mealName.setVisibility(View.VISIBLE);
 			} else {
@@ -134,11 +142,27 @@ public class AlertViewerListAdapter extends BaseAdapter {
 		
 		return convertView;
 	}
+	
+	/**
+	 * Given the locationId of a location this adapter is showing, return the
+	 * date (as a string) that this location's meals are on
+	 * 
+	 * @param locId Location ID
+	 * @return Date string of this location's meals, or null
+	 */
+	public String getDate(int locId) {
+		for (int i = 0; i < numLocs; ++i) {
+			if (locs.get(i).ID == locId)
+				return dates.get(i);
+		}
+		return null;
+	}
 
 	//---------------------------------------------STATIC HOLDER CLASSES--------------------------------
 	
 	private static class LocationNameHolder {
 		TextView name;
+		TextView date;
 	}
 	
 	private static class ResultHolder {

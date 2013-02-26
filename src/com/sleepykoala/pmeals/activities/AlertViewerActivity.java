@@ -1,9 +1,11 @@
 package com.sleepykoala.pmeals.activities;
 
-import static com.sleepykoala.pmeals.data.C.*;
+import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATES;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMNAMES;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ITEMSPERLOC;
+import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
@@ -26,8 +28,6 @@ import com.sleepykoala.pmeals.data.LocationProviderFactory;
 
 public class AlertViewerActivity extends ListActivity {
 	
-	private String mDate;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,7 +43,7 @@ public class AlertViewerActivity extends ListActivity {
         
         Bundle extras = getIntent().getExtras();
         // extract extras
-        mDate = extras.getString(EXTRA_DATE);
+        ArrayList<String> dates = extras.getStringArrayList(EXTRA_DATES);
         String mealName = extras.getString(EXTRA_MEALNAME);
         String query = extras.getString(EXTRA_ALERTQUERY);
         ArrayList<Integer> locIds = extras.getIntegerArrayList(EXTRA_LOCATIONIDS);
@@ -57,7 +57,7 @@ public class AlertViewerActivity extends ListActivity {
         
         // set adapter
         AlertViewerListAdapter adapter = new AlertViewerListAdapter(this,
-        		locs, itemsPerLoc, itemNames, mealName);
+        		locs, itemsPerLoc, itemNames, mealName, dates);
         setListAdapter(adapter);
         
         // set title
@@ -68,8 +68,10 @@ public class AlertViewerActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Intent vbl = new Intent(this, ViewByLocation.class);
-		vbl.putExtra(EXTRA_LOCATIONID, (Integer) l.getAdapter().getItem(position));
-		vbl.putExtra(EXTRA_DATE, mDate);
+		AlertViewerListAdapter adapter = (AlertViewerListAdapter) l.getAdapter();
+		int locId = (Integer) adapter.getItem(position);
+		vbl.putExtra(EXTRA_LOCATIONID, locId);
+		vbl.putExtra(EXTRA_DATE, adapter.getDate(locId));
 		
 		startActivity(vbl);
 	}

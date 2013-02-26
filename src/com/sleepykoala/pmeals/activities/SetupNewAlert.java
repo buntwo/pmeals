@@ -1,11 +1,7 @@
 package com.sleepykoala.pmeals.activities;
 
-import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTHOUR;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTLOC;
-import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
-import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
-import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTREPEAT;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 
 import java.io.IOException;
@@ -16,35 +12,52 @@ import java.util.Set;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.format.Time;
+import android.text.style.StyleSpan;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.sleepykoala.pmeals.R;
+import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.Location;
 import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
+import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
-import com.sleepykoala.pmeals.data.ScrollableTimePicker;
 import com.sleepykoala.pmeals.services.AlertService;
 
 public class SetupNewAlert extends Activity implements
 		OnMultiChoiceClickListener, OnClickListener, OnCancelListener,
-		OnCheckedChangeListener {
+		OnItemSelectedListener, OnCheckedChangeListener {
 
 	//private static final String TAG = "SetupNewAlert";
 	
@@ -59,9 +72,13 @@ public class SetupNewAlert extends Activity implements
 	};
 	private static final int COLOR_DIM = 0xff5d5d5d;
 	private static final int COLOR_ACTIVE = 0xffffffff;
+	private static final int BREAKFAST_DEFAULTTIME = 540; // 9:00am
+	private static final int LUNCH_DEFAULTTIME = 690; // 11:30am
+	private static final int DINNER_DEFAULTTIME = 1020; // 5:00pm
 	
 	private ArrayList<Location> locs;
 	private ArrayList<Boolean> checkedLocs;
+	private ArrayList<Integer> times;
 	
 	private int alertNum;
 	private boolean[] checkedDays;
@@ -75,8 +92,13 @@ public class SetupNewAlert extends Activity implements
 	private TextView thu;
 	private TextView fri;
 	private TextView sat;
+	// cache fadeout animation
+	private Animation fadeout;
+	
+	private LayoutInflater mInflater;
 	
 	private LinearLayout locsContainer;
+	private LinearLayout timeContainer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +113,8 @@ public class SetupNewAlert extends Activity implements
 			throw new RuntimeException("Cannot find asset " + LOCATIONSXML + "!!");
 		}
         LocationProvider lP = LocationProviderFactory.newLocationProvider();
+        
+        mInflater = getLayoutInflater();
 		
 		// cache days of week
 		sun = (TextView) findViewById(R.id.sunday);
@@ -100,6 +124,8 @@ public class SetupNewAlert extends Activity implements
 		thu = (TextView) findViewById(R.id.thursday);
 		fri = (TextView) findViewById(R.id.friday);
 		sat = (TextView) findViewById(R.id.saturday);
+		// cache fadeout animation
+		fadeout = AnimationUtils.loadAnimation(this, R.anim.fadeout);
 
 		// set title back button
 		ActionBar aB = getActionBar();
@@ -108,27 +134,70 @@ public class SetupNewAlert extends Activity implements
 		Intent intent = getIntent();
 		alertNum = intent.getIntExtra(EXTRA_ALERTNUM, -1);
 		// set query
-		String query = intent.getStringExtra(EXTRA_ALERTQUERY);
+		String query = PMealsPreferenceManager.getAlertQuery(alertNum);
 		if (query.equals(""))
 			aB.setTitle("New alert");
 		else
 			aB.setTitle("Edit alert: " + query);
 		((EditText) findViewById(R.id.alertquery)).setText(query);
 		// set repeat
-		int repeat = intent.getIntExtra(EXTRA_ALERTREPEAT, 0);
+		int repeat = PMealsPreferenceManager.getAlertRepeat(alertNum);
 		checkedDays = new boolean[7];
 		checkedDaysBuff = new boolean[7];
 		for (int i = 0; i < 7; ++i)
 			checkedDays[i] = (((repeat >> i) & 1) == 1);
 		drawDaysOfWeek();
 		// set time
-		Time tm = new Time();
-		tm.setToNow();
-		int hour = intent.getIntExtra(EXTRA_ALERTHOUR, tm.hour);
-		int minute = intent.getIntExtra(EXTRA_ALERTMINUTE, tm.minute);
-		TimePicker tP = (TimePicker) findViewById(R.id.alerttime);
-		tP.setCurrentHour(hour);
-		tP.setCurrentMinute(minute);
+		timeContainer = (LinearLayout) findViewById(R.id.timepicker_container);
+		ArrayList<String> mealNames = new ArrayList<String>();
+		times = new ArrayList<Integer>();
+		PMealsPreferenceManager.getAlertMeal_Times(alertNum, mealNames, times);
+		int numTimes = times.size();
+		if (numTimes == 0) {
+			RelativeLayout alertTime = (RelativeLayout) mInflater.inflate(R.layout.newalert_timepicker, null);
+			alertTime.setTag(0);
+			timeContainer.addView(alertTime);
+			// setup meal spinner
+			Spinner alertMeals = (Spinner) alertTime.findViewById(R.id.alertmeal);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.alert_meals, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			alertMeals.setAdapter(adapter);
+			alertMeals.setSelection(3);
+			alertMeals.setOnItemSelectedListener(this);
+			Time tm = new Time();
+			tm.setToNow();
+			setAlertTitle(0, tm.hour, tm.minute);
+			times.add(tm.hour * 60 + tm.minute);
+		} else {
+			for (int i = 0; i < numTimes; ++i) {
+				RelativeLayout alertTime = (RelativeLayout) mInflater.inflate(R.layout.newalert_timepicker, null);
+				// set tag
+				// 0-indexed
+				alertTime.setTag(i);
+				timeContainer.addView(alertTime);
+				// set title
+				int time = times.get(i);
+				setAlertTitle(i, time / 60, time % 60);
+				// setup meal spinner
+				Spinner alertMeals = (Spinner) alertTime.findViewById(R.id.alertmeal);
+				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.alert_meals, android.R.layout.simple_spinner_item);
+				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				alertMeals.setAdapter(adapter);
+				String mealname = mealNames.get(i);
+				if (mealname.equals(""))
+					alertMeals.setSelection(3);
+				else if (mealname.equals("Breakfast"))
+					alertMeals.setSelection(0);
+				else if (mealname.equals("Lunch"))
+					alertMeals.setSelection(1);
+				else if (mealname.equals("Dinner"))
+					alertMeals.setSelection(2);
+				alertMeals.setOnItemSelectedListener(this);
+			}
+		}
+		// can't delete last one
+		if (numTimes <= 1)
+			timeContainer.getChildAt(0).findViewById(R.id.deletealerttime).setVisibility(View.GONE);
 		// populate and set locs container
 		locsContainer = (LinearLayout) findViewById(R.id.alertlocs_container);
 		locs = lP.getAllLocations();
@@ -179,12 +248,14 @@ public class SetupNewAlert extends Activity implements
 	public void create(View v) {
 		// build result
 		Intent result = new Intent();
+		// get query
 		String query = String.valueOf(((TextView) findViewById(R.id.alertquery)).getText());
 		query = query.trim();
 		if (query.isEmpty()) {
 			Toast.makeText(this, "Please enter an alert query", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		// get alert repeat
 		int repeat = 0;
 		for (int i = 0; i < 7; ++i)
 			if (checkedDays[i])
@@ -194,6 +265,7 @@ public class SetupNewAlert extends Activity implements
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+		// get locations
 		Set<String> locsSelected = new HashSet<String>();
 		int size = locs.size();
 		for (int i = 0; i < size; ++i)
@@ -204,14 +276,31 @@ public class SetupNewAlert extends Activity implements
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		ScrollableTimePicker tP = (ScrollableTimePicker) findViewById(R.id.alerttime);
-		int hour = tP.getCurrentHour();
-		int min = tP.getCurrentMinute();
+		// get alert times
+		int numTimes = timeContainer.getChildCount();
+		ArrayList<String> meals = new ArrayList<String>(numTimes);
+		for (int i = 0; i < numTimes; ++i) {
+			RelativeLayout time = (RelativeLayout) timeContainer.getChildAt(i);
+			int selected = ((Spinner) time.findViewById(R.id.alertmeal)).getSelectedItemPosition();
+			switch (selected) {
+			case 0:
+				meals.add("Breakfast");
+				break;
+			case 1:
+				meals.add("Lunch");
+				break;
+			case 2:
+				meals.add("Dinner");
+				break;
+			case 3:
+				meals.add("");
+				break;
+			}
+		}
 		
 		result.putExtra(EXTRA_ALERTNUM, alertNum);
-
 		// store alert
-		PMealsPreferenceManager.storeAlert(alertNum, query, repeat, hour, min, locsSelected);
+		PMealsPreferenceManager.storeAlert(alertNum, query, repeat, meals, times, locsSelected);
 		// set next alert
 		AlertService.setNextAlert(this);
 		
@@ -276,8 +365,128 @@ public class SetupNewAlert extends Activity implements
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		checkedLocs.set((Integer) buttonView.getTag(), isChecked);
 	}
+	
+	public void onAddAlertTime(View v) {
+		RelativeLayout alertTime = (RelativeLayout) mInflater.inflate(R.layout.newalert_timepicker, null);
+		timeContainer.addView(alertTime);
+		int numAlerts = timeContainer.getChildCount();
+		alertTime.setTag(numAlerts - 1);
+		// setup meal spinner
+		Spinner alertMeals = (Spinner) alertTime.findViewById(R.id.alertmeal);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.alert_meals, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		alertMeals.setAdapter(adapter);
+		alertMeals.setSelection(3);
+		alertMeals.setOnItemSelectedListener(this);
+		Time tm = new Time();
+		tm.setToNow();
+		setAlertTitle(numAlerts - 1, tm.hour, tm.minute);
+		times.add(tm.hour * 60 + tm.minute);
+		// enable previous one's delete button if this is the 2nd alert time
+		if (numAlerts == 2)
+			timeContainer.getChildAt(0).findViewById(R.id.deletealerttime).setVisibility(View.VISIBLE);
+	}
+	
+	public void onDeleteAlertTime(View v) {
+		int numDeleted = (Integer) ((View) v.getParent()).getTag();
+		times.remove(numDeleted);
+		// shift tags down
+		int totalTimes = timeContainer.getChildCount();
+		for (int i = numDeleted + 1; i < totalTimes; ++i) {
+			RelativeLayout alertTime = (RelativeLayout) timeContainer.getChildAt(i);
+			alertTime.setTag(i - 1);
+		}
+		// can't delete last one
+		if (totalTimes == 2)
+			timeContainer.getChildAt((numDeleted == 1) ? 0 : 1).findViewById(R.id.deletealerttime).setVisibility(View.GONE);
+		fadeout.setAnimationListener(new DeleteAlertAnimationListener(timeContainer, numDeleted));
+		timeContainer.getChildAt(numDeleted).startAnimation(fadeout);
+	}
+	
+	public void onSetAlertTimeTime(View v) {
+		int timeNum = (Integer) ((View) v.getParent()).getTag();
+		int time = times.get(timeNum);
+		TimePickerDialog tpd = new TimePickerDialog(this,
+				new AlertTimeTimeSetListener(timeNum),
+				time / 60, time % 60, C.IS24HOURFORMAT);
+		
+		tpd.show();
+	}
 
+	public void onItemSelected(AdapterView<?> av, View v, int pos,
+			long id) {
+		int num = (Integer) ((View) av.getParent()).getTag();
+		int newTime = 0;
+		switch (pos) {
+		case 0:
+			newTime = BREAKFAST_DEFAULTTIME;
+			break;
+		case 1:
+			newTime = LUNCH_DEFAULTTIME;
+			break;
+		case 2:
+			newTime = DINNER_DEFAULTTIME;
+			break;
+		case 3:
+			Time tm = new Time();
+			tm.setToNow();
+			newTime = tm.hour * 60 + tm.minute;
+		}
+		times.set(num, newTime);
+		setAlertTitle(num, newTime / 60, newTime % 60);
+	}
+
+	public void onNothingSelected(AdapterView<?> arg0) { }
+	
+	private class DeleteAlertAnimationListener implements AnimationListener {
+		private final ViewGroup parent;
+		private final int num;
+		
+		public DeleteAlertAnimationListener(ViewGroup parent, int numDelete) {
+			this.parent = parent;
+			num = numDelete;
+		}
+
+		public void onAnimationEnd(Animation animation) {
+			parent.post(new Runnable() {
+				public void run() {
+					parent.removeViewAt(num);
+				}
+			});
+		}
+
+		public void onAnimationRepeat(Animation animation) { }
+		public void onAnimationStart(Animation animation) { }
+		
+	}
+	
 	//----------------------------------------------------------------------------------------
+	
+	private void setAlertTitle(int num, int hour, int min) {
+		String timeStr = MealTimeProvider.getFormattedTime(hour, min);
+		int len = timeStr.length();
+		SpannableString title = new SpannableString(timeStr + " (tap to change)");
+		title.setSpan(new StyleSpan(Typeface.BOLD), 0, len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		((TextView) timeContainer.getChildAt(num).findViewById(R.id.alerttimetitle))
+			.setText(title);
+	}
+	
+	private class AlertTimeTimeSetListener implements OnTimeSetListener {
+		
+		private final int num;
+		
+		public AlertTimeTimeSetListener(int num) {
+			this.num = num;
+		}
+		
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			// set data
+			times.set(num, hourOfDay * 60 + minute);
+			// set UI
+			setAlertTitle(num, hourOfDay, minute);
+		}
+
+	}
 	
 	// colors the selected days
 	private void drawDaysOfWeek() {

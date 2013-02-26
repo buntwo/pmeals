@@ -2,14 +2,13 @@ package com.sleepykoala.pmeals.activities;
 
 import static com.sleepykoala.pmeals.data.C.ALPHA_DISABLED;
 import static com.sleepykoala.pmeals.data.C.ALPHA_ENABLED;
-import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTHOUR;
-import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTMINUTE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTREPEAT;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 
 import android.app.ActionBar;
@@ -169,12 +168,10 @@ public class ManageAlertsActivity extends Activity {
     private void updateAlertView(LinearLayout alert, int num) {
     	// build text
     	String query = PMealsPreferenceManager.getAlertQuery(num);
-    	int repeat = PMealsPreferenceManager.getAlertRepeat(num);
-    	int hour = PMealsPreferenceManager.getAlertHour(num);
-    	int min = PMealsPreferenceManager.getAlertMinute(num);
     	// set query
     	((TextView) alert.findViewById(R.id.alertquery)).setText(query);
     	// set info
+    	int repeat = PMealsPreferenceManager.getAlertRepeat(num);
     	StringBuilder info = new StringBuilder();;
     	if (repeat == EVERY_DAY)
     		info.append("Every day");
@@ -188,11 +185,26 @@ public class ManageAlertsActivity extends Activity {
     				info.append(dayAbbrevs[j]).append(", ");
     		info.setLength(info.length() - 2);
     	}
-    	info.append(" at ");
-    	Time tm = new Time();
-    	tm.hour = hour;
-    	tm.minute = min;
-    	info.append(MealTimeProvider.getFormattedTime(tm.toMillis(false)));
+    	ArrayList<String> mealNames = new ArrayList<String>();
+    	ArrayList<Integer> times = new ArrayList<Integer>();
+    	PMealsPreferenceManager.getAlertMeal_Times(num, mealNames, times);
+    	int numTimes = times.size();
+    	for (int i = 0; i < numTimes - 1; ++i) {
+    		int time = times.get(i);
+    		info.append(" at ").append(MealTimeProvider.getFormattedTime(time / 60, time % 60));
+    		String mealname = mealNames.get(i);
+    		if (!mealname.equals(""))
+    			info.append(" for ").append(mealname.toLowerCase());
+    		info.append(",");
+    	}
+    	if (numTimes > 1) {
+    		info.append(" and");
+    	}
+    	int time = times.get(numTimes - 1);
+    	info.append(" at ").append(MealTimeProvider.getFormattedTime(time / 60, time % 60));
+    	String mealname = mealNames.get(numTimes - 1);
+    	if (!mealname.equals(""))
+    		info.append(" for ").append(mealname.toLowerCase());
     	((TextView) alert.findViewById(R.id.alerttime)).setText(info);
     	// set locations
     	info = new StringBuilder();
@@ -358,8 +370,6 @@ public class ManageAlertsActivity extends Activity {
 			edit.putExtra(EXTRA_ALERTNUM, num);
 			edit.putExtra(EXTRA_ALERTQUERY, PMealsPreferenceManager.getAlertQuery(num));
 			edit.putExtra(EXTRA_ALERTREPEAT, PMealsPreferenceManager.getAlertRepeat(num));
-			edit.putExtra(EXTRA_ALERTHOUR, PMealsPreferenceManager.getAlertHour(num));
-			edit.putExtra(EXTRA_ALERTMINUTE, PMealsPreferenceManager.getAlertMinute(num));
 			
 			startActivityForResult(edit, REQ_EDIT);
 		}

@@ -18,5 +18,11 @@
         <item>10</item>
         <item>11</item>
     </string-array>
+    <string-array name="alert_meals" >
+        <item>Breakfast</item>
+        <item>Lunch/Brunch</item>
+        <item>Dinner</item>
+        <item>Next meal</item>
+    </string-array>
     
 </resources>

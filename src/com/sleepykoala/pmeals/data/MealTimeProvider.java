@@ -302,4 +302,17 @@ public class MealTimeProvider {
 		}
 	}
 	
+	// get 12/24 hour setting-aware time
+	public static String getFormattedTime(int hour, int minute) {
+		if (IS24HOURFORMAT)
+			return String.format("%d:%02d", hour, minute);
+		else {
+			boolean inAM = (hour < 12);
+			if (inAM)
+				hour = (hour == 0) ? 12 : hour;
+			else
+				hour = (hour == 12) ? 12 : hour - 12;
+			return String.format("%d:%02d%s", hour, minute, inAM ? "am" : "pm");
+		}
+	}
 }

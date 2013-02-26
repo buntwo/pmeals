@@ -28,6 +28,8 @@ import com.sleepykoala.pmeals.services.AlertService;
 import com.sleepykoala.pmeals.services.DailyDownloadService;
 
 public class Launcher extends Activity implements OnFirstTimeDismissListener {
+	
+	private static final int COOL_NUMBER = 2;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,27 +39,30 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
         // set 24 hour status
         IS24HOURFORMAT = DateFormat.is24HourFormat(this);
 
-        /*
+        //*
 		startActivity(new Intent(this, ManageAlertsActivity.class));
 		finish();
 		//*/
         /*
 		Intent alert = new Intent(this, AlertService.class);
 		ArrayList<Integer> alertNums = new ArrayList<Integer>();
-		alertNums.add(2);
+		ArrayList<String> mealNames = new ArrayList<String>();
+		alertNums.add(1);
+		mealNames.add("Breakfast");
 		alert.putExtra(EXTRA_ALERTNUMS, alertNums);
+		alert.putExtra(EXTRA_MEALNAMES, mealNames);
 		startService(alert);
 		launch();
 		//*/
 		
-		//*
+		/*
         // set alert
         AlertService.setNextAlert(this);
 		// set daily update alarm
 		Intent dailyDownload = new Intent(this, DailyDownloadService.class);
 		PendingIntent pI = PendingIntent.getService(this, 0, dailyDownload, PendingIntent.FLAG_CANCEL_CURRENT);
 		((AlarmManager) getSystemService(Context.ALARM_SERVICE)).setRepeating(
-				AlarmManager.RTC, (new Date()).toMillis(false) + 2000, AlarmManager.INTERVAL_DAY, pI);
+				AlarmManager.RTC, (new Date()).toMillis(false) + COOL_NUMBER * 1000, AlarmManager.INTERVAL_DAY, pI);
 		
         // upgrade code
         // show help dialog on first time or upgrade
