@@ -1,6 +1,7 @@
 package com.sleepykoala.pmeals.adapters;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_FRAGMENTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.PAGES_TO_LOAD;
 import static com.sleepykoala.pmeals.data.C.TOTAL_PAGES;
@@ -94,6 +95,7 @@ public class LocationViewPagerAdapter extends FragmentStatePagerAdapter {
 			date = dates[pos];
 		}
 		args.putString(EXTRA_DATE, date.toString());
+		args.putInt(EXTRA_FRAGMENTNUM, pos);
 		lf.setArguments(args);
 		
 		// load next/prev dates if needed

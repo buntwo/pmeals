@@ -61,6 +61,7 @@ public final class C {
 	public static final String EXTRA_TYPE = "com.sleepykoala.pmeals.TYPE";
 	public static final String EXTRA_ITEMSPERLOC = "com.sleepykoala.pmeals.ITEMSPERLOC";
 	public static final String EXTRA_ITEMNAMES = "com.sleepykoala.pmeals.ITEMNAMES";
+	public static final String EXTRA_FRAGMENTNUM = "com.sleepykoala.pmeals.FRAGMENTNUM";
 	// NOTE: this is for an arraylist of ID's
 	// the similarly named one above is for a single ID
 	public static final String EXTRA_LOCATIONIDS = "com.sleepykoala.pmeals.LOCATIONIDS";

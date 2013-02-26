@@ -1,6 +1,7 @@
 package com.sleepykoala.pmeals.adapters;
 
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_FRAGMENTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
 import static com.sleepykoala.pmeals.data.C.PAGES_TO_LOAD;
@@ -105,6 +106,7 @@ public class MealViewPagerAdapter extends FragmentStatePagerAdapter {
 		args.putIntegerArrayList(EXTRA_LOCATIONIDS, locIDsToShow);
 		args.putString(EXTRA_DATE, meal.date.toString());
 		args.putString(EXTRA_MEALNAME, meal.mealName);
+		args.putInt(EXTRA_FRAGMENTNUM, pos);
 		lf.setArguments(args);
 		
 		// load next/prev meals if needed

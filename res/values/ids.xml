@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- context menu -->
+    <item type="id" name="share" />
+    <item type="id" name="copy" />
+    <item type="id" name="searchmeals" />
+    <item type="id" name="searchonline" />
+    <item type="id" name="makealert" />
+    
+</resources>

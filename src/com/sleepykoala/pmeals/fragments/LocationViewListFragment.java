@@ -4,6 +4,7 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTLOC;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ALERTQUERY;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
+import static com.sleepykoala.pmeals.data.C.EXTRA_FRAGMENTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_ISREFRESH;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONNAME;
@@ -116,6 +117,7 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 	private String mDate;
 	private Location mLoc;
 	private ArrayList<String> mDaysMealNames;
+	private int fragmentNum;
 	
 	// cached resources
 	Animation mRotation;
@@ -142,6 +144,7 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 		Bundle args = getArguments();
 		int locID = args.getInt(EXTRA_LOCATIONID);
 		mDate = args.getString(EXTRA_DATE);
+		fragmentNum = args.getInt(EXTRA_FRAGMENTNUM);
 		
 		// inflate objects
 		mLoc = lP.getById(locID);
@@ -260,14 +263,21 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
     	super.onCreateContextMenu(menu, v, info);
+    	
     	if (((AdapterContextMenuInfo) info).id == -2) {
-    		MenuInflater inflater = getActivity().getMenuInflater();
-    		inflater.inflate(R.menu.context_menuitem, menu);
+    		menu.add(fragmentNum, R.id.share, 0, R.string.share);
+    		menu.add(fragmentNum, R.id.copy, 1, R.string.copy);
+    		menu.add(fragmentNum, R.id.searchmeals, 2, R.string.search_meals);
+    		menu.add(fragmentNum, R.id.searchonline, 3, R.string.search_online);
+    		menu.add(fragmentNum, R.id.makealert, 4, R.string.make_alert);
     	}
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+    	if (item.getGroupId() != fragmentNum)
+    		return false;
+    	
     	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
     	String locName, mealName;
     	String itemName = ((FoodItem) getListAdapter().getItem(info.position)).itemName;
