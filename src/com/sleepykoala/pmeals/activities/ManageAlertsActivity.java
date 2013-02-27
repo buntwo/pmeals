@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.Time;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -25,6 +27,7 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.sleepykoala.pmeals.R;
@@ -37,7 +40,7 @@ import com.sleepykoala.pmeals.services.AlertService;
 
 public class ManageAlertsActivity extends Activity {
 	
-	//private static final String TAG = "ManageAlertsActivity";
+	private static final String TAG = "ManageAlertsActivity";
 	
 	private LinearLayout container;
 	private LayoutInflater mInflater;
@@ -114,11 +117,8 @@ public class ManageAlertsActivity extends Activity {
     	int numAlerts = PMealsPreferenceManager.getNumAlerts();
     	container.removeViewAt(num - 1);
     	// shift numbers down
-    	for (int i = num - 1; i < numAlerts - 1; ++i) {
-    		container.getChildAt(i).findViewById(R.id.alertstatus).setTag(i + 1);
-    		container.getChildAt(i).findViewById(R.id.deletealert).setTag(i + 1);
-    		container.getChildAt(i).findViewById(R.id.alertinfo).setTag(i + 1);
-    	}
+    	for (int i = num - 1; i < numAlerts - 1; ++i)
+    		container.getChildAt(i).setTag(i + 1);
     	PMealsPreferenceManager.deleteAlert(num);
     	if (numAlerts == 1) {
     		mInflater.inflate(R.layout.no_alert, container);
@@ -136,22 +136,20 @@ public class ManageAlertsActivity extends Activity {
     		container.removeAllViews();
     	
     	LinearLayout alert = (LinearLayout) mInflater.inflate(R.layout.alert, null);
+    	alert.setTag(num);
     	
     	// setup alertInfo box
     	View alertInfo = alert.findViewById(R.id.alertinfo);
-    	alertInfo.setTag(num);
     	EditListener eL = new EditListener();
-    	DeleteListener dL = new DeleteListener();
+    	ShowDetailListener dL = new ShowDetailListener();
     	alertInfo.setOnClickListener(eL);
     	alertInfo.setOnLongClickListener(dL);
     	
     	// setup toggle button
     	View deleteButton = alert.findViewById(R.id.deletealert);
-    	deleteButton.setTag(num);
     	// set status indicator
     	ImageView iv = (ImageView) alert.findViewById(R.id.alertstatus);
     	iv.setAlpha(PMealsPreferenceManager.getAlertOn(num) ? ALPHA_ENABLED : ALPHA_DISABLED);
-    	iv.setTag(num);
     	iv.setOnTouchListener(new AlertStatusTouchListener());
 
     	container.addView(alert);
@@ -300,10 +298,34 @@ public class ManageAlertsActivity extends Activity {
      * @param v View that fired the delete command
      */
 	public void delete(View v) {
-		deleteAlert((Integer) v.getTag());
+		deleteAlert((Integer) ((View) v.getParent()).getTag());
 	}
 	
 	//--------------------------------------------------------------------------------------------
+	
+	private void showAlertDetail(View v) {
+		// setup popup view
+		int num = (Integer) ((View) v.getParent()).getTag();
+		View pV = mInflater.inflate(R.layout.alertdetail, null);
+
+		// set locations
+		StringBuilder info = new StringBuilder();
+		Set<String> locs = PMealsPreferenceManager.getAlertLocations(num);
+		for (String s : locs) {
+			Location l = lP.getById(Integer.parseInt(s));
+			info.append(l.nickname).append("\n");
+		}
+		info.setLength(info.length() - 1);
+    	((TextView) pV.findViewById(R.id.alertlocs)).setText(info);
+		
+		// setup popup window
+		PopupWindow popup = new PopupWindow(pV, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		popup.setFocusable(true);
+		popup.setOutsideTouchable(true);
+		popup.setTouchable(true);
+		pV.setOnClickListener(new PopupDismissListener(popup));
+		popup.showAsDropDown(v.findViewById(R.id.alertlocs), -10, 3);
+	}
     
 	/**
 	 * Activates/deactivates the given alert, and sets the next alert
@@ -332,15 +354,30 @@ public class ManageAlertsActivity extends Activity {
     }
 
     //-----------------------------------------LISTENERS-----------------------------------
+    
+    private class PopupDismissListener implements OnClickListener {
+    	
+    	private final PopupWindow pw;
+    	
+    	public PopupDismissListener(PopupWindow pw) {
+    		this.pw = pw;
+    	}
+    	
+    	public void onClick(View v) {
+    		// TODO Auto-generated method stub
+    		pw.dismiss();
+    	}
+    	
+    }
 
     private class AlertStatusTouchListener implements OnTouchListener {
 
-		public boolean onTouch(View v, MotionEvent event) {
+    	public boolean onTouch(View v, MotionEvent event) {
 			int action = event.getAction();
 
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
-				int num = (Integer) v.getTag();
+				int num = (Integer) ((View) v.getParent()).getTag();
 				boolean isOn = PMealsPreferenceManager.getAlertOn(num);
 				isOn ^= true;
 				activateAlert(num, isOn);
@@ -352,10 +389,10 @@ public class ManageAlertsActivity extends Activity {
 		
 	}
     
-    private class DeleteListener implements OnLongClickListener {
+    private class ShowDetailListener implements OnLongClickListener {
 
 		public boolean onLongClick(View v) {
-			enterDeleteMode(null);
+			showAlertDetail(v);
 			
 			return true;
 		}
@@ -365,7 +402,7 @@ public class ManageAlertsActivity extends Activity {
     private class EditListener implements OnClickListener {
 
 		public void onClick(View v) {
-			int num = (Integer) v.getTag();
+			int num = (Integer) ((View) v.getParent()).getTag();
 			Intent edit = new Intent(ManageAlertsActivity.this, SetupNewAlert.class);
 			edit.putExtra(EXTRA_ALERTNUM, num);
 			edit.putExtra(EXTRA_ALERTQUERY, PMealsPreferenceManager.getAlertQuery(num));

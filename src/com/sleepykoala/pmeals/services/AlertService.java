@@ -115,7 +115,7 @@ public class AlertService extends IntentService {
 						dmt.mealName, query_ };
 				Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
 				int numMatched = c.getCount();
-				if (numMatched == 0)
+				if (numMatched == 0) // no match
 					continue;
 				// yay matched, add to arrays
 				if (locName == null) {
@@ -182,12 +182,13 @@ public class AlertService extends IntentService {
 			action.putExtra(EXTRA_ITEMNAMES, menuItems);
 			action.putExtra(EXTRA_DATES, dates);
 			// set data to differentiate it
-			action.setData(Uri.fromParts("content", String.format("%s.%d", query,
-					System.currentTimeMillis()), null));
+			int id = (int) System.currentTimeMillis();
+			action.setData(Uri.fromParts("content", String.format("%s.%s.%d",
+					query, meal, id), null));
 			PendingIntent pI = PendingIntent.getActivity(this, 0, action, PendingIntent.FLAG_ONE_SHOT);
 			builder.setContentIntent(pI);
 			// send notification!
-			((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(num, builder.build());
+			((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(id, builder.build());
 		}
 	}
 
