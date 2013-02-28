@@ -275,7 +275,7 @@ public class ManageAlertsActivity extends Activity {
      * Exit delete mode, restore colors, change menu item icon back
      */
     public void exitDeleteMode(View v) {
-    	int numAlerts = PMealsPreferenceManager.getNumAlerts();
+    	int numAlerts = container.getChildCount();
     	for (int i = 0; i < numAlerts; ++i) {
     		View alert = container.getChildAt(i);
     		alert.findViewById(R.id.deletealert).setVisibility(View.GONE);
