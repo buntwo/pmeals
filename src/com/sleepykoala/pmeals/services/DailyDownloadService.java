@@ -8,6 +8,7 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONNUMBER;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAMES;
 import static com.sleepykoala.pmeals.data.C.LOCATIONSXML;
 import static com.sleepykoala.pmeals.data.C.MEALTIMESXML;
+import static com.sleepykoala.pmeals.data.C.STRING_DOWNLOADFAILED;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,7 +87,9 @@ public class DailyDownloadService extends IntentService {
 			Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
 			if (c.getCount() != 0) {
 				c.moveToFirst();
-				if (c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1) { // refresh on error
+				// refresh on dl fail
+				if (c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1
+						&& c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)).equals(STRING_DOWNLOADFAILED)) {
 					Date date = new Date();
 					MenuProvider.startRefresh(String.valueOf(l.ID), date.toString());
 					Intent dlService = new Intent(this, MenuDownloaderService.class);
