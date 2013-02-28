@@ -48,7 +48,7 @@ public final class C {
 	public static final int VBL_NUMLISTS_BEFORE = 2;
 	public static final int VBL_NUMLISTS_AFTER = 2;
 	public static final int TOTAL_PAGES = 101; // must be an odd number
-	public static final int PAGES_TO_LOAD = 2; // number to load ahead & behind
+	public static final int PAGES_TO_PRELOAD = 2; // number to load ahead & behind
 	
 	// extra flags
 	public static final String EXTRA_LOCATIONID = "com.sleepykoala.pmeals.LOCATIONID";

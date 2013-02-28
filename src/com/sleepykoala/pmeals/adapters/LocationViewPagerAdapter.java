@@ -3,7 +3,7 @@ package com.sleepykoala.pmeals.adapters;
 import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_FRAGMENTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
-import static com.sleepykoala.pmeals.data.C.PAGES_TO_LOAD;
+import static com.sleepykoala.pmeals.data.C.PAGES_TO_PRELOAD;
 import static com.sleepykoala.pmeals.data.C.TOTAL_PAGES;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,7 +31,7 @@ public class LocationViewPagerAdapter extends FragmentStatePagerAdapter {
 		// load prev/next dates
 		Date yesterday = centerDate;
 		Date tmrw = centerDate;
-		for (int i = 1; i <= PAGES_TO_LOAD; ++i) {
+		for (int i = 1; i <= PAGES_TO_PRELOAD; ++i) {
 			yesterday = getYesterday(yesterday);
 			dates[MIDDLE - i] = yesterday;
 			tmrw = getTomorrow(tmrw);
@@ -59,23 +59,9 @@ public class LocationViewPagerAdapter extends FragmentStatePagerAdapter {
 	public int getMiddleIndex() {
 		return MIDDLE;
 	}
-	
+
 	public Date getDate(int pos) {
-		return dates[pos];
-	}
-	
-	@Override
-	public int getCount() {
-		return TOTAL_PAGES;
-	}
-	
-	@Override
-	public Fragment getItem(int pos) {
-		LocationViewListFragment lf = new LocationViewListFragment();
-		Bundle args = new Bundle();
-		args.putInt(EXTRA_LOCATIONID, mLoc.ID);
 		Date date = dates[pos];
-		
 		if (date == null) {
 			if (pos > MIDDLE) {
 				int lastNotNull;
@@ -94,15 +80,29 @@ public class LocationViewPagerAdapter extends FragmentStatePagerAdapter {
 			}
 			date = dates[pos];
 		}
+		return date;
+	}
+	
+	@Override
+	public int getCount() {
+		return TOTAL_PAGES;
+	}
+	
+	@Override
+	public Fragment getItem(int pos) {
+		LocationViewListFragment lf = new LocationViewListFragment();
+		Bundle args = new Bundle();
+		Date date = getDate(pos);
+		args.putInt(EXTRA_LOCATIONID, mLoc.ID);
 		args.putString(EXTRA_DATE, date.toString());
 		args.putInt(EXTRA_FRAGMENTNUM, pos);
 		lf.setArguments(args);
 		
 		// load next/prev dates if needed
-		if (pos < TOTAL_PAGES - PAGES_TO_LOAD && dates[pos + PAGES_TO_LOAD] == null)
-			dates[pos + PAGES_TO_LOAD] = getTomorrow(dates[pos + PAGES_TO_LOAD - 1]);
-		if (pos > PAGES_TO_LOAD && dates[pos - PAGES_TO_LOAD] == null)
-			dates[pos - PAGES_TO_LOAD] = getYesterday(dates[pos - PAGES_TO_LOAD + 1]);
+		if (pos < TOTAL_PAGES - PAGES_TO_PRELOAD && dates[pos + PAGES_TO_PRELOAD] == null)
+			getDate(pos + PAGES_TO_PRELOAD);
+		if (pos > PAGES_TO_PRELOAD && dates[pos - PAGES_TO_PRELOAD] == null)
+			getDate(pos - PAGES_TO_PRELOAD);
 		
 		return lf;
 	}

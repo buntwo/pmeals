@@ -4,7 +4,7 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_FRAGMENTNUM;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONIDS;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAME;
-import static com.sleepykoala.pmeals.data.C.PAGES_TO_LOAD;
+import static com.sleepykoala.pmeals.data.C.PAGES_TO_PRELOAD;
 import static com.sleepykoala.pmeals.data.C.TOTAL_PAGES;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class MealViewPagerAdapter extends FragmentStatePagerAdapter {
 		// add later and previous ones
 		DatedMealTime prevMeal = centerMeal;
 		DatedMealTime nextMeal = centerMeal;
-		for (int i = 1; i <= PAGES_TO_LOAD; ++i) {
+		for (int i = 1; i <= PAGES_TO_PRELOAD; ++i) {
 			prevMeal = mTP.getPreviousMeal(mealType, prevMeal);
 			meals[MIDDLE - i] = prevMeal;
 			nextMeal = mTP.getNextMeal(mealType, nextMeal);
@@ -74,16 +74,16 @@ public class MealViewPagerAdapter extends FragmentStatePagerAdapter {
 	// returns the middle index
 	public int getMiddleIndex() {
 		return MIDDLE;
+		
 	}
-	
+
+	/**
+	 * Get the meal at the specified position, loading them if needed.
+	 * 
+	 * @param pos Position of meal to retrieve
+	 * @return DatedMealTime
+	 */
 	public DatedMealTime getMeal(int pos) {
-		return meals[pos];
-	}
-	
-	@Override
-	public Fragment getItem(int pos) {
-		MealViewListFragment lf = new MealViewListFragment();
-		Bundle args = new Bundle();
 		DatedMealTime meal = meals[pos];
 		if (meal == null) {
 			if (pos > MIDDLE) {
@@ -103,6 +103,14 @@ public class MealViewPagerAdapter extends FragmentStatePagerAdapter {
 			}
 			meal = meals[pos];
 		}
+		return meal;
+	}
+	
+	@Override
+	public Fragment getItem(int pos) {
+		MealViewListFragment lf = new MealViewListFragment();
+		Bundle args = new Bundle();
+		DatedMealTime meal = getMeal(pos);
 		args.putIntegerArrayList(EXTRA_LOCATIONIDS, locIDsToShow);
 		args.putString(EXTRA_DATE, meal.date.toString());
 		args.putString(EXTRA_MEALNAME, meal.mealName);
@@ -110,10 +118,10 @@ public class MealViewPagerAdapter extends FragmentStatePagerAdapter {
 		lf.setArguments(args);
 		
 		// load next/prev meals if needed
-		if (pos < TOTAL_PAGES - PAGES_TO_LOAD && meals[pos + PAGES_TO_LOAD] == null)
-			meals[pos + PAGES_TO_LOAD] = mTP.getNextMeal(mealType, meals[pos + PAGES_TO_LOAD - 1]);
-		if (pos > PAGES_TO_LOAD && meals[pos - PAGES_TO_LOAD] == null)
-			meals[pos - PAGES_TO_LOAD] = mTP.getPreviousMeal(mealType, meals[pos - PAGES_TO_LOAD + 1]);
+		if (pos < TOTAL_PAGES - PAGES_TO_PRELOAD && meals[pos + PAGES_TO_PRELOAD] == null)
+			getMeal(pos + PAGES_TO_PRELOAD);
+		if (pos > PAGES_TO_PRELOAD && meals[pos - PAGES_TO_PRELOAD] == null)
+			getMeal(pos - PAGES_TO_PRELOAD);
 		
 		return lf;
 	}

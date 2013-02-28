@@ -270,8 +270,6 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 		boolean inMeal = (mealStatus < 1) ? false : true;
 		int[] timeTo;
 		
-		boolean nextMealIsNotToday = !today.equals(currentMeal.date);
-		
 		if (mealStatus == 0) { // meal already happened
 			timeTo = MealTimeProvider.getTimeUntilMeal(mealDisplayed, false);
 			newTitleText.append("Ended ");
@@ -318,7 +316,7 @@ public class ViewByMeal extends FragmentActivity implements OnDateSelectedListen
 					time = mealDisplayed.startTime;
 				newTitleText.append(MealTimeProvider.getFormattedTime(time));
 			}
-			if (mealDisplayed.equals(currentMeal) && nextMealIsNotToday) {
+			if (mealDisplayed.equals(currentMeal) && !today.equals(currentMeal.date)) {
 				if (today.isTomorrow(currentMeal.date)) { // next meal is tomorrow
 					newTitleText.append(" tomorrow");
 				} else { // not tomorrow
