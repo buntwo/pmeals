@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
     
-    <solid
-        android:color="@color/dark_gray" />
+    <gradient
+        android:angle="270"
+        android:startColor="@color/popup_start"
+        android:endColor="@color/popup_end"
+        android:type="linear" />
     
     <corners
         android:radius="9dp" />

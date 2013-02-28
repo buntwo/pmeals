@@ -16,8 +16,6 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -40,7 +38,7 @@ import com.sleepykoala.pmeals.services.AlertService;
 
 public class ManageAlertsActivity extends Activity {
 	
-	private static final String TAG = "ManageAlertsActivity";
+	//private static final String TAG = "ManageAlertsActivity";
 	
 	private LinearLayout container;
 	private LayoutInflater mInflater;
@@ -145,8 +143,6 @@ public class ManageAlertsActivity extends Activity {
     	alertInfo.setOnClickListener(eL);
     	alertInfo.setOnLongClickListener(dL);
     	
-    	// setup toggle button
-    	View deleteButton = alert.findViewById(R.id.deletealert);
     	// set status indicator
     	ImageView iv = (ImageView) alert.findViewById(R.id.alertstatus);
     	iv.setAlpha(PMealsPreferenceManager.getAlertOn(num) ? ALPHA_ENABLED : ALPHA_DISABLED);
@@ -324,7 +320,7 @@ public class ManageAlertsActivity extends Activity {
 		popup.setOutsideTouchable(true);
 		popup.setTouchable(true);
 		pV.setOnClickListener(new PopupDismissListener(popup));
-		popup.showAsDropDown(v.findViewById(R.id.alertlocs), -10, 3);
+		popup.showAsDropDown(v, 3, 3);
 	}
     
 	/**
@@ -364,7 +360,6 @@ public class ManageAlertsActivity extends Activity {
     	}
     	
     	public void onClick(View v) {
-    		// TODO Auto-generated method stub
     		pw.dismiss();
     	}
     	

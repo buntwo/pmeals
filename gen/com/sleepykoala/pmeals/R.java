@@ -22,28 +22,30 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int PrincetonOrange=0x7f070008;
+        public static final int PrincetonOrange=0x7f07000a;
         public static final int dark_gray=0x7f070001;
-        public static final int efriendly=0x7f070010;
-        public static final int gray_button=0x7f070012;
-        public static final int infobar_neutral_bg=0x7f070006;
+        public static final int efriendly=0x7f070012;
+        public static final int gray_button=0x7f070014;
+        public static final int infobar_neutral_bg=0x7f070008;
         public static final int light_gray=0x7f070000;
-        public static final int lighter_gray=0x7f070002;
-        public static final int menuitem=0x7f070013;
-        public static final int menuitem_bg=0x7f070005;
-        public static final int menuitem_selectedbg=0x7f070004;
-        public static final int nuts=0x7f07000f;
-        public static final int outline_gray=0x7f070003;
-        public static final int pageindicators=0x7f07000b;
-        public static final int pork=0x7f07000e;
-        public static final int refresh_background=0x7f07000a;
-        public static final int sectiontitle=0x7f070014;
-        public static final int selectedPrincetonOrange=0x7f070009;
-        public static final int text_lightgray=0x7f070007;
-        public static final int vegan=0x7f07000c;
-        public static final int vegetarian=0x7f07000d;
-        public static final int white_button=0x7f070015;
-        public static final int widget_bg=0x7f070011;
+        public static final int lighter_gray=0x7f070004;
+        public static final int menuitem=0x7f070015;
+        public static final int menuitem_bg=0x7f070007;
+        public static final int menuitem_selectedbg=0x7f070006;
+        public static final int nuts=0x7f070011;
+        public static final int outline_gray=0x7f070005;
+        public static final int pageindicators=0x7f07000d;
+        public static final int popup_end=0x7f070003;
+        public static final int popup_start=0x7f070002;
+        public static final int pork=0x7f070010;
+        public static final int refresh_background=0x7f07000c;
+        public static final int sectiontitle=0x7f070016;
+        public static final int selectedPrincetonOrange=0x7f07000b;
+        public static final int text_lightgray=0x7f070009;
+        public static final int vegan=0x7f07000e;
+        public static final int vegetarian=0x7f07000f;
+        public static final int white_button=0x7f070017;
+        public static final int widget_bg=0x7f070013;
     }
     public static final class dimen {
         public static final int foodinfo_height=0x7f090000;
