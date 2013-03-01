@@ -73,7 +73,7 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		} catch (NameNotFoundException e) {
 			// better not get here lol
 		}
-        if (prefs.getBoolean(PREF_FIRSTTIME, true) || (prefs.getInt(PREF_LASTVER, 0) < currentVer)) {
+        if (true || prefs.getBoolean(PREF_FIRSTTIME, true) || (prefs.getInt(PREF_LASTVER, 0) < currentVer)) {
     		FirstTimeFragment ftf = new FirstTimeFragment();
     		ftf.show(getFragmentManager(), "firsttime");
     		

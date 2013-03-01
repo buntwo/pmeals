@@ -2,236 +2,226 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp"
-    >
-    
+    android:padding="15dp" >
+
     <LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical"
-		>
-    
-    <TextView
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:textSize="15sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/firsttime1"
-        />
-    <ImageView
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:paddingTop="10dp"
-	    android:paddingBottom="10dp"
-	    android:src="@drawable/hr"
-        />
-    
-    <TextView
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="14sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/firsttime2"
-	    android:paddingBottom="4dp"
-        />
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="14sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/firsttime3"
-	    android:paddingBottom="4dp"
-        />
-    
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="14sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/firsttime4"
-	    android:paddingBottom="4dp"
-        />
-    
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        >
-	        
-        <ImageView
-            android:id="@+id/leftbar"
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/firsttime_leftbar"
-            />
-        
-        <LinearLayout
-            android:layout_width="0dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            >
-		    <LinearLayout
-		        android:id="@+id/firsttime_vegan"
-		        android:orientation="horizontal"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:paddingLeft="10dp"
-		        >
-			    <TextView
-			        android:layout_height="wrap_content"
-			        android:layout_width="0dp"
-			        android:layout_weight="1"
-			        android:textSize="14sp"
-				    android:textColor="@android:color/white"
-			        android:text="@string/legend1"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/vegan"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-		    </LinearLayout>
-		    <LinearLayout
-		        android:id="@+id/firsttime_veget"
-		        android:orientation="horizontal"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:paddingLeft="10dp"
-		        >
-			    <TextView
-			        android:layout_height="wrap_content"
-			        android:layout_width="0dp"
-			        android:layout_weight="1"
-			        android:textSize="14sp"
-				    android:textColor="@android:color/white"
-			        android:text="@string/legend2"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/vegetarian"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-		    </LinearLayout>
-		    <LinearLayout
-		        android:id="@+id/firsttime_pork"
-		        android:orientation="horizontal"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:paddingLeft="10dp"
-		        >
-			    <TextView
-			        android:layout_height="wrap_content"
-			        android:layout_width="0dp"
-			        android:layout_weight="1"
-			        android:textSize="14sp"
-				    android:textColor="@android:color/white"
-			        android:text="@string/legend3"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/pork"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-		    </LinearLayout>
-		    <LinearLayout
-		        android:id="@+id/firsttime_nuts"
-		        android:orientation="horizontal"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:paddingLeft="10dp"
-		        >
-			    <TextView
-			        android:layout_height="wrap_content"
-			        android:layout_width="0dp"
-			        android:layout_weight="1"
-			        android:textSize="14sp"
-				    android:textColor="@android:color/white"
-			        android:text="@string/legend4"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/foodinfo_outline"
-			        />
-			    <ImageView
-			        android:layout_width="6dp"
-			        android:layout_height="wrap_content"
-			        android:paddingRight="1dp"
-			        android:layout_gravity="center_vertical"
-			        android:src="@drawable/nuts"
-			        />
-		    </LinearLayout>
-		    
+            android:text="@string/firsttime1"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/hr" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:text="@string/firsttime2"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:text="@string/firsttime3"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:text="@string/firsttime4"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/leftbar"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/firsttime_leftbar" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/firsttime_vegan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/legend1"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/vegan" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/firsttime_veget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/legend2"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/vegetarian" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/firsttime_pork"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/legend3"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/pork" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/firsttime_nuts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/legend4"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/foodinfo_outline" />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="1dp"
+                        android:src="@drawable/nuts" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:text="@string/firsttime5"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
     </LinearLayout>
-    
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="14sp"
-	    android:textColor="@android:color/white"
-        android:text="@string/firsttime5"
-	    android:paddingTop="4dp"
-        />
-    
-    </LinearLayout>
+
 </ScrollView>

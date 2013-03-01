@@ -97,7 +97,7 @@
         <provider
             android:name=".contentproviders.MenuProvider"
             android:authorities="com.sleepykoala.pmeals.contentproviders.MenuProvider"
-            android:exported="false" >
+            android:exported="true" >
         </provider>
         <provider
             android:name=".contentproviders.SearchSuggestionsProvider"

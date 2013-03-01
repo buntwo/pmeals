@@ -317,9 +317,10 @@ public class ManageAlertsActivity extends Activity {
 		// setup popup window
 		PopupWindow popup = new PopupWindow(pV, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		popup.setFocusable(true);
-		popup.setOutsideTouchable(true);
+		popup.setOutsideTouchable(false);
 		popup.setTouchable(true);
 		pV.setOnClickListener(new PopupDismissListener(popup));
+    	pV.findViewById(R.id.dismisspopup).setOnClickListener(new PopupDismissListener(popup));
 		popup.showAsDropDown(v, 3, 3);
 	}
     
