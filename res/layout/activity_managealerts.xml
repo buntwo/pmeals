@@ -24,8 +24,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:src="@drawable/hr" />
 
     <LinearLayout
@@ -33,36 +31,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/light_gray"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp" >
+        android:orientation="horizontal" >
 
-        <ImageView
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/addalert"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:clickable="true"
             android:gravity="center_horizontal"
             android:onClick="addAlert"
             android:src="@drawable/ic_addalarm" />
 
-        <ImageView
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:clickable="true"
             android:gravity="center_horizontal"
             android:onClick="enterDeleteMode"
             android:src="@drawable/ic_delete" />
 
-        <ImageView
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/donedeleting"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:clickable="true"
             android:gravity="center_horizontal"
             android:onClick="exitDeleteMode"
             android:src="@drawable/ic_accept"

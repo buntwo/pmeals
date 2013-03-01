@@ -149,11 +149,14 @@ public class AlertService extends IntentService {
 				detail.append(", and more");
 			builder.setContentText(detail);
 			// set ticker
-			StringBuilder ticker = new StringBuilder();
-			for (String s : menuItems) {
-				ticker.append(s).append(", ");
+			StringBuilder ticker = new StringBuilder("Alert: ");
+			ticker.append(menuItems.get(0));
+			int numItems = menuItems.size();
+			if (menuItems.size() > 1) {
+				ticker.append(" and ").append(numItems - 1).append(" more item");
+				if (numItems > 2)
+					ticker.append("s");
 			}
-			ticker.setLength(ticker.length() - 2);
 			ticker.append(" at " );
 			int size = locIds.size();
 			ticker.append(locName);

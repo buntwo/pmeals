@@ -164,9 +164,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
             android:paddingBottom="6dp"
             android:paddingLeft="10dp"
+            android:paddingTop="20dp"
             android:text="@string/alertlocs_prompt"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
@@ -194,8 +194,8 @@
                 android:clickable="true"
                 android:gravity="center_horizontal"
                 android:onClick="selectDiningHalls"
-                android:textColor="@color/gray_button"
                 android:text="@string/selectdininghalls"
+                android:textColor="@color/gray_button"
                 android:textSize="16sp" />
 
             <TextView
@@ -205,8 +205,8 @@
                 android:clickable="true"
                 android:gravity="center_horizontal"
                 android:onClick="selectAll"
-                android:textColor="@color/gray_button"
                 android:text="@string/selectall"
+                android:textColor="@color/gray_button"
                 android:textSize="16sp" />
 
             <TextView
@@ -216,8 +216,8 @@
                 android:clickable="true"
                 android:gravity="center_horizontal"
                 android:onClick="selectNone"
-                android:textColor="@color/gray_button"
                 android:text="@string/selectnone"
+                android:textColor="@color/gray_button"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -248,24 +248,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/light_gray"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp" >
+            android:orientation="horizontal" >
 
-            <ImageView
+            <ImageButton
+	            style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:clickable="true"
                 android:gravity="center_horizontal"
                 android:onClick="create"
                 android:src="@drawable/ic_accept" />
 
-            <ImageView
+            <ImageButton
+	            style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:clickable="true"
                 android:gravity="center_horizontal"
                 android:onClick="cancel"
                 android:src="@drawable/ic_cancel" />

@@ -29,6 +29,8 @@ import com.sleepykoala.pmeals.data.PMealsDatabase;
 
 public class MealSearcher extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	
+	//private static final String TAG = "MealSearcher";
+	
 	private SearchResultsListAdapter mAdapter;
 	private String query;
 
@@ -47,6 +49,9 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
 					SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
 			suggestions.saveRecentQuery(query, null);
+			// setup adapter
+			mAdapter = new SearchResultsListAdapter(this, null);
+			setListAdapter(mAdapter);
 			// do the search
 			performSearch(query);
 		}
@@ -54,13 +59,30 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
         aB.setDisplayHomeAsUpEnabled(true);
 	}
 	
+	protected void onNewIntent(Intent intent) {
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			query = intent.getStringExtra(SearchManager.QUERY);
+			// set title
+			getActionBar().setTitle("Search results: " + query);
+			// save query into recent searches
+			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+					SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+			suggestions.saveRecentQuery(query, null);
+			// do the search
+			reperformSearch(query);
+		}
+	}
+
 	private void performSearch(String query) {
-		mAdapter = new SearchResultsListAdapter(this, null);
-		setListAdapter(mAdapter);
-		
 		Bundle args = new Bundle();
 		args.putString(EXTRA_MEALNAME, query);
 		getLoaderManager().initLoader(0, args, this);
+	}
+	
+	private void reperformSearch(String query) {
+		Bundle args = new Bundle();
+		args.putString(EXTRA_MEALNAME, query);
+		getLoaderManager().restartLoader(0, args, this);
 	}
 
 	@Override

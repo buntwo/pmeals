@@ -39,6 +39,22 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
         // set 24 hour status
         IS24HOURFORMAT = DateFormat.is24HourFormat(this);
 
+        /*
+		startActivity(new Intent(this, ManageAlertsActivity.class));
+		finish();
+		//*/
+        /*
+		Intent alert = new Intent(this, AlertService.class);
+		ArrayList<Integer> alertNums = new ArrayList<Integer>();
+		ArrayList<String> mealNames = new ArrayList<String>();
+		alertNums.add(1);
+		mealNames.add("");
+		alert.putExtra(EXTRA_ALERTNUMS, alertNums);
+		alert.putExtra(EXTRA_MEALNAMES, mealNames);
+		startService(alert);
+		launch();
+		//*/
+		
 		//*
         // set alert
         AlertService.setNextAlert(this);
@@ -48,7 +64,7 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		((AlarmManager) getSystemService(Context.ALARM_SERVICE)).setRepeating(
 				AlarmManager.RTC, (new Date()).toMillis(false) + COOL_NUMBER * 1000, AlarmManager.INTERVAL_DAY, pI);
 		
-        // upgrade code block
+        // upgrade code
         // show help dialog on first time or upgrade
 		SharedPreferences prefs = getSharedPreferences(PREFSFILENAME, 0);
         int currentVer = 1;

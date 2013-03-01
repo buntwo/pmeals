@@ -69,3 +69,5 @@ Status bar gray if before meal
 Alerts
 Auto download on each day
 Added boot complete permission to set alarm on boot
+Fix datepicker bug
+Add "infinite" scroll (50 on each side)

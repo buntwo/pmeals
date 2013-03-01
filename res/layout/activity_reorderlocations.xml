@@ -3,77 +3,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/reorder_instr"
         android:gravity="left"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        />
-    
+        android:paddingTop="5dp"
+        android:text="@string/reorder_instr"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
     <LinearLayout
         android:id="@+id/reorder_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="2dp"
-        android:paddingBottom="8dp"
-        android:orientation="vertical"
         android:divider="@color/light_gray"
-        >
-        
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="2dp" >
     </LinearLayout>
-    
+
+    <!-- buttons -->
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:src="@drawable/hr" />
+
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:divider="@color/light_gray"
-        >
-        
-        <ImageView
+        android:orientation="horizontal" >
+
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:src="@drawable/ic_accept"
             android:onClick="done"
-            android:clickable="true"
-            />
-        
-        <ImageView
+            android:src="@drawable/ic_accept" />
+
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:src="@drawable/ic_replay"
             android:onClick="reset"
-            android:clickable="true"
-            />
-        
-        <ImageView
+            android:src="@drawable/ic_replay" />
+
+        <ImageButton
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:src="@drawable/ic_cancel"
             android:onClick="cancel"
-            android:clickable="true"
-            />
-        
+            android:src="@drawable/ic_cancel" />
     </LinearLayout>
 
 </LinearLayout>

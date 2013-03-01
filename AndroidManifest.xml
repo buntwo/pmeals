@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sleepykoala.pmeals"
-    android:versionCode="16"
+    android:versionCode="15"
     android:versionName="@string/version" >
 
     <uses-sdk
@@ -50,7 +50,8 @@
         <activity
             android:name=".activities.MealSearcher"
             android:exported="false"
-            android:label="@string/title_activity_meal_searcher" >
+            android:label="@string/title_activity_meal_searcher"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
