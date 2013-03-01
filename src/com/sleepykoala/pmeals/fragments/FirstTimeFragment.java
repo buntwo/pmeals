@@ -35,6 +35,7 @@ public class FirstTimeFragment extends DialogFragment {
     	builder.setTitle("First Time")
     		   .setCancelable(true)
     		   .setView(getActivity().getLayoutInflater().inflate(R.layout.firsttime, null))
+    		   .setIcon(R.drawable.launcher)
     		   .setNeutralButton("OK!", new DialogInterface.OnClickListener() {
     			   public void onClick(DialogInterface dialog, int item) {
     				   dialog.dismiss();

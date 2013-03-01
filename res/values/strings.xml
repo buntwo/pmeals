@@ -78,7 +78,7 @@
 
     <!-- First time dialog strings -->
     <string name="firsttime1">Thanks for downloading PMeals! Here are some tips to help you use the app.</string>
-    <string name="firsttime2">&#8226; NEW: Add alerts for menu items under settings</string>
+    <string name="firsttime2">&#8226; NEW: Add alerts for menu items, under settings</string>
     <string name="firsttime3">&#8226; Swipe left and right to view additional menus/days.</string>
     <string name="firsttime4">&#8226; Each menu item will have anywhere from 0 to 3 bars on its right side. Here\'s what they mean:</string>
     <string name="legend1">Vegan</string>

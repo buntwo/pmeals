@@ -68,18 +68,19 @@ public final class R {
         public static final int ic_refresh=0x7f02000c;
         public static final int ic_replay=0x7f02000d;
         public static final int launcher=0x7f02000e;
-        public static final int next=0x7f02000f;
-        public static final int notif_small=0x7f020010;
-        public static final int nuts=0x7f020011;
-        public static final int pageindicator_notselected=0x7f020012;
-        public static final int pageindicator_selected=0x7f020013;
-        public static final int popup_bg=0x7f020014;
-        public static final int pork=0x7f020015;
-        public static final int prev=0x7f020016;
-        public static final int refresh_background=0x7f020017;
-        public static final int vegan=0x7f020018;
-        public static final int vegetarian=0x7f020019;
-        public static final int vr=0x7f02001a;
+        public static final int launcher_white=0x7f02000f;
+        public static final int next=0x7f020010;
+        public static final int notif_small=0x7f020011;
+        public static final int nuts=0x7f020012;
+        public static final int pageindicator_notselected=0x7f020013;
+        public static final int pageindicator_selected=0x7f020014;
+        public static final int popup_bg=0x7f020015;
+        public static final int pork=0x7f020016;
+        public static final int prev=0x7f020017;
+        public static final int refresh_background=0x7f020018;
+        public static final int vegan=0x7f020019;
+        public static final int vegetarian=0x7f02001a;
+        public static final int vr=0x7f02001b;
     }
     public static final class id {
         public static final int action_viewbylocation_spinnertext=0x7f0a000c;
