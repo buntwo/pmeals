@@ -105,9 +105,17 @@ public class AlertService extends IntentService {
 				Location l = lP.getById(Integer.parseInt(s));
 				// get correct meal
 				DatedMealTime dmt = mTP.getCurrentMeal(l.type);
-				if (!meal.equals(""))
-					while (!dmt.mealName.equals(meal))
+				if (!meal.equals("") && LocationProvider.isDiningHall(l)) {
+					boolean timeout = false;
+					int count = 0;
+					while (!dmt.mealName.equals(meal) && !timeout) {
 						dmt = mTP.getNextMeal(l.type, dmt);
+						if (count++ > 5)
+							timeout = true;
+					}
+					if (timeout) // somehow mealname matching failed
+						continue;
+				}
 				// if it's not today or tomorrow, skip
 				if (!(dmt.date.equals(today) || dmt.date.isYesterday(today)))
 					continue;
@@ -115,8 +123,10 @@ public class AlertService extends IntentService {
 						dmt.mealName, query_ };
 				Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
 				int numMatched = c.getCount();
-				if (numMatched == 0) // no match
+				if (numMatched == 0) { // no match
+					c.close();
 					continue;
+				}
 				// yay matched, add to arrays
 				if (locName == null) {
 					locName = l.nickname;

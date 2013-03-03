@@ -1,15 +1,12 @@
 package com.sleepykoala.pmeals.activities;
 
-import static com.sleepykoala.pmeals.data.C.*;
+import static com.sleepykoala.pmeals.data.C.EXTRA_DATE;
 import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONID;
 import static com.sleepykoala.pmeals.data.C.IS24HOURFORMAT;
 import static com.sleepykoala.pmeals.data.C.PREFSFILENAME;
 import static com.sleepykoala.pmeals.data.C.PREF_FIRSTTIME;
 import static com.sleepykoala.pmeals.data.C.PREF_LASTVER;
 import static com.sleepykoala.pmeals.data.C.PREF_STARTUPLOC;
-
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -48,7 +45,7 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		ArrayList<Integer> alertNums = new ArrayList<Integer>();
 		ArrayList<String> mealNames = new ArrayList<String>();
 		alertNums.add(1);
-		mealNames.add("");
+		mealNames.add("Dinner");
 		alert.putExtra(EXTRA_ALERTNUMS, alertNums);
 		alert.putExtra(EXTRA_MEALNAMES, mealNames);
 		startService(alert);

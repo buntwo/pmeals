@@ -71,7 +71,9 @@ import com.sleepykoala.pmeals.fragments.LegendFragment;
 import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment;
 import com.sleepykoala.pmeals.fragments.MealPickerDialogFragment.OnMealSelectedListener;
 
-public class ViewByMeal extends FragmentActivity implements OnDateSelectedListener, OnMealSelectedListener,  OnSharedPreferenceChangeListener {
+public class ViewByMeal extends FragmentActivity implements
+		OnDateSelectedListener, OnMealSelectedListener,
+		OnSharedPreferenceChangeListener {
 	
     //private static final String TAG = "ViewByMeal";
     
