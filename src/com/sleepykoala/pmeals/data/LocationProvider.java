@@ -9,7 +9,7 @@ public class LocationProvider {
 	//private static final String DEBUG_TAG = "LocationProvider";
 	
 	// double array, top level is type, second level is locations
-	private ArrayList<ArrayList<Location>> locations;
+	private final ArrayList<ArrayList<Location>> locations;
 
 	public LocationProvider(ArrayList<ArrayList<Location>> aLocations) {
 		locations = aLocations;

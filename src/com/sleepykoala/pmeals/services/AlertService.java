@@ -261,10 +261,10 @@ public class AlertService extends IntentService {
 				}
 			}
 		}
-		if (!isOn) {
-			PendingIntent pI = PendingIntent.getService(c, 0, new Intent(c,
-					AlertService.class), PendingIntent.FLAG_CANCEL_CURRENT);
-			((AlarmManager) c.getSystemService(Context.ALARM_SERVICE)).cancel(pI);
+		if (!isOn) { // cancel alarms
+			((AlarmManager) c.getSystemService(Context.ALARM_SERVICE))
+					.cancel(PendingIntent.getService(c, 0, new Intent(c,
+					AlertService.class), PendingIntent.FLAG_CANCEL_CURRENT));
 			return;
 		}
 		

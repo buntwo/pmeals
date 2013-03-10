@@ -26,7 +26,7 @@ public class PMealsPreferenceManager {
 	private static ArrayList<Integer> locIds; // cache it
 	private static Context ctx;
 
-	// can't be initialized
+	// can't be instantiated
 	private PMealsPreferenceManager() {
 	}
 

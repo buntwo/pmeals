@@ -13,7 +13,7 @@ public class MealTimeProvider {
 	
 	//private static final String TAG = "MealTimeProvider";
     
-	private ArrayList<ArrayList<MealTime>[]> mealTimes;
+	private final ArrayList<ArrayList<MealTime>[]> mealTimes;
 	
 	/**
 	 * Return a new MealTimeProvider.
