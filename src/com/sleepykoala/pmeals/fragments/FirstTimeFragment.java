@@ -32,7 +32,7 @@ public class FirstTimeFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_Dialog_NoFrame);
     	
-    	builder.setTitle("First Time")
+    	builder.setTitle("PMeals")
     		   .setCancelable(true)
     		   .setView(getActivity().getLayoutInflater().inflate(R.layout.firsttime, null))
     		   .setIcon(R.drawable.launcher)
