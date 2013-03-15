@@ -58,8 +58,10 @@ public class Launcher extends Activity implements OnFirstTimeDismissListener {
 		// set daily update alarm
 		Intent dailyDownload = new Intent(this, DailyDownloadService.class);
 		PendingIntent pI = PendingIntent.getService(this, 0, dailyDownload, PendingIntent.FLAG_CANCEL_CURRENT);
+		Date t = new Date();
+		++t.monthDay;
 		((AlarmManager) getSystemService(Context.ALARM_SERVICE)).setRepeating(
-				AlarmManager.RTC, (new Date()).toMillis(false) + COOL_NUMBER * 1000, AlarmManager.INTERVAL_DAY, pI);
+				AlarmManager.RTC, t.toMillis(true) + COOL_NUMBER * 1000, AlarmManager.INTERVAL_DAY, pI);
 		
         // upgrade code
         // show help dialog on first time or upgrade

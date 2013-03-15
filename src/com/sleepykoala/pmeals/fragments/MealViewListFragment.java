@@ -106,7 +106,8 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 			} else if (action.equals(C.ACTION_REFRESHFAILED) &&
 					intent.getExtras().getString(C.EXTRA_DATE).equals(mDate)) {
 				synchronized (dlFailedLock) {
-					if (!failedToastDisplayed.get(mDate)) {
+					Boolean displayed = failedToastDisplayed.get(mDate);
+					if (displayed == null || !displayed) {
 						Toast.makeText(getActivity(), "Refresh failed", Toast.LENGTH_SHORT).show();
 						failedToastDisplayed.put(mDate, true);
 					}
