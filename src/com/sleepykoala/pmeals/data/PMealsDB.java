@@ -5,17 +5,18 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class PMealsDatabase extends SQLiteOpenHelper {
+public class PMealsDB extends SQLiteOpenHelper {
 	
 	// V1 had _ID, locationid, date, mealname, itemname, itemerror
 	// V2 had food info
-	private static final int DB_VERSION = 7;
+	private static final int DB_VERSION = 8;
 	private static final String DB_NAME = "pmeals";
 	
-	// table names
+	public static final String _ID = "_id";
+	// tables
+	// meals table
 	public static final String TABLE_MEALS = "meals";
 	// column names
-	public static final String _ID = "_id";
 	public static final String LOCATIONID = "locationid";
 	public static final String DATE = "date"; // in MM/dd/yyyy format
 	public static final String MEALNAME = "meal_name";
@@ -29,12 +30,17 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 	public static final String ITEMNUTS = "item_nuts"; // does the item have nuts?
 	public static final String ITEMEFRIENDLY = "item_efriendly"; // is the item earth-friendly?
 	
+	// location notes table
+	public static final String TABLE_LOCNOTES = "locnotes";
+	// column names
+	public static final String NOTE = "note";
+	
 	// SQL commands
 	// Now with vegetarian, vegan, earth-friendly, pork, and nuts allergen info
 	private static final String CREATE_TABLE_MEALS = "create table " + TABLE_MEALS +
 			" (" + _ID + " integer primary key autoincrement, " +
 			LOCATIONID + " text, " +
-			DATE + " text, " +
+			DATE + " text not null, " +
 			MEALNAME + " text, " +
 			ITEMNAME + " text not null, " +
 			ITEMTYPE + " text not null default '', " +
@@ -45,18 +51,25 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 			ITEMNUTS + " integer default 0, " +
 			ITEMEFRIENDLY + " integer default 0" +
 			");";
+	private static final String CREATE_TABLE_LOCNOTES = "create table " + TABLE_LOCNOTES +
+			" (" + _ID + " integer primary key autoincrement, " +
+			LOCATIONID + " text, " +
+			DATE + " text not null, " +
+			NOTE + " text not null" +
+			");";
 	
 	// schema
-	private static final String DB_SCHEMA = CREATE_TABLE_MEALS;
+	private static final String[] DB_SCHEMA = { CREATE_TABLE_MEALS, CREATE_TABLE_LOCNOTES };
 	
-	public PMealsDatabase(Context c) {
+	public PMealsDB(Context c) {
 		super(c, DB_NAME, null, DB_VERSION);
 	}
 	
 	// create new table, and put in the "Closed" entry
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(DB_SCHEMA);
+		for (String schema : DB_SCHEMA)
+			db.execSQL(schema);
 		// insert closed
 		ContentValues closed = new ContentValues();
 		closed.put(ITEMNAME, C.STRING_CLOSED);
@@ -92,6 +105,9 @@ public class PMealsDatabase extends SQLiteOpenHelper {
 			closed.put(ITEMNAME, C.STRING_CLOSED);
 			closed.put(ITEMERROR, true);
 			db.insert(TABLE_MEALS, null, closed);
+		}
+		if (oldVersion < 8 && newVersion >= 8) {
+			db.execSQL(CREATE_TABLE_LOCNOTES);
 		}
 	}
 

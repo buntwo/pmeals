@@ -25,7 +25,7 @@ import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.adapters.SearchResultsListAdapter;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.contentproviders.SearchSuggestionsProvider;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 public class MealSearcher extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	
@@ -129,15 +129,15 @@ public class MealSearcher extends ListActivity implements LoaderManager.LoaderCa
 		String query = args.getString(EXTRA_MEALNAME);
 		query = "%" + query + "%";
 		String[] projection = {
-				PMealsDatabase._ID,
-				PMealsDatabase.ITEMNAME,
-				PMealsDatabase.DATE,
-				PMealsDatabase.MEALNAME,
-				PMealsDatabase.LOCATIONID
+				PMealsDB._ID,
+				PMealsDB.ITEMNAME,
+				PMealsDB.DATE,
+				PMealsDB.MEALNAME,
+				PMealsDB.LOCATIONID
 				};
-		String selection = PMealsDatabase.ITEMNAME + " LIKE ?";
-		return new CursorLoader(this, MenuProvider.CONTENT_URI, projection, selection, new String[]{query},
-				PMealsDatabase.DATE + " desc, " + PMealsDatabase.LOCATIONID + " asc");
+		String selection = PMealsDB.ITEMNAME + " LIKE ?";
+		return new CursorLoader(this, MenuProvider.MEALS_URI, projection, selection, new String[]{query},
+				PMealsDB.DATE + " desc, " + PMealsDB.LOCATIONID + " asc");
 	}
 
 	public void onLoadFinished(Loader<Cursor> l, Cursor c) {

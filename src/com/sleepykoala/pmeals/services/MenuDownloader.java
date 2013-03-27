@@ -9,17 +9,17 @@ import static com.sleepykoala.pmeals.data.C.EXTRA_LOCATIONNUMBER;
 import static com.sleepykoala.pmeals.data.C.EXTRA_MEALNAMES;
 import static com.sleepykoala.pmeals.data.C.STRING_DOWNLOADFAILED;
 import static com.sleepykoala.pmeals.data.C.STRING_NODATA;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.DATE;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMEFRIENDLY;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMERROR;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMNAME;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMNUTS;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMPORK;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMTYPE;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMVEGAN;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.ITEMVEGETARIAN;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.LOCATIONID;
-import static com.sleepykoala.pmeals.data.PMealsDatabase.MEALNAME;
+import static com.sleepykoala.pmeals.data.PMealsDB.*;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMEFRIENDLY;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMERROR;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMNAME;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMNUTS;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMPORK;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMTYPE;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMVEGAN;
+import static com.sleepykoala.pmeals.data.PMealsDB.ITEMVEGETARIAN;
+import static com.sleepykoala.pmeals.data.PMealsDB.LOCATIONID;
+import static com.sleepykoala.pmeals.data.PMealsDB.MEALNAME;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,25 +44,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Html;
 
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
 import com.sleepykoala.pmeals.data.C;
 import com.sleepykoala.pmeals.data.FoodItem;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 // actual downloading class
 // downloads and writes to the content resolver
 public class MenuDownloader implements Runnable {
-	
-	//private static final String TAG = "MenuDownloader";
+
+	// private static final String TAG = "MenuDownloader";
 
 	// base URI's
 	private static final String MENU1_BASEURI = "http://facilities.princeton.edu/dining/_Foodpro/menu.asp?";
 
 	// XML charset
 	private static final String CHARSET = "ISO-8859-1";
-	
+
 	/*
-	 *  Field names used for building the .asp request
+	 * Field names used for building the .asp request
 	 */
 	private static final String FIELD_LOCNUM = "locationNum";
 	private static final String FIELD_MYACTION = "myaction";
@@ -74,8 +76,10 @@ public class MenuDownloader implements Runnable {
 	// Princeton dining services name
 	private static final String PRINCETON_DINING = "Princeton University Dining Services";
 
-	/* Tag names for XML parsing
+	/*
+	 * Tag names for XML parsing
 	 */
+	// meal/entree
 	private static final String TAG_MEAL = "meal";
 	private static final String TAG_ENTREE = "entree";
 	private static final String TAG_NAME = "name";
@@ -85,9 +89,12 @@ public class MenuDownloader implements Runnable {
 	private static final String TAG_NUTS = "nuts";
 	private static final String TAG_EFRIENDLY = "earth_friendly";
 	private static final String ATTRIBUTE_TYPE = "type";
+	// notes
+	private static final String TAG_LOCNOTE = "note";
+	private static final String LOCNOTE_KEY = "NOTES";
 
 	private final WeakReference<Context> mContext;
-	
+
 	private final String mLocId;
 	private final ArrayList<String> mMealNames;
 	private final String mLocNum;
@@ -107,21 +114,24 @@ public class MenuDownloader implements Runnable {
 
 	public void run() {
 		Context cxt = mContext.get();
-		
+
 		// this line does all the network requests
-		ArrayList<ArrayList<FoodItem>> menus = getDaysMenus(mMealNames, mLocNum, mLocName, mDate);
-		
+		ArrayList<ArrayList<FoodItem>> menus = getDaysMenus(mMealNames,
+				mLocNum, mLocName, mDate);
+
 		MenuDownloaderService.startNextTask();
 
-		final Uri CONTENT_URI = MenuProvider.CONTENT_URI;
+		final Uri MEALS_URI = MenuProvider.MEALS_URI;
 		ContentResolver cr = cxt.getContentResolver();
-		// if we are refreshing and download did not fail, delete all menu items for that day
-		// we assume that if the first menu is a download failed, all of them are
+		// if we are refreshing and download did not fail, delete all menu items
+		// for that day
+		// we assume that if the first menu is a download failed, all of them
+		// are
 		// if download failed, remind users with a toast
 		if (mIsRefresh) {
 			if (!menus.get(0).get(0).itemName.equals(STRING_DOWNLOADFAILED)) { // download did not fail
-				cr.delete(CONTENT_URI, LOCATIONID + "=? and " +
-						DATE + "=?", new String[]{mLocId, mDate});
+				cr.delete(MEALS_URI, LOCATIONID + "=? and " + DATE + "=?",
+						new String[] { mLocId, mDate });
 				for (int i = 0; i < mMealNames.size(); ++i) {
 					String mealName = mMealNames.get(i);
 					ArrayList<FoodItem> menu = menus.get(i);
@@ -129,13 +139,14 @@ public class MenuDownloader implements Runnable {
 					ContentValues[] mealData = new ContentValues[size];
 					for (int j = 0; j < size; ++j) {
 						FoodItem f = menu.get(j);
-						ContentValues data = new ContentValues();
+						ContentValues data = new ContentValues(11);
 						data.put(LOCATIONID, mLocId);
 						data.put(DATE, mDate);
 						data.put(MEALNAME, mealName);
 						data.put(ITEMNAME, f.itemName);
 						data.put(ITEMTYPE, f.type);
-						data.put(ITEMERROR, f.error); // converted to 1 = true, 0 = false, in db
+						data.put(ITEMERROR, f.error); // converted to 1 = true,
+														// 0 = false, in db
 						data.put(ITEMVEGAN, f.foodInfo[0]);
 						data.put(ITEMVEGETARIAN, f.foodInfo[1]);
 						data.put(ITEMPORK, f.foodInfo[2]);
@@ -143,7 +154,16 @@ public class MenuDownloader implements Runnable {
 						data.put(ITEMEFRIENDLY, f.foodInfo[4]);
 						mealData[j] = data;
 					}
-					cr.bulkInsert(CONTENT_URI, mealData);
+					cr.bulkInsert(MEALS_URI, mealData);
+					// insert note
+					ArrayList<FoodItem> noteArr = menus.get(menus.size() - 1);
+					if (noteArr != null && !noteArr.isEmpty()) {
+						ContentValues note = new ContentValues(3);
+						note.put(LOCATIONID, mLocId);
+						note.put(DATE, mDate);
+						note.put(NOTE, noteArr.get(0).itemName);
+						cr.insert(MenuProvider.LOCNOTES_URI, note);
+					}
 				}
 			} else { // send broadcast indicating failure
 				Intent failure = new Intent();
@@ -152,7 +172,8 @@ public class MenuDownloader implements Runnable {
 				failure.putExtra(EXTRA_DATE, mDate);
 				LocalBroadcastManager.getInstance(cxt).sendBroadcast(failure);
 			}
-			// failed or not, we have to clear refresh status, and send broadcast
+			// failed or not, we have to clear refresh status, and send
+			// broadcast
 			MenuProvider.doneRefreshing(mLocId, mDate);
 			Intent refreshDone = new Intent();
 			refreshDone.setAction(C.ACTION_REFRESHDONE);
@@ -171,7 +192,8 @@ public class MenuDownloader implements Runnable {
 					data.put(MEALNAME, mealName);
 					data.put(ITEMNAME, f.itemName);
 					data.put(ITEMTYPE, f.type);
-					data.put(ITEMERROR, f.error); // converted to 1=true, 0=false
+					data.put(ITEMERROR, f.error); // converted to 1=true,
+													// 0=false
 					data.put(ITEMVEGAN, f.foodInfo[0]);
 					data.put(ITEMVEGETARIAN, f.foodInfo[1]);
 					data.put(ITEMPORK, f.foodInfo[2]);
@@ -179,29 +201,43 @@ public class MenuDownloader implements Runnable {
 					data.put(ITEMEFRIENDLY, f.foodInfo[4]);
 					mealData[j] = data;
 				}
-				cr.bulkInsert(CONTENT_URI, mealData);
+				cr.bulkInsert(MEALS_URI, mealData);
+				// insert note
+				ArrayList<FoodItem> noteArr = menus.get(menus.size() - 1);
+				if (noteArr != null && !noteArr.isEmpty()) {
+					ContentValues note = new ContentValues(3);
+					note.put(LOCATIONID, mLocId);
+					note.put(DATE, mDate);
+					note.put(NOTE, noteArr.get(0).itemName);
+					cr.insert(MenuProvider.LOCNOTES_URI, note);
+				}
 			}
 			// put in finished downloading status
 			MenuProvider.doneDownloading(mLocId, mDate);
 		}
 	}
 
-	//----------------------------------------------------HELPER METHODS-----------------------------------------
-	private ArrayList<ArrayList<FoodItem>> getDaysMenus(ArrayList<String> aMealNames,
-			String aLocNum, String aLocName, String aDate) {
-		
+	// --------------------------------HELPER METHODS----------------------------
+	// last entry is always a 1-element arraylist of notes, or null if there are
+	// no notes
+	private ArrayList<ArrayList<FoodItem>> getDaysMenus(
+			ArrayList<String> aMealNames, String aLocNum, String aLocName,
+			String aDate) {
+
 		int size = aMealNames.size();
-		ArrayList<ArrayList<FoodItem>> daysMenus = new ArrayList<ArrayList<FoodItem>>(size); // parallel array of menus
-																							 // (parallel to mealNames)
+		ArrayList<ArrayList<FoodItem>> daysMenus = new ArrayList<ArrayList<FoodItem>>(
+				size); // parallel array of menus
+						// (parallel to mealNames)
 		// get this day's MealTime
 		for (int i = 0; i < size; ++i) { // populate with download failed's
 			ArrayList<FoodItem> menu = new ArrayList<FoodItem>(1);
-			menu.add(new FoodItem(STRING_DOWNLOADFAILED, true, "", new boolean[5]));
+			menu.add(new FoodItem(STRING_DOWNLOADFAILED, true, "",
+					new boolean[FoodItem.NUM_PARAMS]));
 			daysMenus.add(menu);
 		}
 
 		// get XML feed info
-		String URI1 = buildMenu1URI(aLocNum, aLocName, aDate);
+		String URI1 = buildMenuURI(aLocNum, aLocName, aDate);
 		String htmlData = getHtmlData(URI1);
 
 		if (htmlData == null)
@@ -209,40 +245,47 @@ public class MenuDownloader implements Runnable {
 		// use HashMap because webpage could have the meals out of order...
 		// actually probably not...think about using ArrayList instead?? TODO
 		htmlData = cleanData(htmlData);
-		HashMap<String, ArrayList<FoodItem>> mealItems1 = parseMenu1(htmlData);
-		
-		if (mealItems1 == null)
+		HashMap<String, ArrayList<FoodItem>> mealItems = parseMenu(htmlData);
+
+		if (mealItems == null)
 			return daysMenus;
 
 		for (int i = 0; i < size; ++i) {
 			String mealName = aMealNames.get(i);
-			if (!mealItems1.containsKey(mealName)) {
-				daysMenus.get(i).set(0, new FoodItem(STRING_NODATA, true, "", new boolean[5]));
+			if (!mealItems.containsKey(mealName)) {
+				daysMenus.get(i).set(
+						0,
+						new FoodItem(STRING_NODATA, true, "",
+								new boolean[FoodItem.NUM_PARAMS]));
 				continue;
 			}
-			
-			ArrayList<FoodItem> meal = mealItems1.get(mealName);
-			
-			// if it's empty, then add nodata entry
+
+			ArrayList<FoodItem> meal = mealItems.get(mealName);
+
+			// if it's empty, add nodata entry
 			if (meal.isEmpty())
-				meal.add(new FoodItem(STRING_NODATA, true, "", new boolean[5]));
-			
+				meal.add(new FoodItem(STRING_NODATA, true, "",
+						new boolean[FoodItem.NUM_PARAMS]));
+
 			// add the menu
 			daysMenus.set(i, meal);
 		}
 
+		daysMenus.add(mealItems.get(LOCNOTE_KEY)); // notes
+
 		return daysMenus;
 	}
-	
+
 	// replace diacritical characters with non-accented ones
 	// and for some reason e' -> y' lol
 	private String cleanData(String s) {
 		return s.replace('ý', 'e');
 	}
 
-	// given location number, location name, date, constructs URI that has the day's menu items
+	// given location number, location name, date, constructs URI that has the
+	// day's menu items
 	// this is the XML feed
-	private String buildMenu1URI(String locNum, String locName, String date) {
+	private String buildMenuURI(String locNum, String locName, String date) {
 
 		Uri.Builder b = Uri.parse(MENU1_BASEURI).buildUpon();
 		// add args
@@ -256,70 +299,99 @@ public class MenuDownloader implements Runnable {
 		return b.build().toString();
 	}
 
-	// given HTML data from menuSamp.asp request, returns HashMap of meals and items
+	// given HTML data from menuSamp.asp request, returns HashMap of meals and
+	// items
 	// Meal name (pulled from data) -> items, as ArrayList<MenuItem>
-	// DatedMealTime (name pulled from data, date given in constructor) -> items, as ArrayList<MenuItem>
+	// also has a mapping "NOTES" -> arraylist of 1 fooditem, whose name is the
+	// text of the note, if it exists
+	// DatedMealTime (name pulled from data, date given in constructor) ->
+	// items, as ArrayList<MenuItem>
 	// returns null on download error
-	private HashMap<String, ArrayList<FoodItem>> parseMenu1(String htmlData) {
+	private HashMap<String, ArrayList<FoodItem>> parseMenu(String htmlData) {
 		HashMap<String, ArrayList<FoodItem>> meals = new HashMap<String, ArrayList<FoodItem>>();
 
 		XmlPullParser p = null;
 		try {
 			p = XmlPullParserFactory.newInstance().newPullParser();
 			p.setInput(new StringReader(htmlData));
-			
+
 			int eventType = p.getEventType();
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
 					String tagName = p.getName();
 					if (tagName.equals(TAG_MEAL)) {
-						// assumes that there is 1 attribute in the meal tag, 
+						// assumes that there is 1 attribute in the meal tag,
 						// which is the name of the meal
 						String mealName = p.getAttributeValue(0);
 						meals.put(mealName, processMeal(p));
+					} else if (tagName.equals(TAG_LOCNOTE)) {
+						meals.put(LOCNOTE_KEY, processNote(p));
 					}
 					break;
-					
+
 				}
 				eventType = p.next();
 			}
 		} catch (XmlPullParserException e) {
 			// assume that this means the xml file is malformed, eg, not my error
 			return null;
-			//throw new RuntimeException("XmlPullParseException");
+			// throw new RuntimeException("XmlPullParseException");
 		} catch (IOException e) {
 			throw new RuntimeException("IOException");
 		} finally { // release parser resources
 			if (p != null) {
 				try {
 					p.setInput(null);
-				} catch (XmlPullParserException e) {} // should never happen
+				} catch (XmlPullParserException e) {
+				} // should never happen
 			}
 		}
-		
+
 		return meals;
 	}
-	
-	private ArrayList<FoodItem> processMeal(XmlPullParser p) throws XmlPullParserException, IOException {
+
+	// processes a note tag
+	private ArrayList<FoodItem> processNote(XmlPullParser p)
+			throws XmlPullParserException, IOException {
 		ArrayList<FoodItem> meal = new ArrayList<FoodItem>();
-		
+
 		int eventType = p.next();
-		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(TAG_MEAL))) {
+		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(
+				TAG_LOCNOTE))) {
+			String text = Html.fromHtml(p.getText()).toString();
+			if (text.isEmpty())
+				return null;
+			meal.add(new FoodItem(text, true, "",
+					new boolean[FoodItem.NUM_PARAMS]));
+			eventType = p.next();
+		}
+
+		return meal;
+	}
+
+	private ArrayList<FoodItem> processMeal(XmlPullParser p)
+			throws XmlPullParserException, IOException {
+		ArrayList<FoodItem> meal = new ArrayList<FoodItem>();
+
+		int eventType = p.next();
+		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(
+				TAG_MEAL))) {
 			if (eventType == XmlPullParser.START_TAG)
 				if (p.getName().equals(TAG_ENTREE))
 					meal.add(processEntree(p));
 			eventType = p.next();
 		}
-		
+
 		return meal;
 	}
-	
-	private FoodItem processEntree(XmlPullParser p) throws XmlPullParserException, IOException {
+
+	private FoodItem processEntree(XmlPullParser p)
+			throws XmlPullParserException, IOException {
 		String name = null;
 		// params is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
-		boolean[] params = new boolean[5];
-		
+		boolean[] params = new boolean[FoodItem.NUM_PARAMS];
+
 		String type;
 		// get entree type attribute
 		try {
@@ -331,7 +403,8 @@ public class MenuDownloader implements Runnable {
 			type = "";
 		}
 		int eventType = p.next();
-		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(TAG_ENTREE))) {
+		while (!((eventType == XmlPullParser.END_TAG) && p.getName().equals(
+				TAG_ENTREE))) {
 			if (eventType == XmlPullParser.START_TAG) {
 				if (p.getName().equals(TAG_NAME))
 					name = p.nextText();
@@ -348,7 +421,7 @@ public class MenuDownloader implements Runnable {
 			}
 			eventType = p.next();
 		}
-		
+
 		return new FoodItem(name, false, type, params);
 	}
 
@@ -360,19 +433,21 @@ public class MenuDownloader implements Runnable {
 
 		try {
 			conn = (HttpURLConnection) new URL(url).openConnection();
-			//conn.setRequestProperty("Connection", "close");
+			// conn.setRequestProperty("Connection", "close");
 
 			// check for valid server response
 			if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				/*Log.w(TAG, "Http server error " + conn.getResponseCode()
-						+ ": " + conn.getResponseMessage());
-						*/
+				/*
+				 * Log.w(TAG, "Http server error " + conn.getResponseCode() +
+				 * ": " + conn.getResponseMessage()); //
+				 */
 				return null;
 			}
 
 			// pull content
 			is = conn.getInputStream();
-			InputStreamReader in = new InputStreamReader(new BufferedInputStream(is));
+			InputStreamReader in = new InputStreamReader(
+					new BufferedInputStream(is));
 			ByteArrayOutputStream content = new ByteArrayOutputStream();
 			int charRead;
 			while ((charRead = in.read()) != -1)
@@ -393,4 +468,4 @@ public class MenuDownloader implements Runnable {
 		}
 	}
 
-} 
+}

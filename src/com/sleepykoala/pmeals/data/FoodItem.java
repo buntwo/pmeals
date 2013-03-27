@@ -7,13 +7,15 @@ public class FoodItem {
 	public final boolean[] foodInfo;
 	public final String type;
 	
+	public static final int NUM_PARAMS = 5;
+	
 	// params is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
 	public FoodItem(String s, boolean err, String type, boolean[] params) {
 		itemName = s;
 		error = err;
 		this.type = type;
-		foodInfo = new boolean[5];
-		for (int i = 0; i < 5; ++i)
+		foodInfo = new boolean[NUM_PARAMS];
+		for (int i = 0; i < NUM_PARAMS; ++i)
 			foodInfo[i] = params[i];
 	}
 	

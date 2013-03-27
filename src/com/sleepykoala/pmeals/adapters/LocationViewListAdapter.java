@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,13 +31,19 @@ import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.DatedMealTime;
 import com.sleepykoala.pmeals.data.FoodItem;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 // shows meals for one day for one location
 public class LocationViewListAdapter extends BaseAdapter {
 
 	private ArrayList<Cursor> data;
 	private ArrayList<DatedMealTime> mealsToShow;
+	private String note;
+	private boolean noteExpanded;
+	
+	// cached colors
+	private final int LIGHTER_GRAY = 0xffdddddd;
+	private final int WHITE = 0xffffffff;
 	
 	private final LayoutInflater mInflater;
 	
@@ -64,6 +71,8 @@ public class LocationViewListAdapter extends BaseAdapter {
 				data.add(null);
 			isEmpty = false;
 		}
+		note = null;
+		noteExpanded = false;
 		
 		// set dates
 		today = new Date();
@@ -101,13 +110,27 @@ public class LocationViewListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 	
+	// set the note this loc has, or null if no note
+	public void setNote(String note) {
+		this.note = note;
+		notifyDataSetChanged();
+	}
+	
+	// toggle note expande d state
+	public void toggleNoteExpanded() {
+		if (note != null) {
+			noteExpanded ^= true;
+			notifyDataSetChanged();
+		}
+	}
+	
 	//----------------------------------------------------------------------------------------------------------------
 	
 	public int getCount() {
 		if (isEmpty) {
-			return 2;
+			return (note == null) ? 2 : 3;
 		} else {
-			int count = 1;
+			int count = (note == null) ? 1 : 2;
 			for (Cursor menu : data)
 				count += 1 + (menu == null || menu.getCount() == 0 ? 1 : menu.getCount());
 			return count;
@@ -116,8 +139,8 @@ public class LocationViewListAdapter extends BaseAdapter {
 	
 	// given position, return the meal it belongs to
 	public DatedMealTime getMeal(int pos) {
+		int counter = (note == null) ? 1 : 2;
 		DatedMealTime meal = null;
-		int counter = 1;
 		for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
 			meal = mealsToShow.get(mealPos);
 			if (pos == counter)
@@ -133,24 +156,30 @@ public class LocationViewListAdapter extends BaseAdapter {
 		return meal;
 	}
 
-	public Object getItem(int position) {
-		if (position == 0)
+	public Object getItem(int pos) {
+		if (pos == 0)
 			;
 		else {
+			int counter;
+			if (note != null) {
+				if (pos == 1)
+					return note;
+				counter = 2;
+			} else
+				counter = 1;
 			DatedMealTime meal = null;
-			int counter = 1;
 			int itemType = 2;
 			Cursor menu = null;
 			for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
 				meal = mealsToShow.get(mealPos);
-				if (position == counter) {
+				if (pos == counter) {
 					itemType = 0;
 					break;
 				}
 				menu = data.get(mealPos);
 				boolean loaded = menu != null && menu.getCount() != 0;
 				counter += (loaded) ? menu.getCount() : 1;
-				if (position <= counter) {
+				if (pos <= counter) {
 					itemType = (loaded) ? 2 : 1;
 					break;
 				}
@@ -160,7 +189,7 @@ public class LocationViewListAdapter extends BaseAdapter {
 			if (itemType == 0)
 				return meal;
 			else if (itemType == 2) {
-				menu.moveToPosition(menu.getCount() - counter + position - 1);
+				menu.moveToPosition(menu.getCount() - counter + pos - 1);
 				return inflateItem(menu);
 			}
 		}
@@ -172,40 +201,54 @@ public class LocationViewListAdapter extends BaseAdapter {
 	// -2 = menu item
 	// -3 = loading
 	// -4 = meal name
-	// -5 = unknown (shouldn't ever return this...)
-	public long getItemId(int position) {
-		if (position == 0)
+	// -5 = note
+	//  0 = unknown (shouldn't ever return this...)
+	public long getItemId(int pos) {
+		if (pos == 0)
 			return -1;
 		else {
-			int counter = 1;
+			int counter;
+			if (note != null) {
+				if (pos == 1)
+					return -5;
+				counter = 2;
+			} else
+				counter = 1;
 			for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
-				if (position == counter)
+				if (pos == counter)
 					return -4;
 				Cursor menu = data.get(mealPos);
 				boolean loaded = menu != null && menu.getCount() != 0;
 				counter += (loaded) ? menu.getCount() : 1;
-				if (position <= counter)
+				if (pos <= counter)
 					return (loaded) ? -2 : -3;
 				++counter;
 			}
 		}
 		
-		return -5;
+		return 0;
 	}
 
 	public int getViewTypeCount() {
-		return 4;
+		return 5;
 	}
 
 	// 0 - meal name
 	// 1 - loading
 	// 2 - menu item
 	// 3 - date
+	// 4 - note
 	public int getItemViewType(int pos) {
-		if (pos == 0) {
+		if (pos == 0)
 			return 3;
-		} else {
-			int counter = 1;
+		else {
+			int counter;
+			if (note != null) {
+				if (pos == 1)
+					return 4;
+				counter = 2;
+			} else
+				counter = 1;
 			if (isEmpty)
 				return data.get(0) == null ? 1 : 2;
 			else {
@@ -223,28 +266,32 @@ public class LocationViewListAdapter extends BaseAdapter {
 		}
 	}
 	
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int pos, View convertView, ViewGroup parent) {
 		int counter = 1;
 		DatedMealTime meal = null;
 		int itemType = 2;
 		Cursor menu = null;
-		if (position == 0) {
+		if (pos == 0) {
 			itemType = 3;
+			// ERRR FIX THIS
+		} else if (pos == 1 && note != null) {
+			itemType = 4;
 		} else {
 			if (isEmpty) {
 				menu = data.get(0);
 				itemType = menu == null ? 1 : 2;
 			} else {
+				counter = note == null ? 1 : 2;
 				for (int mealPos = 0; mealPos < mealsToShow.size(); ++mealPos) {
 					meal = mealsToShow.get(mealPos);
-					if (position == counter) {
+					if (pos == counter) {
 						itemType = 0;
 						break;
 					}
 					menu = data.get(mealPos);
 					boolean loaded = menu != null && menu.getCount() != 0;
 					counter += (loaded) ? menu.getCount() : 1;
-					if (position <= counter) {
+					if (pos <= counter) {
 						itemType = (loaded) ? 2 : 1;
 						break;
 					}
@@ -303,7 +350,7 @@ public class LocationViewListAdapter extends BaseAdapter {
 				convertView.setTag(holder);
 			}
 			// move cursor to the item we want
-			menu.moveToPosition(menu.getCount() - counter + position - 1);
+			menu.moveToPosition(menu.getCount() - counter + pos - 1);
 			holder.item.setText(getItemName(menu));
 			if (getItemError(menu)) {
 				holder.item.setTextColor(COLOR_ERROR_ITEM);
@@ -337,34 +384,56 @@ public class LocationViewListAdapter extends BaseAdapter {
 				holder = new DateHolder();
 				holder.date = (TextView) convertView.findViewById(R.id.title);
 				convertView.setTag(holder);
-			}		// set header text
-			String text;
+			}
+			// set header text
+			StringBuilder text = new StringBuilder();
 			if (today.equals(dateShowing)) {
 				if (isDetailedDate)
-					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+					text.append(String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true))));
 				else
-					text = "Today";
+					text.append("Today");
 				if (isWeird)
-					text += " (tomorrow's menu)";
+					text.append(" (tomorrow's menu)");
 			} else if (today.isTomorrow(dateShowing)) {
 				if (isDetailedDate)
-					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+					text.append(String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true))));
 				else
-					text = "Tomorrow";
+					text.append("Tomorrow");
 			} else if (today.isYesterday(dateShowing)) {
 				if (isDetailedDate)
-					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+					text.append(String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true))));
 				else
-					text = "Yesterday";
+					text.append("Yesterday");
 				if (isWeird)
-					text += " (today's menu)";
+					text.append(" (today's menu)");
 			} else {
 				if (isDetailedDate)
-					text = String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true)));
+					text.append(String.valueOf(DateFormat.format(DATEFORMAT, dateShowing.toMillis(true))));
 				else
-					text = String.valueOf(DateFormat.format("EEEE", dateShowing.toMillis(true)));
+					text.append(String.valueOf(DateFormat.format("EEEE", dateShowing.toMillis(true))));
 			}
 			holder.date.setText(text);
+		} else if (itemType == 4) {
+			NoteHolder holder;
+			if (convertView != null) {
+				holder = (NoteHolder) convertView.getTag();
+			} else {
+				convertView = (FrameLayout) mInflater.inflate(R.layout.menu_note, parent, false);
+				holder = new NoteHolder();
+				holder.note = (TextView) convertView.findViewById(R.id.note);
+				holder.toggleIcon = (ImageView) convertView.findViewById(R.id.toggleicon);
+				convertView.setTag(holder);
+			}
+			holder.note.setText(note);
+			holder.note.setSingleLine(!noteExpanded);
+			if (noteExpanded) {
+				holder.toggleIcon.setImageResource(R.drawable.ic_collapse);
+				holder.note.setTextColor(WHITE);
+			} else {
+				holder.toggleIcon.setImageResource(R.drawable.ic_expand);
+				holder.note.setTextColor(LIGHTER_GRAY);
+			}
+				
 		}
 		
 		return convertView;
@@ -373,32 +442,32 @@ public class LocationViewListAdapter extends BaseAdapter {
 	// get a FoodItem from cursor's current position
 	private FoodItem inflateItem(Cursor c) {
 		boolean[] params = getFoodInfo(c);
-		String type = c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMTYPE));
-		return new FoodItem(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)),
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1 ? true : false,
+		String type = c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMTYPE));
+		return new FoodItem(c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME)),
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMERROR)) == 1 ? true : false,
 				type, params
 				);
 	}
 
 	// get the name of the food item the cursor is pointing at
 	private String getItemName(Cursor c) {
-		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME));
+		return c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME));
 	}
 
 	// get the error status of the food item the cursor is pointing at
 	private boolean getItemError(Cursor c) {
-		return c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1 ? true : false;
+		return c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMERROR)) == 1 ? true : false;
 	}
 
 	/* food info getter
  	 * array is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
 	 */
 	private boolean[] getFoodInfo(Cursor c) {
-		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGAN)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGETARIAN)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMPORK)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNUTS)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMEFRIENDLY)) == 1 ? true : false
+		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMVEGAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMVEGETARIAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMPORK)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMNUTS)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMEFRIENDLY)) == 1 ? true : false
 		};
 	}
 	
@@ -422,5 +491,10 @@ public class LocationViewListAdapter extends BaseAdapter {
 	
 	private static class LoadingHolder {
 		TextView text;
+	}
+	
+	private static class NoteHolder {
+		TextView note;
+		ImageView toggleIcon;
 	}
 }

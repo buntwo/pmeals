@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.data.Date;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 public class SearchResultsListAdapter extends BaseAdapter {
 	
@@ -142,11 +142,11 @@ public class SearchResultsListAdapter extends BaseAdapter {
 	//---------------------------------------------CURSOR GETTERS-------------------------------------
 	
 	private String getItemName(Cursor c) {
-		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME));
+		return c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME));
 	}
 	
 	private String getMealName(Cursor c) {
-		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.MEALNAME));
+		return c.getString(c.getColumnIndexOrThrow(PMealsDB.MEALNAME));
 	}
 	
 	private String getLocName(Cursor c) {
@@ -159,11 +159,11 @@ public class SearchResultsListAdapter extends BaseAdapter {
 	}
 	
 	private int getLocID(Cursor c) {
-		return Integer.valueOf(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.LOCATIONID)));
+		return Integer.valueOf(c.getString(c.getColumnIndexOrThrow(PMealsDB.LOCATIONID)));
 	}
 	
 	private String getDate(Cursor c) {
-		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.DATE));
+		return c.getString(c.getColumnIndexOrThrow(PMealsDB.DATE));
 	}
 	
 	//---------------------------------------------STATIC HOLDER CLASSES--------------------------------

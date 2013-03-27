@@ -77,12 +77,12 @@ public class MealTimeProvider {
 		Time tm_ = new Time(tm);
 		--tm_.monthDay;
 		ArrayList<MealTime> arr = mealTimes.get(type)[(wkDay + 6) % 7];
-		try {
+		if (arr.size() != 0) {
 			MealTime mtmt = arr.get(arr.size() - 1);
 			mtmt.setProperTimes(tm_);
 			if (isBeforeMeal(tm, mtmt) || isDuringMeal(tm, mtmt))
 				return new DatedMealTime(mtmt, tm_);
-		} catch (ArrayIndexOutOfBoundsException e) { }
+		}
 		// restore monthDay
 		++tm_.monthDay;
 		// now start checking from given date
@@ -265,7 +265,6 @@ public class MealTimeProvider {
 		tm.setToNow();
 		return tm;
 	}
-	
 	
 	//--------------------------------------PUBLIC STATIC METHODS--------------------------------
 	

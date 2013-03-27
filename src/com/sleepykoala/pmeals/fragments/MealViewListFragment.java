@@ -64,7 +64,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
@@ -119,14 +119,14 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 	};
 
 	private static String[] projection = {
-		PMealsDatabase.ITEMNAME,
-		PMealsDatabase.ITEMTYPE,
-		PMealsDatabase.ITEMERROR,
-		PMealsDatabase.ITEMVEGAN,
-		PMealsDatabase.ITEMVEGETARIAN,
-		PMealsDatabase.ITEMPORK,
-		PMealsDatabase.ITEMNUTS,
-		PMealsDatabase.ITEMEFRIENDLY,
+		PMealsDB.ITEMNAME,
+		PMealsDB.ITEMTYPE,
+		PMealsDB.ITEMERROR,
+		PMealsDB.ITEMVEGAN,
+		PMealsDB.ITEMVEGETARIAN,
+		PMealsDB.ITEMPORK,
+		PMealsDB.ITEMNUTS,
+		PMealsDB.ITEMEFRIENDLY,
 	};
 
 	private MealViewListAdapter mAdapter;
@@ -205,9 +205,16 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
 			} else {
 				loaderArg.putBoolean(EXTRA_MEALEXISTS, true);
 				loaderArg.putInt(EXTRA_LOCATIONID, l.ID);
-				loaderArg.putString(EXTRA_DATE, meal.date.toString());
+				loaderArg.putString(EXTRA_DATE, mDate);
 				loaderArg.putString(EXTRA_MEALNAME, meal.mealName);
 			}
+			loaderArgs.add(loaderArg);
+		}
+		// add locnote args
+		for (Location l : mLocsToShow) {
+			Bundle loaderArg = new Bundle();
+			loaderArg.putString(EXTRA_DATE, mDate);
+			loaderArg.putInt(EXTRA_LOCATIONID, l.ID);
 			loaderArgs.add(loaderArg);
 		}
 		
@@ -413,33 +420,48 @@ public class MealViewListFragment extends ListFragment implements LoaderManager.
     
     //---------------------------------------------LOADER CALLBACKS---------------------------------------------
     
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String select;
-		String[] selectArgs;
-		if (args.getBoolean(EXTRA_MEALEXISTS)) {
-			select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
-					+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?))";
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    	String select;
+    	String[] selectArgs;
+    	if (id < mLocsToShow.size()) {
+    		if (args.getBoolean(EXTRA_MEALEXISTS)) {
+    			select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+    					+ PMealsDB.DATE + "=?) and (" + PMealsDB.MEALNAME + "=?))";
+    			selectArgs = new String[] { String.valueOf(args.getInt(EXTRA_LOCATIONID)),
+    					args.getString(EXTRA_DATE),
+    					args.getString(EXTRA_MEALNAME)
+    			};
+    		} else {
+    			select = "((" + PMealsDB.ITEMNAME + "=?) and (" + 
+    					PMealsDB.ITEMERROR + "=?))";
+    			// need the second string for locking purposes in the content provider
+    			selectArgs = new String[] { STRING_CLOSED, "1" };
+    		}
+    		return new CursorLoader(getActivity(), MenuProvider.MEALS_URI,
+    				projection, select, selectArgs, null);
+		} else { // locnote
+			select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+					+ PMealsDB.DATE + "=?))";
 			selectArgs = new String[] { String.valueOf(args.getInt(EXTRA_LOCATIONID)),
 					args.getString(EXTRA_DATE),
-					args.getString(EXTRA_MEALNAME)
 			};
-		} else {
-			select = "((" + PMealsDatabase.ITEMNAME + "=?) and (" + 
-					PMealsDatabase.ITEMERROR + "=?))";
-			// need the second string for locking purposes in the content provider
-			selectArgs = new String[] { STRING_CLOSED, "1" };
+			return new CursorLoader(getActivity(), MenuProvider.LOCNOTES_URI,
+					new String[]{ PMealsDB.NOTE }, select, selectArgs, null);
 		}
-		
-		return new CursorLoader(getActivity(), MenuProvider.CONTENT_URI,
-				projection, select, selectArgs, null);
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		mAdapter.swapCursor(cursor, loader.getId());
+		int id = loader.getId();
+		if (id < mLocsToShow.size())
+			mAdapter.swapCursor(cursor, id);
+		else
+			mAdapter.setInfoIndicator(id % mLocsToShow.size(), cursor.getCount() != 0);
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.swapCursor(null, loader.getId());
+		int id = loader.getId();
+		if (id < mLocsToShow.size())
+			mAdapter.swapCursor(null, id);
 	}
 	
     //----------------------------------------------------------------------------------------------------------

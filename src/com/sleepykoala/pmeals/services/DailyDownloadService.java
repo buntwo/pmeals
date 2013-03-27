@@ -27,7 +27,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 public class DailyDownloadService extends IntentService {
 	
@@ -35,9 +35,9 @@ public class DailyDownloadService extends IntentService {
 
 	private MealTimeProvider mTP;
 	private ArrayList<Location> locs;
-	private static final String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR };
-	private static final String select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
-			+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?))";
+	private static final String[] projection = { PMealsDB.ITEMNAME, PMealsDB.ITEMERROR };
+	private static final String select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+			+ PMealsDB.DATE + "=?) and (" + PMealsDB.MEALNAME + "=?))";
 
 	public DailyDownloadService() {
 		super("DailyDownloadService");
@@ -84,12 +84,12 @@ public class DailyDownloadService extends IntentService {
 				selectArgs = new String[]{ "", dmt.date.toString(), dmt.mealName };
 			}
 			selectArgs[0] = String.valueOf(l.ID);
-			Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
+			Cursor c = cr.query(MenuProvider.MEALS_URI, projection, select, selectArgs, null);
 			if (c.getCount() != 0) {
 				c.moveToFirst();
 				// refresh on dl fail
-				if (c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1
-						&& c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)).equals(STRING_DOWNLOADFAILED)) {
+				if (c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMERROR)) == 1
+						&& c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME)).equals(STRING_DOWNLOADFAILED)) {
 					Date date = new Date();
 					MenuProvider.startRefresh(String.valueOf(l.ID), date.toString());
 					Intent dlService = new Intent(this, MenuDownloaderService.class);

@@ -29,7 +29,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
 public class MenuProvider extends ContentProvider {
@@ -40,7 +40,7 @@ public class MenuProvider extends ContentProvider {
 	private LocationProvider lP;
 	
 	// database
-	private PMealsDatabase mDB;
+	private PMealsDB mDB;
 	
 	// downloading status map
 	// id + date (concatenated strings) -> boolean
@@ -53,25 +53,32 @@ public class MenuProvider extends ContentProvider {
 	private static final String AUTHORITY = "com.sleepykoala.pmeals.contentproviders.MenuProvider";
 	public static final int MENU = 10;
 	public static final int FOODITEM_ID = 20;
+	public static final int LOCNOTE = 30;
 	
-	private static final String BASE_PATH = "meals";
-	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + 
-			"/" + BASE_PATH);
+	private static final String MEALS_PATH = "meals";
+	private static final String LOCNOTES_PATH = "locnotes";
+	public static final Uri MEALS_URI = Uri.parse("content://" + AUTHORITY + 
+			"/" + MEALS_PATH);
+	public static final Uri LOCNOTES_URI = Uri.parse("content://" + AUTHORITY + 
+			"/" + LOCNOTES_PATH);
 	
 	public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + 
 			"/pmeals-fooditem";
-	public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+	public static final String CONTENT_MEALS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
 			"/pmeals-menu";
+	public static final String CONTENT_LOCNOTES_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+			"/pmeals-locnotes";
 	
 	private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
-		sUriMatcher.addURI(AUTHORITY, BASE_PATH, MENU);
-		sUriMatcher.addURI(AUTHORITY, BASE_PATH + "/#", FOODITEM_ID);
+		sUriMatcher.addURI(AUTHORITY, MEALS_PATH, MENU);
+		sUriMatcher.addURI(AUTHORITY, MEALS_PATH + "/#", FOODITEM_ID);
+		sUriMatcher.addURI(AUTHORITY, LOCNOTES_PATH, LOCNOTE);
 	}
 	
 	@Override
 	public boolean onCreate() {
-		mDB = new PMealsDatabase(getContext());
+		mDB = new PMealsDB(getContext());
         // get meal time provider
 		try {
 			MealTimeProviderFactory.initialize(getContext().getAssets().open(MEALTIMESXML));
@@ -98,21 +105,24 @@ public class MenuProvider extends ContentProvider {
 	    
 	    switch (uriType) {
 	    case MENU:
-	      rowsDeleted = sqlDB.delete(PMealsDatabase.TABLE_MEALS, selection, selectionArgs);
+	      rowsDeleted = sqlDB.delete(PMealsDB.TABLE_MEALS, selection, selectionArgs);
 	      break;
 	    case FOODITEM_ID:
 	      String id = uri.getLastPathSegment();
 	      if (TextUtils.isEmpty(selection)) {
-	        rowsDeleted = sqlDB.delete(PMealsDatabase.TABLE_MEALS,
-	            PMealsDatabase._ID + "=" + id,
+	        rowsDeleted = sqlDB.delete(PMealsDB.TABLE_MEALS,
+	            PMealsDB._ID + "=" + id,
 	            null);
 	      } else {
-	        rowsDeleted = sqlDB.delete(PMealsDatabase.TABLE_MEALS,
-	            PMealsDatabase._ID + "=" + id +
+	        rowsDeleted = sqlDB.delete(PMealsDB.TABLE_MEALS,
+	            PMealsDB._ID + "=" + id +
 	            " and " + selection,
 	            selectionArgs);
 	      }
 	      break;
+	    case LOCNOTE:
+	    	rowsDeleted = sqlDB.delete(PMealsDB.TABLE_LOCNOTES, selection, selectionArgs);
+	    	break;
 	    default:
 	      throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
@@ -131,15 +141,21 @@ public class MenuProvider extends ContentProvider {
 	public Uri insert(Uri uri, ContentValues values) {
 		int uriType = sUriMatcher.match(uri);
 		long id = 0;
+		Uri ret = null;
 		switch (uriType) {
 		case MENU:
-			id = mDB.getWritableDatabase().insert(PMealsDatabase.TABLE_MEALS, null, values);
+			id = mDB.getWritableDatabase().insert(PMealsDB.TABLE_MEALS, null, values);
+			ret = Uri.parse(MEALS_PATH + "/" + id);
+			break;
+		case LOCNOTE:
+			id = mDB.getWritableDatabase().insert(PMealsDB.TABLE_LOCNOTES, null, values);
+			ret = Uri.parse(LOCNOTES_PATH + "/" + id);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return Uri.parse(BASE_PATH + "/" + id);
+		return ret;
 	}
 
 	// NOTE: if selectionArgs has size 3, it must be in following order:
@@ -150,76 +166,81 @@ public class MenuProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 		
-		queryBuilder.setTables(PMealsDatabase.TABLE_MEALS);
+		Cursor cursor;
 		
 		int uriType = sUriMatcher.match(uri);
 		switch (uriType) {
-		case MENU:
-			break;
 		case FOODITEM_ID:
 			// add ID to query
-			queryBuilder.appendWhere(PMealsDatabase._ID + "=" + uri.getLastPathSegment());
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown URI: " + uri);
-		}
-		
-		Cursor cursor;
-		if (selectionArgs.length == 3) {
-			String id = selectionArgs[0];
-			String date = selectionArgs[1];
-			// create a lock for this location+date, if needed
-			// this DCL *SHOULD* work, as HashMap is thread-safe
-			// eg, reads and writes are atomic wrt each other
-			if (sLocks.get(id + date) == null) {
-				synchronized (sMasterLock) {
-					if (sLocks.get(id + date) == null)
-						sLocks.put(id + date, new Object());
-				}
-			}
-
-			// synchronized block
-			// each day+location combo gets its own lock
-			synchronized (sLocks.get(id + date)) {
-				cursor = queryBuilder.query(mDB.getReadableDatabase(), projection,
-						selection, selectionArgs, null, null, sortOrder);
-				cursor.setNotificationUri(getContext().getContentResolver(), uri);
-
-				// not downloaded yet; download!!
-				if (cursor.getCount() == 0) {
-					// request download only if not already downloading
-					// need this because a request for one meal forces request for all meals that day!
-					if (!isDownloading(id, date)) {
-						Location l = lP.getById(Integer.parseInt(id));
-						// put arguments
-						Intent dlService = new Intent();
-						dlService.putExtra(EXTRA_LOCATIONID, id);
-						dlService.putExtra(EXTRA_LOCATIONNAME, l.locName);
-						dlService.putExtra(EXTRA_LOCATIONNUMBER, l.locNum);
-						dlService.putExtra(EXTRA_DATE, date);
-						dlService.putExtra(EXTRA_ISREFRESH, false);
-						// get meal names
-						Date dt = new Date(date);
-						dlService.putExtra(EXTRA_MEALNAMES, mTP.getDaysMealNames(l.type, dt.weekDay));
-
-						dlService.setClass(getContext(), MenuDownloaderService.class);
-						getContext().startService(dlService);
-
-						startDownload(id, date);
+			queryBuilder.appendWhere(PMealsDB._ID + "=" + uri.getLastPathSegment());
+			// no break statement
+		case MENU:
+			queryBuilder.setTables(PMealsDB.TABLE_MEALS);
+			if (selectionArgs.length == 3) {
+				String id = selectionArgs[0];
+				String date = selectionArgs[1];
+				// create a lock for this location+date, if needed
+				// this DCL *SHOULD* work, as HashMap is thread-safe
+				// eg, reads and writes are atomic wrt each other
+				if (sLocks.get(id + date) == null) {
+					synchronized (sMasterLock) {
+						if (sLocks.get(id + date) == null)
+							sLocks.put(id + date, new Object());
 					}
 				}
+
+				// synchronized block
+				// each day+location combo gets its own lock
+				synchronized (sLocks.get(id + date)) {
+					cursor = queryBuilder.query(mDB.getReadableDatabase(), projection,
+							selection, selectionArgs, null, null, sortOrder);
+					cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+					// not downloaded yet; download!!
+					if (cursor.getCount() == 0) {
+						// request download only if not already downloading
+						// need this because a request for one meal forces request for all meals that day!
+						if (!isDownloading(id, date)) {
+							Location l = lP.getById(Integer.parseInt(id));
+							// put arguments
+							Intent dlService = new Intent();
+							dlService.putExtra(EXTRA_LOCATIONID, id);
+							dlService.putExtra(EXTRA_LOCATIONNAME, l.locName);
+							dlService.putExtra(EXTRA_LOCATIONNUMBER, l.locNum);
+							dlService.putExtra(EXTRA_DATE, date);
+							dlService.putExtra(EXTRA_ISREFRESH, false);
+							// get meal names
+							Date dt = new Date(date);
+							dlService.putExtra(EXTRA_MEALNAMES, mTP.getDaysMealNames(l.type, dt.weekDay));
+
+							dlService.setClass(getContext(), MenuDownloaderService.class);
+							getContext().startService(dlService);
+
+							startDownload(id, date);
+						}
+					}
+				}
+			} else {
+				cursor = queryBuilder.query(mDB.getReadableDatabase(), projection, selection,
+						selectionArgs, null, null, sortOrder);
+				cursor.setNotificationUri(getContext().getContentResolver(), uri);
 			}
-		} else {
+			break;
+		case LOCNOTE:
+			queryBuilder.setTables(PMealsDB.TABLE_LOCNOTES);
 			cursor = queryBuilder.query(mDB.getReadableDatabase(), projection, selection,
 					selectionArgs, null, null, sortOrder);
 			cursor.setNotificationUri(getContext().getContentResolver(), uri);
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 
 		return cursor;
 	}
 
 	//-----------------------------------------------DOWNLOADING STATUS SETTER/GETTERS-----------------------------------
-	
+
 	// called by service when it finishes downloading
 	// synchronized on the id+date combination
 	public static void doneDownloading(String id, String date) {
@@ -263,21 +284,25 @@ public class MenuProvider extends ContentProvider {
 	    
 	    switch (uriType) {
 	    case MENU:
-	      rowsUpdated = sqlDB.update(PMealsDatabase.TABLE_MEALS, 
+	      rowsUpdated = sqlDB.update(PMealsDB.TABLE_MEALS, 
 	          values, selection, selectionArgs);
 	      break;
 	    case FOODITEM_ID:
 	      String id = uri.getLastPathSegment();
 	      if (TextUtils.isEmpty(selection)) {
-	        rowsUpdated = sqlDB.update(PMealsDatabase.TABLE_MEALS, 
-	            values, PMealsDatabase._ID + "=" + id, 
+	        rowsUpdated = sqlDB.update(PMealsDB.TABLE_MEALS, 
+	            values, PMealsDB._ID + "=" + id, 
 	            null);
 	      } else {
-	        rowsUpdated = sqlDB.update(PMealsDatabase.TABLE_MEALS, 
-	            values, PMealsDatabase._ID + "=" + id + " and " +
+	        rowsUpdated = sqlDB.update(PMealsDB.TABLE_MEALS, 
+	            values, PMealsDB._ID + "=" + id + " and " +
 	            selection, selectionArgs);
 	      }
 	      break;
+	    case LOCNOTE:
+	      rowsUpdated = sqlDB.update(PMealsDB.TABLE_LOCNOTES, 
+	          values, selection, selectionArgs);
+	    	break;
 	    default:
 	      throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }

@@ -38,7 +38,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 
 public class AlertService extends IntentService {
@@ -47,10 +47,10 @@ public class AlertService extends IntentService {
 	
 	private MealTimeProvider mTP;
 	private LocationProvider lP;
-	private static final String[] projection = { PMealsDatabase.ITEMNAME };
-	private static final String select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
-			+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?) and ("
-			+ PMealsDatabase.ITEMNAME + " like ?" + "))";
+	private static final String[] projection = { PMealsDB.ITEMNAME };
+	private static final String select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+			+ PMealsDB.DATE + "=?) and (" + PMealsDB.MEALNAME + "=?) and ("
+			+ PMealsDB.ITEMNAME + " like ?" + "))";
 	
 	public AlertService() {
 		super("AlertService");
@@ -121,7 +121,7 @@ public class AlertService extends IntentService {
 					continue;
 				String[] selectArgs =  { String.valueOf(l.ID), dmt.date.toString(),
 						dmt.mealName, query_ };
-				Cursor c = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
+				Cursor c = cr.query(MenuProvider.MEALS_URI, projection, select, selectArgs, null);
 				int numMatched = c.getCount();
 				if (numMatched == 0) { // no match
 					c.close();
@@ -138,7 +138,7 @@ public class AlertService extends IntentService {
 				dates.add(dmt.date.toString());
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
-					menuItems.add(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)));
+					menuItems.add(c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME)));
 					c.moveToNext();
 				}
 				c.close();

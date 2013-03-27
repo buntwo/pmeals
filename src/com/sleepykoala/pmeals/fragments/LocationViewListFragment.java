@@ -59,7 +59,7 @@ import com.sleepykoala.pmeals.data.LocationProvider;
 import com.sleepykoala.pmeals.data.LocationProviderFactory;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 import com.sleepykoala.pmeals.data.PMealsPreferenceManager;
 import com.sleepykoala.pmeals.services.MenuDownloaderService;
 
@@ -101,14 +101,14 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 	};
 
 	private static String[] projection = {
-		PMealsDatabase.ITEMNAME,
-		PMealsDatabase.ITEMTYPE,
-		PMealsDatabase.ITEMERROR,
-		PMealsDatabase.ITEMVEGAN,
-		PMealsDatabase.ITEMVEGETARIAN,
-		PMealsDatabase.ITEMPORK,
-		PMealsDatabase.ITEMNUTS,
-		PMealsDatabase.ITEMEFRIENDLY,
+		PMealsDB.ITEMNAME,
+		PMealsDB.ITEMTYPE,
+		PMealsDB.ITEMERROR,
+		PMealsDB.ITEMVEGAN,
+		PMealsDB.ITEMVEGETARIAN,
+		PMealsDB.ITEMPORK,
+		PMealsDB.ITEMNUTS,
+		PMealsDB.ITEMEFRIENDLY,
 	};
 
 	private LocationViewListAdapter mAdapter;
@@ -181,6 +181,11 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 			loaderArg.putBoolean(EXTRA_MEALEXISTS, false);
 			loaderArgs.add(loaderArg);
 		}
+		// add locnote arg
+		Bundle loaderArg = new Bundle();
+		loaderArg.putInt(EXTRA_LOCATIONID, locID);
+		loaderArg.putString(EXTRA_DATE, mDate);
+		loaderArgs.add(loaderArg);
 	}
 	
 	
@@ -211,7 +216,8 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
 			Intent toggleDate = new Intent();
 			toggleDate.setAction(C.ACTION_DATEFORMATTOGGLED);
 			LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(toggleDate);
-		}
+		} else if (pos == 1 && id == -5)
+			mAdapter.toggleNoteExpanded();
 	}
 	
 	@Override
@@ -351,34 +357,55 @@ public class LocationViewListFragment extends ListFragment implements LoaderMana
     }
 
     //---------------------------------------------------LOADER CALLBACKS---------------------------------------
-    
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String select;
-		String[] selectArgs;
-		if (args.getBoolean(EXTRA_MEALEXISTS)) {
-			select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
-					+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?))";
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    	String select;
+    	String[] selectArgs;
+    	if (id < loaderArgs.size() - 1) {
+    		if (args.getBoolean(EXTRA_MEALEXISTS)) {
+    			select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+    					+ PMealsDB.DATE + "=?) and (" + PMealsDB.MEALNAME + "=?))";
+    			selectArgs = new String[] { String.valueOf(args.getInt(EXTRA_LOCATIONID)),
+    					args.getString(EXTRA_DATE),
+    					args.getString(EXTRA_MEALNAME)
+    			};
+    		} else {
+    			select = "((" + PMealsDB.ITEMNAME + "=?) and (" + 
+    					PMealsDB.ITEMERROR + "=?))";
+    			// need the second string for locking purposes in the content provider
+    			selectArgs = new String[] { STRING_CLOSED, "1" };
+    		}
+
+    		return new CursorLoader(getActivity(), MenuProvider.MEALS_URI,
+    				projection, select, selectArgs, null);
+		} else { // locnote
+			select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+					+ PMealsDB.DATE + "=?))";
 			selectArgs = new String[] { String.valueOf(args.getInt(EXTRA_LOCATIONID)),
 					args.getString(EXTRA_DATE),
-					args.getString(EXTRA_MEALNAME)
 			};
-		} else {
-			select = "((" + PMealsDatabase.ITEMNAME + "=?) and (" + 
-					PMealsDatabase.ITEMERROR + "=?))";
-			// need the second string for locking purposes in the content provider
-			selectArgs = new String[] { STRING_CLOSED, "1" };
-		}
-		
-		return new CursorLoader(getActivity(), MenuProvider.CONTENT_URI,
-				projection, select, selectArgs, null);
+			return new CursorLoader(getActivity(), MenuProvider.LOCNOTES_URI,
+					new String[]{ PMealsDB.NOTE }, select, selectArgs, null);
+    	}
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		mAdapter.swapCursor(cursor, loader.getId());
+		int id = loader.getId();
+		if (id < loaderArgs.size() - 1)
+			mAdapter.swapCursor(cursor, id);
+		else {
+			if (cursor.getCount() != 0) {
+				cursor.moveToFirst();
+				mAdapter.setNote(cursor.getString(cursor.getColumnIndexOrThrow(PMealsDB.NOTE)));
+			} else
+				mAdapter.setNote(null);
+		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.swapCursor(null, loader.getId());
+		int id = loader.getId();
+		if (id < loaderArgs.size() - 1)
+			mAdapter.swapCursor(null, id);
 	}
 
 }

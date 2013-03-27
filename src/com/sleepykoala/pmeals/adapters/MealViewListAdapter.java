@@ -39,7 +39,7 @@ import com.sleepykoala.pmeals.data.FoodItem;
 import com.sleepykoala.pmeals.data.Location;
 import com.sleepykoala.pmeals.data.MealTimeProvider;
 import com.sleepykoala.pmeals.data.MealTimeProviderFactory;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 public class MealViewListAdapter extends BaseAdapter {
 	
@@ -47,6 +47,7 @@ public class MealViewListAdapter extends BaseAdapter {
 	
 	private ArrayList<Cursor> data; // parallel array of the data
 	private ArrayList<Location> locsToShow; // list of locations to show, in display order
+	private boolean[] hasInfo;
 	
 	// map: location type -> meal
 	private SparseArray<DatedMealTime> mealsToShow;
@@ -76,6 +77,7 @@ public class MealViewListAdapter extends BaseAdapter {
 		data = new ArrayList<Cursor>(size);
 		for (int i = 0; i < size; ++i)
 			data.add(null);
+		hasInfo = new boolean[size];
 		
 		// set date
 		today = new Date();
@@ -84,6 +86,12 @@ public class MealViewListAdapter extends BaseAdapter {
 	// swap in the cursor at the given ID
 	public void swapCursor(Cursor c, int ID) {
 		data.set(ID, c);
+		notifyDataSetChanged();
+	}
+	
+	// set if the given location has addition info (note) or not
+	public void setInfoIndicator(int ID, boolean set) {
+		hasInfo[ID] = set;
 		notifyDataSetChanged();
 	}
 	
@@ -246,12 +254,14 @@ public class MealViewListAdapter extends BaseAdapter {
 		Location loc = null;
 		int itemType = 0;
 		Cursor menu = null;
+		boolean hasInfo = false;
 		if (position == 0) {
 			itemType = 3;
 		} else {
 			for (int locPos = 0; locPos < locsToShow.size(); ++locPos) {
 				loc = locsToShow.get(locPos);
 				if (position == counter) {
+					hasInfo = this.hasInfo[locPos];
 					itemType = 0;
 					break;
 				}
@@ -276,11 +286,14 @@ public class MealViewListAdapter extends BaseAdapter {
 				holder = new LocationNameHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.sectiontitle);
 				holder.extra = (TextView) convertView.findViewById(R.id.sectionextra);
+				holder.infoIcon = (ImageView) convertView.findViewById(R.id.sectioninfoicon);
 				convertView.setTag(holder);
 			}
 			// hard coded location info!! (nickname);
 			// set location name
 			holder.name.setText(loc.nickname);
+			// set icon
+			holder.infoIcon.setVisibility(hasInfo ? View.VISIBLE : View.GONE);
 			// set extra info (time)
 			if (loc.type != mainType) {
 				DatedMealTime meal = mealsToShow.get(loc.type);
@@ -464,32 +477,32 @@ public class MealViewListAdapter extends BaseAdapter {
 	// get a FoodItem from cursor's current position
 	private FoodItem inflateItem(Cursor c) {
 		boolean[] params = getFoodInfo(c);
-		String type = c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMTYPE));
-		return new FoodItem(c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME)),
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1 ? true : false,
+		String type = c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMTYPE));
+		return new FoodItem(c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME)),
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMERROR)) == 1 ? true : false,
 				type,params
 				);
 	}
 	
 	// get the name of the food item the cursor is pointing at
 	private String getItemName(Cursor c) {
-		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME));
+		return c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME));
 	}
 
 	// get the error status of the food item the cursor is pointing at
 	private boolean getItemError(Cursor c) {
-		return c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMERROR)) == 1 ? true : false;
+		return c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMERROR)) == 1 ? true : false;
 	}
 	
 	/* food info getter
  	 * array is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
 	 */
 	private boolean[] getFoodInfo(Cursor c) {
-		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGAN)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGETARIAN)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMPORK)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNUTS)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMEFRIENDLY)) == 1 ? true : false
+		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMVEGAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMVEGETARIAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMPORK)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMNUTS)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMEFRIENDLY)) == 1 ? true : false
 		};
 	}
 
@@ -502,6 +515,7 @@ public class MealViewListAdapter extends BaseAdapter {
 	private static class LocationNameHolder {
 		TextView name;
 		TextView extra;
+		ImageView infoIcon;
 	}
 	
 	private static class MenuItemHolder {

@@ -8,7 +8,7 @@ import android.widget.RemoteViewsService;
 
 import com.sleepykoala.pmeals.R;
 import com.sleepykoala.pmeals.contentproviders.MenuProvider;
-import com.sleepykoala.pmeals.data.PMealsDatabase;
+import com.sleepykoala.pmeals.data.PMealsDB;
 
 public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFactory {
 	
@@ -84,20 +84,20 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 	}
 
 	private void getMenu() {
-		String[] projection = { PMealsDatabase.ITEMNAME, PMealsDatabase.ITEMERROR,
-				PMealsDatabase.ITEMVEGAN,
-				PMealsDatabase.ITEMVEGETARIAN,
-				PMealsDatabase.ITEMPORK,
-				PMealsDatabase.ITEMNUTS,
-				PMealsDatabase.ITEMEFRIENDLY,
+		String[] projection = { PMealsDB.ITEMNAME, PMealsDB.ITEMERROR,
+				PMealsDB.ITEMVEGAN,
+				PMealsDB.ITEMVEGETARIAN,
+				PMealsDB.ITEMPORK,
+				PMealsDB.ITEMNUTS,
+				PMealsDB.ITEMEFRIENDLY,
 		};
-		String select = "((" + PMealsDatabase.LOCATIONID + "=?) and ("
-				+ PMealsDatabase.DATE + "=?) and (" + PMealsDatabase.MEALNAME + "=?))";
+		String select = "((" + PMealsDB.LOCATIONID + "=?) and ("
+				+ PMealsDB.DATE + "=?) and (" + PMealsDB.MEALNAME + "=?))";
 		String[] selectArgs = new String[]{ String.valueOf(locID),
 				date,
 				mealName
 		};
-		menu = cr.query(MenuProvider.CONTENT_URI, projection, select, selectArgs, null);
+		menu = cr.query(MenuProvider.MEALS_URI, projection, select, selectArgs, null);
 	}
 
 	public void onDataSetChanged() {
@@ -114,18 +114,18 @@ public class MenuWidgetListFactory implements RemoteViewsService.RemoteViewsFact
 
 	// get the name of the food item the cursor is pointing at
 	private String getItemName(Cursor c) {
-		return c.getString(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNAME));
+		return c.getString(c.getColumnIndexOrThrow(PMealsDB.ITEMNAME));
 	}
 
 	/* food info getter
 	 * array is { isVegan, isVegetarian, hasPork, hasNuts, isEFriendly }
 	 */
 	private boolean[] getFoodInfo(Cursor c) {
-		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGAN)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMVEGETARIAN)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMPORK)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMNUTS)) == 1 ? true : false,
-				c.getInt(c.getColumnIndexOrThrow(PMealsDatabase.ITEMEFRIENDLY)) == 1 ? true : false
+		return new boolean[]{ c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMVEGAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMVEGETARIAN)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMPORK)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMNUTS)) == 1 ? true : false,
+				c.getInt(c.getColumnIndexOrThrow(PMealsDB.ITEMEFRIENDLY)) == 1 ? true : false
 		};
 	}
 
